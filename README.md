@@ -30,7 +30,7 @@ Our ambition is to develop an AAC tool that:
   Gives people a rich and natural-sounding voice.
 
 - **employs predictive text**<br>
-  Allows users to communicate efficiently.
+  Enables near-real-time communication with minimal effort.
 
 ## Existing open software
 
@@ -38,7 +38,7 @@ We want to build on the shoulders of those who came before by combining the best
 
 | Name | Platforms | Framework | Licence | Links |
 | --- | --- | --- | --- | --- |
-| CBoard | [Web](https://www.cboard.io), [iOS](https://apps.apple.com/gb/app/aac-cboard-app/id6453683048), [Android](https://play.google.com/store/apps/details?id=com.unicef.cboard), [Windows](https://apps.microsoft.com/store/detail/XP9M5KQV699FLR) | React | GPLv3 | [Website](https://www.cboard.io)<br>[Code](https://github.com/cboard-org/cboard) |
+| CBoard | [Web](https://app.cboard.io), [iOS](https://apps.apple.com/gb/app/aac-cboard-app/id6453683048), [Android](https://play.google.com/store/apps/details?id=com.unicef.cboard), [Windows](https://apps.microsoft.com/store/detail/XP9M5KQV699FLR) | React | GPLv3 | [Website](https://www.cboard.io)<br>[Code](https://github.com/cboard-org/cboard) |
 | FreeSpeech | [Web](https://www.freespeechaac.com/) | Svelte | MIT | [Website](https://www.freespeechaac.com/)<br>[Code](https://github.com/Merkie/freespeech)
 | PicTalk | [Android](https://play.google.com/store/apps/details?id=org.pictalk.www.twa), [iOS](https://apps.apple.com/ca/app/pictalk-aac/id1617860868?l=en)  | Vue, Node | GPLv3 | [Website](https://www.pictalk.org/)<br>[Code](https://github.com/Pictalk-speech-made-easy/pictalk-frontend)  |
 | AsTeRICS Grid | [Web](https://grid.asterics.eu)  | Vue | AGPLv3 | [Website](https://grid.asterics.eu)<br>[Code](https://github.com/asterics/AsTeRICS-Grid) |
@@ -56,11 +56,14 @@ We want to build on the shoulders of those who came before by combining the best
 | [ARASAAC](https://arasaac.org/) | Symbol set | CC-BY-NC-SA |
 | [OpenSymbols](https://www.opensymbols.org/) | Symbol set | Mixed CC |
 | [Global Symbols](https://globalsymbols.com/) | Symbol set | Mixed CC |
-| [ConvAssist](https://github.com/IntelLabs/ConvAssist) | Language model | GPLv3<br>([was Apache2](https://github.com/IntelLabs/ConvAssist/commit/10d8473efda23d0b1cc1269c3e17456030e7cc02)) |
+| [ConvAssist](https://github.com/IntelLabs/ConvAssist) | Predictive text tool | GPLv3<br>([was Apache-2.0](https://github.com/IntelLabs/ConvAssist/commit/10d8473efda23d0b1cc1269c3e17456030e7cc02)) |
+| [AAC-GPT2](https://huggingface.co/IntelLabs/aac_gpt2) | Language model (used in ConvAssist) | MIT |
 | [KWickChat](https://github.com/CambridgeIIS/KWickChat) | Language model | ⚠️ None |
 | [PrAACT](https://github.com/jayralencar/praact) | Language model (WIP) | MIT |
 | [AAC-LLM](https://github.com/Textualization/aac-llm) | Language model research | ⚠️ None |
 | [Dynamic AAC](https://github.com/AI-AAC/Dynamic-Augmentative-and-Alternative-Communication) | Board generation research | GPLv3 |
+| [Piper](https://github.com/OHF-Voice/piper1-gpl) | Neural TTS | GPLv3 |
+| [Kokoro](https://github.com/hexgrad/kokoro) | Neural TTS | Apache-2.0 |
 
 ## How to contribute
 
@@ -81,7 +84,7 @@ We want to build on the shoulders of those who came before by combining the best
 
 - 🔧 [Fix a problem identified in Issues](https://github.com/sonicbaume/FreeAAC/issues) and submitting a Pull Request.
 
-- 🔍 Find libraries or models that could be used to improve or extend the app.
+- 🔍 Find and suggest libraries or models that could be used to improve or extend the app.
 
 ## Authors
 
