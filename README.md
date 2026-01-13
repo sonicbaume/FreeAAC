@@ -55,6 +55,7 @@ We want to build on the shoulders of those who came before by combining the best
 | [Word Forms and Inflection Rules](https://docs.google.com/document/d/1JJI82jk9hPy-PHMgx5rXNhEhy8Z38-MtSF0Uirt8gFY/edit) | Standardised format for tracking word-level information | CC-BY |
 | [ARASAAC](https://arasaac.org/) | Symbol set | CC-BY-NC-SA |
 | [OpenSymbols](https://www.opensymbols.org/) | Symbol set | Mixed CC |
+| [Global Symbols](https://globalsymbols.com/) | Symbol set | Mixed CC |
 | [ConvAssist](https://github.com/IntelLabs/ConvAssist) | Language model | GPLv3<br>([was Apache2](https://github.com/IntelLabs/ConvAssist/commit/10d8473efda23d0b1cc1269c3e17456030e7cc02)) |
 | [KWickChat](https://github.com/CambridgeIIS/KWickChat) | Language model | ⚠️ None |
 | [PrAACT](https://github.com/jayralencar/praact) | Language model (WIP) | MIT |
@@ -66,19 +67,19 @@ We want to build on the shoulders of those who came before by combining the best
 ### You can:
 - ⭐️ Star this repository to improve its visibility.
 
-- 💬 Join the conversation by up-voting, commenting, or starting a discussion.
+- 💬 [Join the conversation](https://github.com/sonicbaume/FreeAAC/discussions) by up-voting, commenting, or starting a discussion.
 
 ### AAC users can:
 
 - ✋ Sign up to be a tester, try releases, report problems and offer feedback.
 
-- 📝 Request features by writing user stories.
+- 📝 [Request a feature](https://github.com/sonicbaume/FreeAAC/issues/new) by writing a user story.
 
 ### Developers can:
 
-- 🗺 Build features listed in the roadmap.
+- 🗺 Build features [listed in the roadmap](https://github.com/sonicbaume/FreeAAC/projects?query=is%3Aopen).
 
-- 🔧 Fix a problem identified in Issues and submitting a Pull Request.
+- 🔧 [Fix a problem identified in Issues](https://github.com/sonicbaume/FreeAAC/issues) and submitting a Pull Request.
 
 - 🔍 Find libraries or models that could be used to improve or extend the app.
 
