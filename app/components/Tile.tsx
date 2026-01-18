@@ -1,4 +1,5 @@
 import { AACButton } from "@willwade/aac-processors/browser"
+import { SquareArrowOutUpRight } from "lucide-react-native"
 import { Image, Pressable, StyleSheet, Text } from "react-native"
 import { speak } from "../utils/speech"
 
@@ -33,7 +34,15 @@ export default function Tile({
       }
       <Text
         style={styles.label}
-      >{button.label}</Text>
+      >
+        {button.label}
+      </Text>
+      {button.action?.type === "NAVIGATE" &&
+      <SquareArrowOutUpRight
+        style={{ position: 'absolute', top: 8, right: 8}}
+        size={18}
+      />
+      }
     </Pressable>
   )
 }
