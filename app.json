@@ -44,7 +44,7 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true,
-      "baseUrl": "/freeaac" 
+      "baseUrl": "/FreeAAC" 
     }
   }
 }
