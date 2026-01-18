@@ -1,16 +1,19 @@
 import { AACPage, getProcessor } from "@willwade/aac-processors/browser";
 import * as DocumentPicker from "expo-document-picker";
-import { File } from "expo-file-system";
 import { handleError } from "./error";
+
+const getFileExt = (name: string): string => {
+  const ext = name.split(".").pop()
+  return ext ? `.${ext.toLowerCase()}` : ''
+}
 
 export const selectFile = async (onSuccess: (page: AACPage) => void) => {
   const result = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: true })
-  const fileName = result.assets?.at(0)
-  if (!fileName) return handleError("No file selected")
-  const file = new File(fileName.uri)
-  const arrayBuffer = await file.arrayBuffer()
-
-  const processor = getProcessor(file.extension)
+  const asset = result.assets?.at(0)
+  if (!asset) return handleError("No file selected")
+  const arrayBuffer = await asset.file?.arrayBuffer()
+  if (!arrayBuffer) return handleError("Could not read file")
+  const processor = getProcessor(getFileExt(asset.name))
   const tree = await processor.loadIntoTree(arrayBuffer)
 
   if (Object.keys(tree.pages).length < 1) return handleError("No pages found")
