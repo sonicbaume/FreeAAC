@@ -1,12 +1,16 @@
 # 🌈 FreeAAC
 
-Augmentative and Alternative Communication (AAC) tools support people who have difficulty speaking to communicate effectively. Everyone has the right to freedom of opinion and expression, yet for some people, their ability to communicate effectively sits behind a paywall. This initiative aims to provide free and open-source AAC software that offers state-of-the-art technology and a high quality user experience.
+A free and open-source Augmentative and Alternative Communication (AAC) app for Android, iOS and web, built using React Native.
 
 > 💡 We are currently in the planning stage - please **[let us know what you think](https://github.com/sonicbaume/FreeAAC/discussions)** to help guide the project in the right direction.
 
 ## Introduction
 
-There are some excellent free AAC tools already available (see below) that are hugely valuable to the community. The fundamental problem is that advanced features such as neural TTS and LLMs are hard to deliver through a web app, or need to be delivered through costly backend servers. This limits the functionality and user experience of many of these apps.
+AAC technology is dominated by proprietary software that can cost upwards of $300, limiting people’s ability to access the best tools and functionality. There are some excellent free and open-source AAC apps already available (see below) that are hugely valuable to the community. These are mostly built using Javascript frameworks that run in a browser, either natively or wrapped in a mobile app.
+
+As these AAC apps are based on web technology, advanced functionality such as neural TTS and word/sentence prediction needs to be delivered through cloud services. This introduces a cost that must be met by the product owner (i.e. through a subscription) or the user (i.e. through an API key).
+
+Recently, lightweight AI models have become available that can be run on the user’s device, eliminating the need for servers or API keys. This approach might enable apps to offer features that rival commercial offerings while being truly free and open.
 
 Our ambition is to develop an AAC app that:
 
@@ -28,12 +32,12 @@ Our ambition is to develop an AAC app that:
 - **employs predictive text**<br>
   Enables near-real-time communication with minimal effort.
 
-To achieve this, we are thinking about using:
+To achieve this, we plan to use:
 
-- **React Native**, for cross-platform development with a large community and rich ecosystem.
-- **Open Board Format (OBF)**, for interoperability with other AAC apps.
-- **Kokoro**, for natural sounding speech rendered on the user's device.
-- **AAC-GPT2**, for near real time conversations by predicting utterances or sentences.
+- **[React Native](https://reactnative.dev/)**, for serving Android, iOS and web from a single Javascript codebase. (_It is technically possible to run AI models in a browser (e.g. using [tfjs](https://github.com/tensorflow/tfjs)), but being able to run local models natively brings performance and reliability benefits._)
+- **[Open Board Format](https://www.openboardformat.org/) (OBF)**, with [adapters](https://github.com/willwade/AACProcessors-nodejs) for interoperability with other AAC apps.
+- **[Kokoro](https://github.com/hexgrad/kokoro)**, for rendering natural sounding speech on the user’s device.
+- **[AAC-GPT2](https://huggingface.co/IntelLabs/aac_gpt2)**, for near-real-time conversations by predicting utterances or sentences.
 
 ## Existing open software
 
@@ -45,6 +49,7 @@ We want to build on the shoulders of those who came before by combining the best
 | FreeSpeech | [Web](https://www.freespeechaac.com/) | Svelte | MIT | [Website](https://www.freespeechaac.com/)<br>[Code](https://github.com/Merkie/freespeech)
 | PicTalk | [Android](https://play.google.com/store/apps/details?id=org.pictalk.www.twa), [iOS](https://apps.apple.com/ca/app/pictalk-aac/id1617860868?l=en)  | Vue, Node | GPLv3 | [Website](https://www.pictalk.org/)<br>[Code](https://github.com/Pictalk-speech-made-easy/pictalk-frontend)  |
 | AsTeRICS Grid | [Web](https://grid.asterics.eu)  | Vue | AGPLv3 | [Website](https://grid.asterics.eu)<br>[Code](https://github.com/asterics/AsTeRICS-Grid) |
+| OneTalker | _Windows, macOS, Linux_  | Iced (Rust) | GPLv3 | [Code](https://codeberg.org/OneTalker/OneTalker) |
 | OTTAA | (_unpublished_) | Flutter | GPLv3 | [Website](https://ottaaproject.com/)<br>[Code](https://github.com/OTTAA-Project/ottaa_project_flutter)
 | AAC Communication Assistant | (_unpublished_) | React Native | ⚠️ None | [Code](https://github.com/FastTrack-Academy/Augmentative-Alternative-Communication)
 | AAC Speech Android | (_unpublished_) | Android (Java) | ⚠️  None | [Code](https://github.com/vidma/aac-speech-android) |
@@ -99,6 +104,7 @@ We want to build on the shoulders of those who came before by combining the best
 
 ## Development
 
+To run locally with live reloading:
 ```
 npm install
 npx expo start --web
