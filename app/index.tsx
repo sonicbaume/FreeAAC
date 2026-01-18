@@ -16,11 +16,9 @@ export default function Index() {
     const processor = new ObfProcessor();
     const tree = await processor.loadIntoTree(buffer);
     if (Object.keys(tree.pages).length < 1) return
-    if (tree.metadata.defaultHomePageId &&
-        tree.metadata.defaultHomePageId in tree.pages)
-        setPage(tree.pages[tree.metadata.defaultHomePageId])
-    else
-      setPage(Object.values(tree.pages)[0])
+    const defaultPageId = tree.metadata.defaultHomePageId ?? Object.keys(tree.pages)[0]
+    if (!(defaultPageId in tree.pages)) return
+    setPage(tree.pages[defaultPageId])
   }
 
   return (
