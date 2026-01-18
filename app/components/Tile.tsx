@@ -15,7 +15,13 @@ export default function Tile({
   }
 
   return (
-    <Pressable style={styles.container} onPress={handlePress}>
+    <Pressable
+      style={{
+        ...styles.container,
+        ...button.style,
+      }}
+      onPress={handlePress}
+    >
       {button.image &&
       <Image
         source={{
@@ -46,5 +52,5 @@ const styles = StyleSheet.create({
   symbol: {
     width: '100%',
     height: '100%',
-  }
+  },
 })

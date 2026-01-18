@@ -32,10 +32,13 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     width: '100%',
+    gap: 10,
+    padding: 10
   },
   row: {
     display: 'flex',
     flex: 1,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    gap: 10
   }
 })
