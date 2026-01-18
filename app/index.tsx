@@ -16,7 +16,7 @@ export default function Index() {
       }}
     >
       {page && <Page page={page} />}
-      {!page && <Button title="Open OBF file" onPress={handleOpenFile}/>}
+      {!page && <Button title="Import board" onPress={handleOpenFile}/>}
     </View>
   );
 }

@@ -18,12 +18,14 @@ export const selectFile = async (onSuccess: (page: AACPage) => void) => {
   const result = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: true })
   const asset = result.assets?.at(0)
   if (!asset) return handleError("No file selected")
+
   const arrayBuffer = await getArrayBuffer(asset)
   if (!arrayBuffer) return handleError("Could not read file")
+
   const processor = getProcessor(getFileExt(asset.name))
   const tree = await processor.loadIntoTree(arrayBuffer)
-
   if (Object.keys(tree.pages).length < 1) return handleError("No pages found")
+  
   const defaultPageId = tree.metadata.defaultHomePageId ?? Object.keys(tree.pages)[0]
   if (!(defaultPageId in tree.pages)) return handleError("Could not find default page")
   onSuccess(tree.pages[defaultPageId])

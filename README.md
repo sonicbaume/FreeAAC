@@ -8,7 +8,7 @@ Augmentative and Alternative Communication (AAC) tools support people who have d
 
 There are some excellent free AAC tools already available (see below) that are hugely valuable to the community. The fundamental problem is that advanced features such as neural TTS and LLMs are hard to deliver through a web app, or need to be delivered through costly backend servers. This limits the functionality and user experience of many of these apps.
 
-Our ambition is to develop an AAC mobile app that:
+Our ambition is to develop an AAC app that:
 
 - **is free and open-source**<br>
   Can be run, modified, and distributed freely by anyone.
