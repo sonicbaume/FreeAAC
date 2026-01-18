@@ -1,6 +1,13 @@
 import { AACPage, getProcessor } from "@willwade/aac-processors/browser";
 import * as DocumentPicker from "expo-document-picker";
+import { File } from "expo-file-system";
+import { Platform } from "react-native";
 import { handleError } from "./error";
+
+const getArrayBuffer = async (asset: DocumentPicker.DocumentPickerAsset) => {
+  const file = Platform.OS === "web" ? asset.file : new File(asset.uri)
+  return await file?.arrayBuffer()
+}
 
 const getFileExt = (name: string): string => {
   const ext = name.split(".").pop()
@@ -11,7 +18,7 @@ export const selectFile = async (onSuccess: (page: AACPage) => void) => {
   const result = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: true })
   const asset = result.assets?.at(0)
   if (!asset) return handleError("No file selected")
-  const arrayBuffer = await asset.file?.arrayBuffer()
+  const arrayBuffer = await getArrayBuffer(asset)
   if (!arrayBuffer) return handleError("Could not read file")
   const processor = getProcessor(getFileExt(asset.name))
   const tree = await processor.loadIntoTree(arrayBuffer)
