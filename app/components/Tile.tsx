@@ -1,5 +1,5 @@
 import { AACButton } from "@willwade/aac-processors/browser"
-import { Pressable, StyleSheet, Text } from "react-native"
+import { Image, Pressable, StyleSheet, Text } from "react-native"
 import { speak } from "../utils/speech"
 
 export default function Tile({
@@ -16,7 +16,18 @@ export default function Tile({
 
   return (
     <Pressable style={styles.container} onPress={handlePress}>
-      <Text style={styles.label}>{button.label}</Text>
+      {button.image &&
+      <Image
+        source={{
+          uri: button.image
+        }}
+        resizeMode="contain"
+        style={styles.symbol}
+      />
+      }
+      <Text
+        style={styles.label}
+      >{button.label}</Text>
     </Pressable>
   )
 }
@@ -26,9 +37,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    padding: 20
   },
   label: {
-    fontSize: 30
+    // fontSize: 20,
+  },
+  symbol: {
+    width: '100%',
+    height: '100%',
   }
 })
