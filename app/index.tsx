@@ -4,6 +4,7 @@ import { File } from "expo-file-system";
 import { useState } from "react";
 import { Button, View } from "react-native";
 import Page from "./components/Page";
+import { handleError } from "./utils/error";
 
 export default function Index() {
   const [page, setPage] = useState<AACPage>()
@@ -11,16 +12,16 @@ export default function Index() {
   const handleOpenFile = async () => {
     const result = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: true })
     const fileName = result.assets?.at(0)
-    if (!fileName) return console.debug("No files selected")
+    if (!fileName) return handleError("No file selected")
     const file = new File(fileName.uri)
     const arrayBuffer = await file.arrayBuffer()
 
     const processor = getProcessor(file.extension)
     const tree = await processor.loadIntoTree(arrayBuffer)
 
-    if (Object.keys(tree.pages).length < 1) return
+    if (Object.keys(tree.pages).length < 1) return handleError("No pages found")
     const defaultPageId = tree.metadata.defaultHomePageId ?? Object.keys(tree.pages)[0]
-    if (!(defaultPageId in tree.pages)) return
+    if (!(defaultPageId in tree.pages)) return handleError("Could not find default page")
     setPage(tree.pages[defaultPageId])
   }
 
@@ -33,9 +34,7 @@ export default function Index() {
       }}
     >
       {page && <Page page={page} />}
-      {!page &&
-      <Button title="Open OBF file" onPress={handleOpenFile}/>
-      }
+      {!page && <Button title="Open OBF file" onPress={handleOpenFile}/>}
     </View>
   );
 }
