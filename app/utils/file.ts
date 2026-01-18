@@ -24,6 +24,7 @@ export const selectFile = async (onSuccess: (page: AACPage) => void) => {
 
   const processor = getProcessor(getFileExt(asset.name))
   const tree = await processor.loadIntoTree(arrayBuffer)
+  console.log(tree)
   if (Object.keys(tree.pages).length < 1) return handleError("No pages found")
   
   const defaultPageId = tree.metadata.defaultHomePageId ?? Object.keys(tree.pages)[0]
