@@ -97,6 +97,15 @@ We want to build on the shoulders of those who came before by combining the best
 
 - 🔍 Find and suggest libraries or models that could be used to improve or extend the app.
 
+## Development
+
+```
+npm install
+npx expo start --web
+npx expo run android
+npx expo run ios
+```
+
 ## Authors
 
 - [Chris Baume](https://sonic.bau.me/about) is a software engineer, researcher, and SEN parent with expertise in audio and AI.
