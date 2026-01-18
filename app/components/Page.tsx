@@ -1,0 +1,41 @@
+import { AACPage } from "@willwade/aac-processors/browser";
+import { StyleSheet, View } from "react-native";
+import Tile from "./Tile";
+
+export default function Page({
+  page,
+}: {
+  page: AACPage
+}) {
+  const rows = page.grid.length
+  const cols = page.grid.at(0)?.length
+  if (!rows || !cols) return <></>
+
+  return (
+    <View style={styles.container}>
+      {page.grid.map((row, rowIndex) =>
+       <View key={rowIndex} style={styles.row}>
+        {row.map((col, colIndex) => col &&
+          <Tile
+            key={`${rowIndex}_${colIndex}`}
+            button={col}
+          />
+        )}
+        </View>
+      )}
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flex: 1,
+    width: '100%',
+  },
+  row: {
+    display: 'flex',
+    flex: 1,
+    flexDirection: 'row'
+  }
+})

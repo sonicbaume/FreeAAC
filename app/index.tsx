@@ -3,6 +3,7 @@ import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
 import { useState } from "react";
 import { Button, View } from "react-native";
+import Page from "./components/Page";
 
 export default function Index() {
   const [page, setPage] = useState<AACPage>()
@@ -31,6 +32,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
+      {page && <Page page={page} />}
       {!page &&
       <Button title="Open OBF file" onPress={handleOpenFile}/>
       }
