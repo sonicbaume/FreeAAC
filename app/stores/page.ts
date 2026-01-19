@@ -1,34 +1,50 @@
-import { AACPage } from '@willwade/aac-processors/browser';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { zustandStorage } from './middleware';
 
 interface PageState {
-  pages: AACPage[];
-  currentPage: AACPage | undefined;
+  treeFiles: string[];
+  currentTreeFile: string | undefined;
+  currentPageId: string | undefined;
   actions: {
-    addPage: (page: AACPage) => void;
-    removePage: (page: AACPage) => void;
-    setCurrentPage: (page: AACPage) => void;
+    setCurrentTreeFile: (treeFile: string | undefined) => void;
+    setCurrentPageId: (pageId: string | undefined) => void;
+    addTreeFile: (treeFile: string) => void;
+    removeTreeFile: (treeFile: string) => void;
   }
 }
 
 const useStore = create<PageState>()(persist(
   (set, get) => ({
-    pages: [],
-    currentPage: undefined,
+    treeFiles: [],
+    currentTreeFile: undefined,
+    currentPageId: undefined,
     actions: {
-      addPage: (page) => set({ pages: [...get().pages, page] }),
-      removePage: (page) => set({ pages: get().pages.filter(p => p.id !== page.id) }),
-      setCurrentPage: (page) => set({ currentPage: page })
+      setCurrentTreeFile: (treeFile) => set({
+        currentTreeFile: treeFile
+      }),
+      setCurrentPageId: (pageId) => set({
+        currentPageId: pageId
+      }),
+      addTreeFile: (treeFile: string) => set({
+        treeFiles: [...get().treeFiles, treeFile]
+      }),
+      removeTreeFile: (treeFile: string) => set({
+        treeFiles: get().treeFiles.filter(file => file !== treeFile)
+      })
     }
   }),
   {
     name: 'page',
-    storage: createJSONStorage(() => zustandStorage)
+    storage: createJSONStorage(() => zustandStorage),
+    partialize: (state) =>
+      Object.fromEntries(
+        Object.entries(state).filter(([key]) => !['actions'].includes(key)),
+      ),
   },
 ))
 
-export const usePages = () => useStore(s => s.pages)
-export const useCurrentPage = () => useStore(s => s.currentPage)
+export const useTreeFiles = () => useStore(s => s.treeFiles)
+export const useCurrentTreeFile = () => useStore(s => s.currentTreeFile)
+export const useCurrentPageId = () => useStore(s => s.currentPageId)
 export const usePageActions = () => useStore(s => s.actions)
