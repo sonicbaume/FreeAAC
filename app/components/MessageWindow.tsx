@@ -1,11 +1,12 @@
 import { Home, Menu } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
-import { handleError } from "../utils/error";
 
 export default function MessageWindow({
   onNavigateHome,
+  onOpenSettings,
 }: {
   onNavigateHome: () => void;
+  onOpenSettings: () => void;
 }) {
   return (
     <View style={{
@@ -26,7 +27,7 @@ export default function MessageWindow({
       <View>
         <Pressable
           style={styles.button}
-          onPress={() => handleError('open settings')}
+          onPress={onOpenSettings}
         >
           <Menu size={30} />
         </Pressable>
