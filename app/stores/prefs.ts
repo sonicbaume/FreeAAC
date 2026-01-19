@@ -10,7 +10,7 @@ interface PrefsState {
 export const usePrefsStore = create<PrefsState>()(persist(
   (set, get) => ({
     playOnPress: true,
-    togglePlayOnPress: () => set({ playOnPress: !get().playOnPress }),
+    togglePlayOnPress: () => set({ playOnPress: !(get().playOnPress) }),
   }),
   {
     name: 'prefs',
