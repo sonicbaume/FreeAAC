@@ -1,6 +1,11 @@
-import { X } from "lucide-react-native";
-import { FlatList, ListRenderItem, Pressable, StyleSheet, Switch, Text, View } from "react-native";
+import { LucideIcon, Monitor, Speech, X } from "lucide-react-native";
+import { ListRenderItem, Pressable, SectionList, StyleSheet, Switch, Text, View } from "react-native";
 import { useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions } from "../stores/prefs";
+
+interface SettingsHeader {
+  title: string;
+  icon: LucideIcon;
+}
 
 interface SettingItem {
   name: string;
@@ -18,7 +23,7 @@ export default function Settings({
   const labelLocation = useLabelLocation()
   const { togglePlayOnPress, setMessageWindowLocation, setLabelLocation } = usePrefsActions()
 
-  const handleRenderItem: ListRenderItem<SettingItem> = ({item})  => (
+  const renderItem: ListRenderItem<SettingItem> = ({item}) => (
     <View style={styles.settingItem}>
       <View style={{ flex: 1 }}>
         <Text style={styles.settingItemTitle}>{item.name}</Text>
@@ -28,29 +33,50 @@ export default function Settings({
     </View>
   )
 
-  const settingsData: SettingItem[] = [
+  const renderSectionHeader = ({section}: {section: SettingsHeader}) => {
+    const Icon = section.icon
+    return (
+    <View style={styles.sectionHeader}>
+      <Icon size={20} />
+      <Text style={{ fontSize: 14 }}>{section.title}</Text>
+    </View>)
+  }
+
+  const settingsData: (SettingsHeader & { data: SettingItem[] })[] = [
     {
-      name: "Speak on press",
-      description: "Play audio when a button is pressed",
-      component: <Switch value={playOnPress} onValueChange={togglePlayOnPress} />
+      title: "Speech",
+      icon: Speech,
+      data: [
+        {
+          name: "Speak on press",
+          description: "Play audio when a button is pressed",
+          component: <Switch value={playOnPress} onValueChange={togglePlayOnPress} />
+        }
+      ]
     },{
-      name: "Label location",
-      description: "Position of label on buttons",
-      component: <View style={{display: 'flex', alignItems: 'center'}}>
-        <Switch value={labelLocation === "top"} onValueChange={val => {
-          setLabelLocation(val ? "top" : "bottom")
-        }} />
-        <Text style={{textAlign: 'center', fontSize: 12}}>{labelLocation === "top" ? "Top" : "Bottom"}</Text>
-      </View>
-    },{
-      name: "Message window location",
-      description: "Position of message window on screen",
-      component: <View style={{display: 'flex', alignItems: 'center'}}>
-        <Switch value={messageWindowLocation === "top"} onValueChange={val => {
-          setMessageWindowLocation(val ? "top" : "bottom")
-        }} />
-        <Text style={{textAlign: 'center', fontSize: 12}}>{messageWindowLocation === "top" ? "Top" : "Bottom"}</Text>
-      </View>
+      title: "Interface",
+      icon: Monitor,
+      data: [
+        {
+          name: "Label position",
+          description: "Position of label on buttons",
+          component: <View style={{display: 'flex', alignItems: 'center'}}>
+            <Switch value={labelLocation === "top"} onValueChange={val => {
+              setLabelLocation(val ? "top" : "bottom")
+            }} />
+            <Text style={{textAlign: 'center', fontSize: 12}}>{labelLocation === "top" ? "Top" : "Bottom"}</Text>
+          </View>
+        },{
+          name: "Message window position",
+          description: "Position of message window on screen",
+          component: <View style={{display: 'flex', alignItems: 'center'}}>
+            <Switch value={messageWindowLocation === "top"} onValueChange={val => {
+              setMessageWindowLocation(val ? "top" : "bottom")
+            }} />
+            <Text style={{textAlign: 'center', fontSize: 12}}>{messageWindowLocation === "top" ? "Top" : "Bottom"}</Text>
+          </View>
+        }
+      ]
     }
   ]
 
@@ -61,9 +87,10 @@ export default function Settings({
           <X size={24} />
         </Pressable>
         <Text style={styles.modalTitle}>Settings</Text>
-        <FlatList
-          data={settingsData}
-          renderItem={handleRenderItem}
+        <SectionList
+          sections={settingsData}
+          renderItem={renderItem}
+          renderSectionHeader={renderSectionHeader}
           style={styles.settingsList}
         />
       </View>
@@ -97,6 +124,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'semibold',
     marginBottom: 15,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#ddd',
   },
   settingsList: {
     width: '100%',
