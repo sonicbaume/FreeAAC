@@ -2,17 +2,27 @@ import { AACButton } from "@willwade/aac-processors/browser"
 import { SquareArrowOutUpRight } from "lucide-react-native"
 import { Image, Pressable, StyleSheet, Text } from "react-native"
 import { usePagesetActions } from "../stores/pagesets"
-import { usePlayOnPress } from "../stores/prefs"
+import { useLabelLocation, usePlayOnPress } from "../stores/prefs"
 import { speak } from "../utils/speech"
 
+const Label = ({ text }: { text: string }) => {
+  return (
+    <Text
+      style={styles.label}
+    >
+      {text}
+    </Text>
+  )
+}
 export default function Tile({
   button,
 }: {
   button: AACButton
 }) {
   const playOnPress = usePlayOnPress()
+  const labelLocation = useLabelLocation()
   const { setCurrentPageId } = usePagesetActions()
-
+  
   const handlePress = () => {
     if (button.action?.type === "SPEAK") {
       if (playOnPress) speak(button.action.message ?? button.message)
@@ -29,6 +39,7 @@ export default function Tile({
       }}
       onPress={handlePress}
     >
+      {labelLocation === "top" && <Label text={button.label} />}
       {button.image &&
       <Image
         source={{
@@ -38,11 +49,7 @@ export default function Tile({
         style={styles.symbol}
       />
       }
-      <Text
-        style={styles.label}
-      >
-        {button.label}
-      </Text>
+      {labelLocation === "bottom" && <Label text={button.label} />}
       {button.action?.type === "NAVIGATE" &&
       <SquareArrowOutUpRight
         style={{ position: 'absolute', top: 8, right: 8}}
@@ -59,13 +66,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20
+    overflow: 'hidden',
+    borderRadius: 10
   },
   label: {
-    // fontSize: 20,
+    paddingVertical: 5,
+    textAlign: 'center',
   },
   symbol: {
-    width: '100%',
+    flex: 1,
     height: '100%',
+    width: '100%',
   },
 })

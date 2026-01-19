@@ -1,4 +1,4 @@
-import { Settings } from "lucide-react-native";
+import { Menu } from "lucide-react-native";
 import { Pressable, View } from "react-native";
 import { handleError } from "../utils/error";
 
@@ -15,8 +15,11 @@ export default function MessageWindow() {
         
       </View>
       <View>
-        <Pressable onPress={() => handleError('open settings')}>
-          <Settings size={40} />
+        <Pressable
+          style={{ padding: 5}}
+          onPress={() => handleError('open settings')}
+        >
+          <Menu size={30} />
         </Pressable>
       </View>
     </View>
