@@ -4,13 +4,17 @@ import { zustandStorage } from './middleware';
 
 interface PrefsState {
   playOnPress: boolean;
-  togglePlayOnPress: () => void;
+  actions: {
+    togglePlayOnPress: () => void;
+  }
 }
 
 export const usePrefsStore = create<PrefsState>()(persist(
   (set, get) => ({
     playOnPress: true,
-    togglePlayOnPress: () => set({ playOnPress: !(get().playOnPress) }),
+    actions: {
+      togglePlayOnPress: () => set({ playOnPress: !(get().playOnPress) }),
+    }
   }),
   {
     name: 'prefs',
@@ -19,4 +23,4 @@ export const usePrefsStore = create<PrefsState>()(persist(
 ))
 
 export const usePlayOnPress = () => usePrefsStore(s => s.playOnPress)
-export const useTogglePlayOnPress = () => usePrefsStore(s => s.togglePlayOnPress)
+export const usePrefsActions = () => usePrefsStore(s => s.actions)
