@@ -6,4 +6,5 @@ export const handleError = (
 ) => {
   if (error) console.error(error)
   Alert.alert(message)
+  return undefined
 }
