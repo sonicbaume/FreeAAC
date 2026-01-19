@@ -1,41 +1,51 @@
 
 
 
+import * as Crypto from 'expo-crypto';
 import * as DocumentPicker from 'expo-document-picker';
 import { File, Paths } from 'expo-file-system';
-import { nanoid } from "nanoid";
 import { Platform } from "react-native";
-import { handleError } from "./error";
+
+const getUUID = () => Crypto.randomUUID();
 
 export const saveFile = async (
   fileName: string,
   data: Uint8Array<ArrayBuffer>,
   storageType: 'document' | 'cache'
 ): Promise<string> => {
-  let path = fileName
   if (Platform.OS === "android" || Platform.OS === "ios") {
     const root = storageType === 'cache' ? Paths.cache : Paths.document
-    path = `${root}/${fileName}`
-    const file = new File(path)
+    const file = new File(root, fileName)
+    file.uri
     file.create()
     file.write(data)
+    return file.uri
   } else if (Platform.OS === "web") {
     const root = await navigator.storage.getDirectory()
-    const fileHandle = await root.getFileHandle(path, { create: true })
+    const fileHandle = await root.getFileHandle(fileName, { create: true })
     const writable = await fileHandle.createWritable()
     await writable.write(data)
     await writable.close()
+    return fileName
   } else {
-    throw "Not yet supported on this platform"
+    throw "File save not yet supported on this platform"
   }
-  return path
 }
 
-export const loadFile = async (fileName: string): Promise<globalThis.File | undefined> => {
-  if (Platform.OS !== "web") return handleError("Not yet supported on this platform")
-  const root = await navigator.storage.getDirectory()
-  const fileHandle = await root.getFileHandle(fileName)
-  return await fileHandle.getFile()
+export const loadFile = async (fileName: string):
+  Promise<ArrayBuffer> =>
+{
+  if (Platform.OS === "android" || Platform.OS === "ios") {
+    const file = new File(fileName)
+    return await file.arrayBuffer()
+  } else if (Platform.OS === "web") {
+    const root = await navigator.storage.getDirectory()
+    const fileHandle = await root.getFileHandle(fileName)
+    const file = await fileHandle.getFile()
+    return await file.arrayBuffer()
+  } else {
+    throw "File load not yet supported on this platform"
+  }
 }
 
 const getData = async (asset: DocumentPicker.DocumentPickerAsset):
@@ -60,7 +70,7 @@ export const selectFile = async (): Promise<string> => {
   if (!asset) throw new Error("No file selected")
   const data = await getData(asset)
   const ext = getFileExt(asset.name)
-  const uuid = `${nanoid()}.${ext}`
+  const uuid = `${getUUID()}.${ext}`
   const fileName = await saveFile(uuid, data, 'document')
   return fileName
 }
