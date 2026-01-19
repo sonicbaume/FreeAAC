@@ -7,6 +7,7 @@ import { useCurrentPageId, useCurrentTreeFile, usePagesetActions } from "./store
 import { useMessageWindowLocation } from "./stores/prefs";
 import { handleError } from "./utils/error";
 import { getFileExt, loadFile, selectFile } from "./utils/file";
+import { getHomePageId } from "./utils/pagesets";
 
 export default function Index() {
   const currentTreeFile = useCurrentTreeFile()
@@ -17,18 +18,21 @@ export default function Index() {
 
   useEffect(() => {(async () => {
     if (!currentTreeFile) return
-    const treeFile = await loadFile(currentTreeFile)
-    if (!treeFile) return handleError('Could not load file')
-    const processor = getProcessor(getFileExt(currentTreeFile))
-    const tree = await processor.loadIntoTree(treeFile)
-    console.log(tree)
-    if (Object.keys(tree.pages).length < 1) return handleError("No pages found")
-    setTree(tree)
+    try {
+      const treeFile = await loadFile(currentTreeFile)
+      if (!treeFile) return handleError('Could not load file')
+      const processor = getProcessor(getFileExt(currentTreeFile))
+      const tree = await processor.loadIntoTree(treeFile)
+      console.log(tree)
+      if (Object.keys(tree.pages).length < 1) return handleError("No pages found")
+      setTree(tree)
 
-    if (!currentPageId || !(currentPageId in tree.pages)) {
-      const defaultPageId = tree.metadata.defaultHomePageId ?? Object.keys(tree.pages)[0]
-      if (!(defaultPageId in tree.pages)) return handleError("Could not find default page")
-      setCurrentPageId(defaultPageId)
+      if (!currentPageId || !(currentPageId in tree.pages)) {
+        const homePageId = getHomePageId(tree)
+        setCurrentPageId(homePageId)
+      }
+    } catch (e) {
+      handleError(e)
     }
   })()}, [currentTreeFile])
 
@@ -47,9 +51,22 @@ export default function Index() {
       handleError(e)
     }
   }
+
+  const handleNavigateHome = () => {
+    if (!tree) return
+    try {
+      const homePageId = getHomePageId(tree)
+      setCurrentPageId(homePageId)
+    } catch (e) {
+      handleError(e)
+    }
+  }
+
+  const messageWindow = <MessageWindow onNavigateHome={handleNavigateHome} />
+
   return (
     <View style={{ flex: 1 }}>
-      {messageWindowLocation === "top" && <MessageWindow />}
+      {messageWindowLocation === "top" && messageWindow}
       <View
         style={{
           flex: 1,
@@ -60,7 +77,7 @@ export default function Index() {
         {page && <Page page={page} />}
         {!page && <Button title="Import board" onPress={handleOpenFile}/>}
       </View>
-      {messageWindowLocation === "bottom" && <MessageWindow />}
+      {messageWindowLocation === "bottom" && messageWindow}
     </View>
   );
 }
