@@ -1,14 +1,17 @@
 import { AACTree, getProcessor } from "@willwade/aac-processors/browser";
 import { useEffect, useMemo, useState } from "react";
 import { Button, View } from "react-native";
+import MessageWindow from "./components/MessageWindow";
 import Page from "./components/Page";
 import { useCurrentPageId, useCurrentTreeFile, usePagesetActions } from "./stores/pagesets";
+import { useMessageWindowLocation } from "./stores/prefs";
 import { handleError } from "./utils/error";
 import { getFileExt, loadFile, selectFile } from "./utils/file";
 
 export default function Index() {
   const currentTreeFile = useCurrentTreeFile()
   const currentPageId = useCurrentPageId()
+  const messageWindowLocation = useMessageWindowLocation()
   const { setCurrentPageId, setCurrentTreeFile, addTreeFile } = usePagesetActions()
   const [tree, setTree] = useState<AACTree>()
 
@@ -45,15 +48,19 @@ export default function Index() {
     }
   }
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      {page && <Page page={page} />}
-      {!page && <Button title="Import board" onPress={handleOpenFile}/>}
+    <View style={{ flex: 1 }}>
+      {messageWindowLocation === "top" && <MessageWindow />}
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {page && <Page page={page} />}
+        {!page && <Button title="Import board" onPress={handleOpenFile}/>}
+      </View>
+      {messageWindowLocation === "bottom" && <MessageWindow />}
     </View>
   );
 }
