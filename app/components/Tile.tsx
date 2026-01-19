@@ -12,8 +12,8 @@ export default function Tile({
   const playOnPress = usePlayOnPress()
 
   const handlePress = () => {
-    if (button.semanticAction?.intent === "SPEAK_TEXT") {
-      if (playOnPress) speak(button.semanticAction?.text ?? button.message)
+    if (button.action?.type === "SPEAK") {
+      if (playOnPress) speak(button.action.message ?? button.message)
     }
   }
 
