@@ -10,7 +10,7 @@ const getUUID = () => Crypto.randomUUID();
 
 export const saveFile = async (
   fileName: string,
-  data: Uint8Array<ArrayBuffer>,
+  data: ArrayBuffer,
   storageType: 'document' | 'cache'
 ): Promise<string> => {
   if (Platform.OS === "android" || Platform.OS === "ios") {
@@ -18,7 +18,7 @@ export const saveFile = async (
     const file = new File(root, fileName)
     file.uri
     file.create()
-    file.write(data)
+    file.write(new Uint8Array(data))
     return file.uri
   } else if (Platform.OS === "web") {
     const root = await navigator.storage.getDirectory()
@@ -48,13 +48,12 @@ export const loadFile = async (fileName: string):
   }
 }
 
-const getData = async (asset: DocumentPicker.DocumentPickerAsset):
-  Promise<Uint8Array<ArrayBuffer>> =>
+const getAssetData = async (asset: DocumentPicker.DocumentPickerAsset):
+  Promise<ArrayBuffer> =>
 {
   const file = Platform.OS === "web" ? asset.file : new File(asset.uri)
   if (!file) throw new Error("Could not read file")
-  const arrayBuffer = await file.arrayBuffer()
-  return new Uint8Array(arrayBuffer)
+  return await file.arrayBuffer()
 }
 
 export const getFileExt = (name: string): string => {
@@ -68,7 +67,7 @@ export const selectFile = async (): Promise<string> => {
   })
   const asset = result.assets?.at(0)
   if (!asset) throw new Error("No file selected")
-  const data = await getData(asset)
+  const data = await getAssetData(asset)
   const ext = getFileExt(asset.name)
   const uuid = `${getUUID()}.${ext}`
   const fileName = await saveFile(uuid, data, 'document')
