@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { zustandStorage } from './middleware';
 
-interface PageState {
+interface PagesetsState {
   treeFiles: string[];
   currentTreeFile: string | undefined;
   currentPageId: string | undefined;
@@ -14,7 +14,7 @@ interface PageState {
   }
 }
 
-const useStore = create<PageState>()(persist(
+const useStore = create<PagesetsState>()(persist(
   (set, get) => ({
     treeFiles: [],
     currentTreeFile: undefined,
@@ -35,7 +35,7 @@ const useStore = create<PageState>()(persist(
     }
   }),
   {
-    name: 'page',
+    name: 'pagesets',
     storage: createJSONStorage(() => zustandStorage),
     partialize: (state) =>
       Object.fromEntries(
@@ -47,4 +47,4 @@ const useStore = create<PageState>()(persist(
 export const useTreeFiles = () => useStore(s => s.treeFiles)
 export const useCurrentTreeFile = () => useStore(s => s.currentTreeFile)
 export const useCurrentPageId = () => useStore(s => s.currentPageId)
-export const usePageActions = () => useStore(s => s.actions)
+export const usePagesetActions = () => useStore(s => s.actions)

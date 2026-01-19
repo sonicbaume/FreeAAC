@@ -1,4 +1,4 @@
-import { Alert } from "react-native";
+import { Alert, Platform } from "react-native";
 
 export const handleError = (e: unknown) => {
   let message = ""
@@ -10,6 +10,8 @@ export const handleError = (e: unknown) => {
     message = String(e)
   }
   console.error(e)
-  Alert.alert(message)
+  if (Platform.OS === "android" || Platform.OS === "ios")
+    Alert.alert(message)
+  if (Platform.OS === "web") alert(message)
   return undefined
 }
