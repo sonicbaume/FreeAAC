@@ -18,7 +18,11 @@ export const usePrefsStore = create<PrefsState>()(persist(
   }),
   {
     name: 'prefs',
-    storage: createJSONStorage(() => zustandStorage)
+    storage: createJSONStorage(() => zustandStorage),
+    partialize: (state) =>
+      Object.fromEntries(
+        Object.entries(state).filter(([key]) => !['actions'].includes(key)),
+      ),
   },
 ))
 
