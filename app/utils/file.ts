@@ -1,33 +1,75 @@
-import { AACPage, getProcessor } from "@willwade/aac-processors/browser";
-import * as DocumentPicker from "expo-document-picker";
-import { File } from "expo-file-system";
-import { Platform } from "react-native";
-import { handleError } from "./error";
 
-const getArrayBuffer = async (asset: DocumentPicker.DocumentPickerAsset) => {
-  const file = Platform.OS === "web" ? asset.file : new File(asset.uri)
-  return await file?.arrayBuffer()
+
+
+import * as Crypto from 'expo-crypto';
+import * as DocumentPicker from 'expo-document-picker';
+import { File, Paths } from 'expo-file-system';
+import { Platform } from "react-native";
+
+const getUUID = () => Crypto.randomUUID();
+
+export const saveFile = async (
+  fileName: string,
+  data: ArrayBuffer,
+  storageType: 'document' | 'cache'
+): Promise<string> => {
+  if (Platform.OS === "android" || Platform.OS === "ios") {
+    const root = storageType === 'cache' ? Paths.cache : Paths.document
+    const file = new File(root, fileName)
+    file.uri
+    file.create()
+    file.write(new Uint8Array(data))
+    return file.uri
+  } else if (Platform.OS === "web") {
+    const root = await navigator.storage.getDirectory()
+    const fileHandle = await root.getFileHandle(fileName, { create: true })
+    const writable = await fileHandle.createWritable()
+    await writable.write(data)
+    await writable.close()
+    return fileName
+  } else {
+    throw "File save not yet supported on this platform"
+  }
 }
 
-const getFileExt = (name: string): string => {
+export const loadFile = async (fileName: string):
+  Promise<ArrayBuffer> =>
+{
+  if (Platform.OS === "android" || Platform.OS === "ios") {
+    const file = new File(fileName)
+    return await file.arrayBuffer()
+  } else if (Platform.OS === "web") {
+    const root = await navigator.storage.getDirectory()
+    const fileHandle = await root.getFileHandle(fileName)
+    const file = await fileHandle.getFile()
+    return await file.arrayBuffer()
+  } else {
+    throw "File load not yet supported on this platform"
+  }
+}
+
+const getAssetData = async (asset: DocumentPicker.DocumentPickerAsset):
+  Promise<ArrayBuffer> =>
+{
+  const file = Platform.OS === "web" ? asset.file : new File(asset.uri)
+  if (!file) throw new Error("Could not read file")
+  return await file.arrayBuffer()
+}
+
+export const getFileExt = (name: string): string => {
   const ext = name.split(".").pop()
   return ext ? `.${ext.toLowerCase()}` : ''
 }
 
-export const selectFile = async (onSuccess: (page: AACPage) => void) => {
-  const result = await DocumentPicker.getDocumentAsync({ copyToCacheDirectory: true })
+export const selectFile = async (): Promise<string> => {
+  const result = await DocumentPicker.getDocumentAsync({
+    copyToCacheDirectory: true
+  })
   const asset = result.assets?.at(0)
-  if (!asset) return handleError("No file selected")
-
-  const arrayBuffer = await getArrayBuffer(asset)
-  if (!arrayBuffer) return handleError("Could not read file")
-
-  const processor = getProcessor(getFileExt(asset.name))
-  const tree = await processor.loadIntoTree(arrayBuffer)
-  console.log(tree)
-  if (Object.keys(tree.pages).length < 1) return handleError("No pages found")
-  
-  const defaultPageId = tree.metadata.defaultHomePageId ?? Object.keys(tree.pages)[0]
-  if (!(defaultPageId in tree.pages)) return handleError("Could not find default page")
-  onSuccess(tree.pages[defaultPageId])
+  if (!asset) throw new Error("No file selected")
+  const data = await getAssetData(asset)
+  const ext = getFileExt(asset.name)
+  const uuid = `${getUUID()}.${ext}`
+  const fileName = await saveFile(uuid, data, 'document')
+  return fileName
 }
