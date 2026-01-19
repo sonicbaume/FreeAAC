@@ -36,14 +36,15 @@ export default function Index() {
     return tree.pages[currentPageId]
   }, [currentPageId, tree])
 
-  const handleOpenFile = () => {
+  const handleOpenFile = async () => {
     try {
       const treeFile = await selectFile()
       addTreeFile(treeFile)
       setCurrentTreeFile(treeFile)
-    } catch (e: Error) {
-      handleError(e.message, e)
+    } catch (e) {
+      handleError(e)
     }
+  }
   return (
     <View
       style={{
