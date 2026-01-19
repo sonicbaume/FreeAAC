@@ -2,7 +2,7 @@
 
 A free and open-source Augmentative and Alternative Communication (AAC) app for Android, iOS and web, built using React Native.
 
-### 🚀 Launch app: **[Web](https://sonicbaume.github.io/FreeAAC/)** | _Android_ | _iOS_
+### 🚀 Launch app: **[Web](https://free-aac.org)** | _Android_ | _iOS_
 
 > 💡 We are currently in the planning stage - please **[let us know what you think](https://github.com/sonicbaume/FreeAAC/discussions)** to help guide the project in the right direction.
 
