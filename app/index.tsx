@@ -2,14 +2,14 @@ import { AACTree, getProcessor } from "@willwade/aac-processors/browser";
 import { useEffect, useMemo, useState } from "react";
 import { Button, View } from "react-native";
 import Page from "./components/Page";
-import { useCurrentPageId, useCurrentTreeFile, usePageActions } from "./stores/page";
+import { useCurrentPageId, useCurrentTreeFile, usePagesetActions } from "./stores/pagesets";
 import { handleError } from "./utils/error";
 import { getFileExt, loadFile, selectFile } from "./utils/file";
 
 export default function Index() {
   const currentTreeFile = useCurrentTreeFile()
   const currentPageId = useCurrentPageId()
-  const { setCurrentPageId, setCurrentTreeFile, addTreeFile } = usePageActions()
+  const { setCurrentPageId, setCurrentTreeFile, addTreeFile } = usePagesetActions()
   const [tree, setTree] = useState<AACTree>()
 
   useEffect(() => {(async () => {
