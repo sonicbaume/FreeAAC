@@ -74,8 +74,8 @@ export const selectFile = async (): Promise<{id: string, uri: string}> => {
   return {id, uri}
 }
 
-export const fixSvgData = (data: string): string =>
-  data.replace('data:image/svg;base64', 'data:image/svg+xml;base64')
+export const fixSvgData = (data: string | undefined): string | undefined =>
+  data?.replace('data:image/svg;base64', 'data:image/svg+xml;base64')
 
 export const loadBoard = async (uri: string): Promise<AACTree> => {
   const boardFile = await loadFile(uri)

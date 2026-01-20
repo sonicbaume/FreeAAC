@@ -2,6 +2,7 @@ import { AACButton } from "@willwade/aac-processors/browser";
 import { Delete, Home, X } from "lucide-react-native";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
+import { fixSvgData } from "../utils/file";
 import { speak } from "../utils/speech";
 
 export default function MessageWindow({
@@ -41,7 +42,7 @@ export default function MessageWindow({
           {messageButtons.map((button, i) => (
             <Image
               key={i}
-              source={{ uri: button.image }}
+              source={{ uri: fixSvgData(button.image) }}
               resizeMode="contain"
               style={{ width: 60, height: 60 }}
             />
