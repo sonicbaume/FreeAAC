@@ -58,7 +58,7 @@ const getAssetData = async (asset: DocumentPicker.DocumentPickerAsset):
 
 export const getFileExt = (name: string): string => {
   const ext = name.split(".").pop()
-  return ext ? `.${ext.toLowerCase()}` : ''
+  return ext ? `${ext.toLowerCase()}` : ''
 }
 
 export const selectFile = async (): Promise<string> => {

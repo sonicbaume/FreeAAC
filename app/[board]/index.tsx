@@ -24,7 +24,8 @@ export default function Board() {
     try {
       const treeFile = await loadFile(board)
       if (!treeFile) return handleError('Could not load file')
-      const processor = getProcessor(getFileExt(board))
+      const ext = getFileExt(board)
+      const processor = getProcessor(`.${ext}`)
       const tree = await processor.loadIntoTree(treeFile)
       console.log(tree)
       if (Object.keys(tree.pages).length < 1) return handleError("No pages found")
