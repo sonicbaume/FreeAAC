@@ -21,11 +21,12 @@ export default function Tile({
 }) {
   const playOnPress = usePlayOnPress()
   const labelLocation = useLabelLocation()
-  const { setCurrentPageId } = usePagesetActions()
+  const { setCurrentPageId, addMessageButtonId } = usePagesetActions()
   
   const handlePress = () => {
     if (button.action?.type === "SPEAK") {
       if (playOnPress) speak(button.action.message ?? button.message)
+      addMessageButtonId(button.id)
     } else if (button.action?.type === "NAVIGATE" && button.action.targetPageId) {
       setCurrentPageId(button.action.targetPageId)
     }

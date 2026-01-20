@@ -6,11 +6,15 @@ interface PagesetsState {
   treeFiles: string[];
   currentTreeFile: string | undefined;
   currentPageId: string | undefined;
+  messageButtonsIds: string[];
   actions: {
     setCurrentTreeFile: (treeFile: string | undefined) => void;
     setCurrentPageId: (pageId: string | undefined) => void;
     addTreeFile: (treeFile: string) => void;
     removeTreeFile: (treeFile: string) => void;
+    addMessageButtonId: (buttonId: string) => void;
+    removeLastMessageButtonId: () => void;
+    clearMessageButtonIds: () => void;
   }
 }
 
@@ -19,6 +23,7 @@ const useStore = create<PagesetsState>()(persist(
     treeFiles: [],
     currentTreeFile: undefined,
     currentPageId: undefined,
+    messageButtonsIds: [],
     actions: {
       setCurrentTreeFile: (treeFile) => set({
         currentTreeFile: treeFile
@@ -31,7 +36,16 @@ const useStore = create<PagesetsState>()(persist(
       }),
       removeTreeFile: (treeFile: string) => set({
         treeFiles: get().treeFiles.filter(file => file !== treeFile)
-      })
+      }),
+      addMessageButtonId: (buttonId: string) => set({
+        messageButtonsIds: [...get().messageButtonsIds, buttonId]
+      }),
+      removeLastMessageButtonId: () => set({
+        messageButtonsIds: get().messageButtonsIds.slice(0, -1)
+      }),
+      clearMessageButtonIds: () => set({
+        messageButtonsIds: []
+      }),
     }
   }),
   {
@@ -47,4 +61,5 @@ const useStore = create<PagesetsState>()(persist(
 export const useTreeFiles = () => useStore(s => s.treeFiles)
 export const useCurrentTreeFile = () => useStore(s => s.currentTreeFile)
 export const useCurrentPageId = () => useStore(s => s.currentPageId)
+export const useMessageButtonsIds = () => useStore(s => s.messageButtonsIds)
 export const usePagesetActions = () => useStore(s => s.actions)

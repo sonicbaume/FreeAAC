@@ -46,6 +46,11 @@ export default function Index() {
     return tree.pages[currentPageId]
   }, [currentPageId, tree])
 
+  const buttons = useMemo(() => {
+    if (!tree) return []
+    return Object.values(tree.pages).map(page => page.buttons).flat() 
+  }, [tree])
+
   const handleOpenFile = async () => {
     try {
       const treeFile = await selectFile()
@@ -73,6 +78,7 @@ export default function Index() {
   <MessageWindow
     onNavigateHome={handleNavigateHome}
     onOpenSettings={handleOpenSettings}
+    buttons={buttons}
   />)
 
   return <>
