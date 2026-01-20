@@ -2,6 +2,7 @@ import { AACButton } from "@willwade/aac-processors/browser";
 import { Delete, Home, X } from "lucide-react-native";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
+import { useSpeechOptions } from "../stores/prefs";
 import { fixSvgData } from "../utils/file";
 import { speak } from "../utils/speech";
 
@@ -12,6 +13,7 @@ export default function MessageWindow({
   navigateHome: () => void;
   buttons: AACButton[];
 }) {
+  const speechOptions = useSpeechOptions()
   const messageButtonsIds = useMessageButtonsIds();
   const { removeLastMessageButtonId, clearMessageButtonIds } = usePagesetActions();
   const messageButtons = messageButtonsIds
@@ -36,7 +38,7 @@ export default function MessageWindow({
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
         <Pressable
           style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}
-          onPress={() => speak(message)}
+          onPress={() => speak(message, speechOptions)}
           disabled={messageButtons.length === 0}
         >
           {messageButtons.map((button, i) => (
