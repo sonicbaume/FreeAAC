@@ -2,6 +2,7 @@ import { AACTree } from "@willwade/aac-processors/browser";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import MessageWindow from "../components/MessageWindow";
 import Page from "../components/Page";
 import { useBoards, useCurrentPageId, usePagesetActions } from "../stores/boards";
@@ -11,6 +12,7 @@ import { loadBoard } from "../utils/file";
 import { getHomePageId } from "../utils/pagesets";
 
 export default function Board() {
+  const insets = useSafeAreaInsets()
   const { board } = useLocalSearchParams()
   const boards = useBoards()
   const uri = boards.find(b => b.id === board)?.uri
@@ -66,7 +68,7 @@ export default function Board() {
   />)
   
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingBottom: insets.bottom }}>
       {messageWindowLocation === "top" && messageWindow}
       <View
         style={{
