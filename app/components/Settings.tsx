@@ -1,5 +1,5 @@
-import { LucideIcon, Monitor, Speech, X } from "lucide-react-native";
-import { ListRenderItem, Pressable, SectionList, StyleSheet, Switch, Text, View } from "react-native";
+import { LucideIcon, Monitor, Speech } from "lucide-react-native";
+import { ListRenderItem, SectionList, StyleSheet, Switch, Text, View } from "react-native";
 import { useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions } from "../stores/prefs";
 
 interface SettingsHeader {
@@ -13,11 +13,7 @@ interface SettingItem {
   component: React.ReactNode;
 }
 
-export default function Settings({
-  onClose,
-}: {
-  onClose: () => void;
-}) {
+export default function Settings() {
   const playOnPress = usePlayOnPress()
   const messageWindowLocation = useMessageWindowLocation()
   const labelLocation = useLabelLocation()
@@ -83,9 +79,6 @@ export default function Settings({
   return (
     <View style={styles.centeredView}>
       <View style={styles.modalView}>
-        <Pressable onPress={onClose} style={styles.closeButton}>
-          <X size={24} />
-        </Pressable>
         <Text style={styles.modalTitle}>Settings</Text>
         <SectionList
           sections={settingsData}
@@ -151,10 +144,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'light',
   },
-  closeButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 10
-  }
 })
