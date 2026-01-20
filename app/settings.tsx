@@ -6,6 +6,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import SettingsHeader from "./components/SettingsHeader";
 import SettingsItem from "./components/SettingsItem";
 import { useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
+import { speak } from './utils/speech';
 
 export default function Settings() {
   const playOnPress = usePlayOnPress()
@@ -15,6 +16,12 @@ export default function Settings() {
   const locales = useLocales()
   const { togglePlayOnPress, setMessageWindowLocation, setLabelLocation, setSpeechOptions } = usePrefsActions()
   const [voices, setVoices] = useState<{value: string, label: string}[]>([])
+
+  const introduceVoice = (voice: string | undefined) => {
+    const voiceObject = voices.find(v => v.value === voice)
+    const name = voiceObject?.label.replace(/\(.*\)/, '')
+    if (name) speak(`Hello, my name is ${name}`, {...speechOptions, voice})
+  }
 
   useEffect(() => {(async () => {
     const languages = locales.map(l => l.languageTag)
@@ -41,7 +48,10 @@ export default function Settings() {
           description="The speaker's voice"
           type="select"
           value={speechOptions.voice}
-          setValue={voice => setSpeechOptions({voice})}
+          setValue={voice => {
+            setSpeechOptions({voice})
+            introduceVoice(voice)
+          }}
           items={voices}
         />
         <SettingsItem
