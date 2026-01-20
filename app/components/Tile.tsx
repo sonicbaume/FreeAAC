@@ -1,7 +1,7 @@
 import { AACButton } from "@willwade/aac-processors/browser"
 import { SquareArrowOutUpRight } from "lucide-react-native"
 import { Image, Pressable, StyleSheet, Text } from "react-native"
-import { usePagesetActions } from "../stores/pagesets"
+import { usePagesetActions } from "../stores/boards"
 import { useLabelLocation, usePlayOnPress } from "../stores/prefs"
 import { fixSvgData } from "../utils/file"
 import { speak } from "../utils/speech"

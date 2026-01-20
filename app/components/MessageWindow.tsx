@@ -1,16 +1,14 @@
 import { AACButton } from "@willwade/aac-processors/browser";
-import { Delete, Home, Menu, X } from "lucide-react-native";
+import { Delete, Home, X } from "lucide-react-native";
 import { Image, Pressable, StyleSheet, View } from "react-native";
-import { useMessageButtonsIds, usePagesetActions } from "../stores/pagesets";
+import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { speak } from "../utils/speech";
 
 export default function MessageWindow({
-  onNavigateHome,
-  onOpenSettings,
+  navigateHome,
   buttons,
 }: {
-  onNavigateHome: () => void;
-  onOpenSettings: () => void;
+  navigateHome: () => void;
   buttons: AACButton[];
 }) {
   const messageButtonsIds = useMessageButtonsIds();
@@ -24,18 +22,17 @@ export default function MessageWindow({
     <View style={{
       height: 60,
       flexDirection: "row",
-      justifyContent: "space-between",
       backgroundColor: 'white',
     }}>
       <View style={{ padding: 10 }}>
         <Pressable
           style={styles.button}
-          onPress={onNavigateHome}
+          onPress={navigateHome}
         >
           <Home size={30} />
         </Pressable>
       </View>
-      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#eee' }}>
+      <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
         <Pressable
           style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}
           onPress={() => speak(message)}
@@ -68,14 +65,6 @@ export default function MessageWindow({
             </Pressable>
           </>}
         </View>
-      </View>
-      <View style={{ padding: 10 }}>
-        <Pressable
-          style={styles.button}
-          onPress={onOpenSettings}
-        >
-          <Menu size={30} />
-        </Pressable>
       </View>
     </View>
   )
