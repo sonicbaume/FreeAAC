@@ -54,12 +54,16 @@ export default function Board() {
 
   useEffect(() => page && setOptions({ title: page.name }), [page])
 
+  const buttons = useMemo(() => {
+    if (!tree) return []
+    return Object.values(tree.pages).map(page => page.buttons).flat() 
+  }, [tree])
+
   const messageWindow = (
   <MessageWindow
     navigateHome={handleNavigateHome}
+    buttons={buttons}
   />)
-
-  console.log({page})
   
   return (
     <View style={{ flex: 1 }}>
