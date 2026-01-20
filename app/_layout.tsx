@@ -1,8 +1,11 @@
 import { Stack } from "expo-router";
+import SettingsButton from "./components/SettingsButton";
 
 export default function RootLayout() {
   return (
-    <Stack>
+    <Stack screenOptions={{
+      headerRight: () => <SettingsButton />
+    }}>
       <Stack.Screen name="index" options={{ headerTitle: 'FreeAAC' }} />
       <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
     </Stack>

@@ -1,4 +1,4 @@
-import { Home, Menu } from "lucide-react-native";
+import { Home } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 
 export default function MessageWindow({
@@ -12,7 +12,6 @@ export default function MessageWindow({
     <View style={{
       height: 60,
       flexDirection: "row",
-      justifyContent: "space-between",
       backgroundColor: 'white',
       padding: 10
     }}>
@@ -22,14 +21,6 @@ export default function MessageWindow({
           onPress={onNavigateHome}
         >
           <Home size={30} />
-        </Pressable>
-      </View>
-      <View>
-        <Pressable
-          style={styles.button}
-          onPress={onOpenSettings}
-        >
-          <Menu size={30} />
         </Pressable>
       </View>
     </View>
