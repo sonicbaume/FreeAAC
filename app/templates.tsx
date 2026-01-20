@@ -27,8 +27,8 @@ export default function Templates () {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       {loading && <ActivityIndicator size="large" />}
-      {!loading && templates.map(template => (
-        <View style={styles.card}>
+      {!loading && templates.map((template, i) => (
+        <View style={styles.card} key={i}>
           <View style={{ padding: 10, gap: 5}}>
             <Text style={{ fontSize: 20 }}>{template.name}</Text>
             <Text style={{ fontSize: 14 }}>{template.author}</Text>
