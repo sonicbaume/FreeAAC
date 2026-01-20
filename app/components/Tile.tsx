@@ -3,6 +3,7 @@ import { SquareArrowOutUpRight } from "lucide-react-native"
 import { Image, Pressable, StyleSheet, Text } from "react-native"
 import { usePagesetActions } from "../stores/pagesets"
 import { useLabelLocation, usePlayOnPress } from "../stores/prefs"
+import { fixSvgData } from "../utils/file"
 import { speak } from "../utils/speech"
 
 const Label = ({ text }: { text: string }) => {
@@ -43,7 +44,7 @@ export default function Tile({
       {button.image &&
       <Image
         source={{
-          uri: button.image
+          uri: fixSvgData(button.image)
         }}
         resizeMode="contain"
         style={styles.symbol}

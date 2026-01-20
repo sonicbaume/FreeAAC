@@ -73,3 +73,6 @@ export const selectFile = async (): Promise<string> => {
   const fileName = await saveFile(uuid, data, 'document')
   return fileName
 }
+
+export const fixSvgData = (data: string): string =>
+  data.replace('data:image/svg;base64', 'data:image/svg+xml;base64')
