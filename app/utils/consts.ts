@@ -1,0 +1,1 @@
+export const sampleBoardUrl = "https://data.free-aac.org/communikate-20.obz"

@@ -1,16 +1,20 @@
 
 import { useRouter } from "expo-router";
-import { Button, FlatList, Text, View } from "react-native";
+import { useTransition } from "react";
+import { ActivityIndicator, Button, FlatList, Text, View } from "react-native";
 import { useBoards, usePagesetActions } from "./stores/boards";
+import { sampleBoardUrl } from "./utils/consts";
 import { handleError } from "./utils/error";
-import { loadBoard, selectFile } from "./utils/file";
+import { getFileExt, loadBoard, saveFile, selectFile } from "./utils/file";
+import { uuid } from "./utils/uuid";
 
 export default function Index() {
   const router = useRouter()
   const boards = useBoards()
   const { addBoard } = usePagesetActions()
+  const [loading, startLoading] = useTransition()
 
-  const handleOpenFile = async () => {
+  const openFile = async () => {
     try {
       const {id, uri} = await selectFile()
       console.log({id, uri})
@@ -24,6 +28,19 @@ export default function Index() {
     } catch (e) {
       handleError(e)
     }
+  }
+
+  const openSample = () => {
+    startLoading(async () => {
+      const response = await fetch(sampleBoardUrl)
+      const data = await response.arrayBuffer()
+      const ext = getFileExt(sampleBoardUrl.split('/').slice(-1)[0])
+      const id = uuid()
+      const fileName = `${id}.${ext}`
+      const uri = await saveFile(fileName, data, 'document')
+      addBoard({ id, uri, name: 'Sample board'})
+      router.push({ pathname: '/[board]', params: { board: id } })
+    })
   }
 
   return <>
@@ -43,7 +60,11 @@ export default function Index() {
           />
         )}/>
         </>}
-        <Button title="Import board" onPress={handleOpenFile}/>
+        {loading && <ActivityIndicator size="large" />}
+        {!loading && <>
+          <Button title="Load sample board" onPress={openSample} />
+          <Button title="Import board" onPress={openFile}/>
+        </>}
       </View>
     </View>
   </>
