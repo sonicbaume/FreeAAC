@@ -1,5 +1,5 @@
 import { AACTree, getProcessor } from "@willwade/aac-processors/browser";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 import MessageWindow from "../components/MessageWindow";
@@ -12,7 +12,6 @@ import { getHomePageId } from "../utils/pagesets";
 
 export default function Board() {
   const { board } = useLocalSearchParams()
-  const { navigate } = useRouter()
   const { setOptions } = useNavigation()
   const messageWindowLocation = useMessageWindowLocation()
   const currentPageId = useCurrentPageId()
@@ -60,8 +59,7 @@ export default function Board() {
 
   const messageWindow = (
   <MessageWindow
-    onNavigateHome={handleNavigateHome}
-    onOpenSettings={() => navigate('/settings')}
+    navigateHome={handleNavigateHome}
   />)
 
   console.log({page})

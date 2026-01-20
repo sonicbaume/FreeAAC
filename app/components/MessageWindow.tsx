@@ -2,11 +2,9 @@ import { Home } from "lucide-react-native";
 import { Pressable, StyleSheet, View } from "react-native";
 
 export default function MessageWindow({
-  onNavigateHome,
-  onOpenSettings,
+  navigateHome,
 }: {
-  onNavigateHome: () => void;
-  onOpenSettings: () => void;
+  navigateHome: () => void;
 }) {
   return (
     <View style={{
@@ -18,7 +16,7 @@ export default function MessageWindow({
       <View>
         <Pressable
           style={styles.button}
-          onPress={onNavigateHome}
+          onPress={navigateHome}
         >
           <Home size={30} />
         </Pressable>
