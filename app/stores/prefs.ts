@@ -2,14 +2,22 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { zustandStorage } from './middleware';
 
+export interface SpeechOptions {
+  pitch: number;
+  rate: number;
+  voice: string | undefined;
+}
+
 interface PrefsState {
   playOnPress: boolean;
   labelLocation: 'top' | 'bottom';
   messageWindowLocation: 'top' | 'bottom';
+  speechOptions: SpeechOptions;
   actions: {
     togglePlayOnPress: () => void;
     setMessageWindowLocation: (location: 'top' | 'bottom') => void;
     setLabelLocation: (location: 'top' | 'bottom') => void;
+    setSpeechOptions: (options: Partial<SpeechOptions>) => void;
   }
 }
 
@@ -18,10 +26,16 @@ export const usePrefsStore = create<PrefsState>()(persist(
     playOnPress: true,
     labelLocation: 'bottom',
     messageWindowLocation: 'top',
+    speechOptions: {
+      pitch: 1,
+      rate: 1,
+      voice: undefined
+    },
     actions: {
       togglePlayOnPress: () => set({ playOnPress: !(get().playOnPress) }),
       setMessageWindowLocation: (location: 'top' | 'bottom') => set({ messageWindowLocation: location }),
       setLabelLocation: (location: 'top' | 'bottom') => set({ labelLocation: location }),
+      setSpeechOptions: (options: Partial<SpeechOptions>) => set({ speechOptions: { ...get().speechOptions, ...options } }),
     }
   }),
   {
@@ -35,6 +49,8 @@ export const usePrefsStore = create<PrefsState>()(persist(
 ))
 
 export const usePlayOnPress = () => usePrefsStore(s => s.playOnPress)
-export const usePrefsActions = () => usePrefsStore(s => s.actions)
 export const useMessageWindowLocation = () => usePrefsStore(s => s.messageWindowLocation)
 export const useLabelLocation = () => usePrefsStore(s => s.labelLocation)
+export const useSpeechOptions = () => usePrefsStore(s => s.speechOptions)
+
+export const usePrefsActions = () => usePrefsStore(s => s.actions)

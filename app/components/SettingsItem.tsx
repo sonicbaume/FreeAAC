@@ -1,32 +1,79 @@
+import Slider from '@react-native-community/slider';
+import { Picker } from '@react-native-picker/picker';
 import { StyleSheet, Switch, Text, View } from "react-native";
 
-export default function SettingsItem({
-  title,
-  description,
-  type,
-  value,
-  setValue,
-  toggleLabels,
-}: {
+interface SettingItemBase {
   title: string;
   description?: string;
-  type: 'toggle'
-  value: any;
-  setValue: (val: any) => void;
-  toggleLabels?: string[]
-}) {
-  const component = type === 'toggle'
-    ? <View style={{display: 'flex', alignItems: 'center'}}>
-        <Switch value={value} onValueChange={setValue} />
-        {toggleLabels && <Text style={{textAlign: 'center', fontSize: 12}}>{toggleLabels.at(value)}</Text>}
-      </View>
-    : null;
+}
+
+interface SettingsItemToggle extends SettingItemBase {
+  type: 'toggle';
+  value: boolean;
+  setValue: (val: boolean) => void;
+  labels: string[];
+}
+
+interface SettingsItemSlider extends SettingItemBase {
+  type: 'slider';
+  value: number;
+  setValue: (val: number) => void;
+  min: number;
+  max: number;
+  step?: number;
+}
+
+interface SettingsItemSelect extends SettingItemBase {
+  type: 'select';
+  value: string | undefined;
+  setValue: (val: string | undefined) => void;
+  items: {
+    label: string;
+    value: string;
+  }[]
+}
+
+export default function SettingsItem(props: SettingsItemToggle | SettingsItemSlider | SettingsItemSelect) {
+  const component =
+    props.type === 'toggle' ? (
+      <View style={{display: 'flex', alignItems: 'center'}}>
+        <Switch value={props.value} onValueChange={props.setValue} />
+        {props.labels && 
+        <Text style={{textAlign: 'center', fontSize: 12}}>
+          {props.labels.at(Number(props.value))}
+        </Text>}
+      </View>)
+    : props.type === 'slider' ? (
+      <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
+        <Text>{props.value.toFixed(1)}</Text>
+        <Slider
+          style={{width: 100, height: 40}}
+          value={props.value}
+          onValueChange={props.setValue}
+          minimumValue={props.min}
+          maximumValue={props.max}
+          minimumTrackTintColor="#FFFFFF"
+          maximumTrackTintColor="#000000"
+          step={props.step}
+        />
+      </View>)
+    : props.type === 'select' ? (
+      <Picker
+        selectedValue={props.value}
+        onValueChange={props.setValue}
+      >
+        {props.items.map((item, i) => (
+          <Picker.Item key={i} label={item.label} value={item.value} />
+        ))}
+      </Picker>
+    )
+    : null
 
   return (
     <View style={styles.container}>
       <View style={{ flex: 1 }}>
-        <Text style={styles.title}>{title}</Text>
-        {description && <Text style={styles.description}>{description}</Text>}
+        <Text style={styles.title}>{props.title}</Text>
+        {props.description && <Text style={styles.description}>{props.description}</Text>}
       </View>
       {component}
     </View>
