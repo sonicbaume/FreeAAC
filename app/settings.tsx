@@ -1,4 +1,7 @@
+import { useLocales } from 'expo-localization';
+import { getAvailableVoicesAsync } from "expo-speech";
 import { Monitor, Speech } from "lucide-react-native";
+import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import SettingsHeader from "./components/SettingsHeader";
 import SettingsItem from "./components/SettingsItem";
@@ -9,7 +12,17 @@ export default function Settings() {
   const messageWindowLocation = useMessageWindowLocation()
   const labelLocation = useLabelLocation()
   const speechOptions = useSpeechOptions()
+  const locales = useLocales()
   const { togglePlayOnPress, setMessageWindowLocation, setLabelLocation, setSpeechOptions } = usePrefsActions()
+  const [voices, setVoices] = useState<{value: string, label: string}[]>([])
+
+  useEffect(() => {(async () => {
+    const languages = locales.map(l => l.languageTag)
+    const allVoices = await getAvailableVoicesAsync()
+    const localVoices = allVoices.filter(v => languages.includes(v.language))
+    const voiceOptions = localVoices.map(v => { return {value: v.identifier, label: v.name} })
+    setVoices(voiceOptions)
+  })()}, [])
 
   return (
     <ScrollView contentContainerStyle={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -22,6 +35,14 @@ export default function Settings() {
           value={playOnPress}
           setValue={togglePlayOnPress}
           labels={['Off', 'On']}
+        />
+        <SettingsItem
+          title="Voice"
+          description="The speaker's voice"
+          type="select"
+          value={speechOptions.voice}
+          setValue={voice => setSpeechOptions({voice})}
+          items={voices}
         />
         <SettingsItem
           title="Pitch"

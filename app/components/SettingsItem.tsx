@@ -1,4 +1,5 @@
 import Slider from '@react-native-community/slider';
+import { Picker } from '@react-native-picker/picker';
 import { StyleSheet, Switch, Text, View } from "react-native";
 
 interface SettingItemBase {
@@ -22,7 +23,17 @@ interface SettingsItemSlider extends SettingItemBase {
   step?: number;
 }
 
-export default function SettingsItem(props: SettingsItemToggle | SettingsItemSlider) {
+interface SettingsItemSelect extends SettingItemBase {
+  type: 'select';
+  value: string | undefined;
+  setValue: (val: string | undefined) => void;
+  items: {
+    label: string;
+    value: string;
+  }[]
+}
+
+export default function SettingsItem(props: SettingsItemToggle | SettingsItemSlider | SettingsItemSelect) {
   const component =
     props.type === 'toggle' ? (
       <View style={{display: 'flex', alignItems: 'center'}}>
@@ -46,6 +57,16 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
           step={props.step}
         />
       </View>)
+    : props.type === 'select' ? (
+      <Picker
+        selectedValue={props.value}
+        onValueChange={props.setValue}
+      >
+        {props.items.map((item, i) => (
+          <Picker.Item key={i} label={item.label} value={item.value} />
+        ))}
+      </Picker>
+    )
     : null
 
   return (
