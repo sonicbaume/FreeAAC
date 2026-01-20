@@ -20,7 +20,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.FreeAAC"
+      "package": "org.freeaac"
     },
     "web": {
       "output": "static",
