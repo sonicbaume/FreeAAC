@@ -1,7 +1,7 @@
 import { AACTree, getProcessor } from "@willwade/aac-processors/browser";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import MessageWindow from "../components/MessageWindow";
 import Page from "../components/Page";
 import { useCurrentPageId, usePagesetActions } from "../stores/pagesets";
@@ -75,7 +75,7 @@ export default function Board() {
         }}
       >
         {page && <Page page={page} />}
-        {/* {!page && <Loader2 style={styles.loadingSpinner} size={48} />} */}
+        {!page && <ActivityIndicator size="large" />}
       </View>
       {messageWindowLocation === "bottom" && messageWindow}
     </View>

@@ -15,8 +15,8 @@ export default function Settings() {
       <View style={styles.container}>
         <SettingsHeader title="Speech" icon={Speech} />
         <SettingsItem
-          title="Play Sound on Press"
-          description="Play a sound effect when buttons are pressed"
+          title="Speak on press"
+          description="Speak every time a button is pressed"
           type="toggle"
           value={playOnPress}
           setValue={togglePlayOnPress}
@@ -24,7 +24,7 @@ export default function Settings() {
         />
         <SettingsHeader title="Interface" icon={Monitor} />
         <SettingsItem
-          title="Message Window Location"
+          title="Message window position"
           description="Choose where the message window appears"
           type="toggle"
           value={messageWindowLocation === "top"}
@@ -32,7 +32,7 @@ export default function Settings() {
           toggleLabels={['Bottom', 'Top']}
         />
         <SettingsItem
-          title="Label Location"
+          title="Label position"
           description="Choose where labels appear in relation to icons"
           type="toggle"
           value={labelLocation === "top"}
