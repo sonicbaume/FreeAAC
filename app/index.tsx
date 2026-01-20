@@ -61,7 +61,7 @@ export default function Index() {
     }
   }
 
-  const handleNavigateHome = () => {
+  const navigateHome = () => {
     if (!tree) return
     try {
       const homePageId = getHomePageId(tree)
@@ -70,14 +70,14 @@ export default function Index() {
       handleError(e)
     }
   }
-  const handleOpenSettings = () => {
+  const openSettings = () => {
     setShowSettings(true)
   }
 
   const messageWindow = (
   <MessageWindow
-    onNavigateHome={handleNavigateHome}
-    onOpenSettings={handleOpenSettings}
+    onNavigateHome={navigateHome}
+    onOpenSettings={openSettings}
     buttons={buttons}
   />)
 

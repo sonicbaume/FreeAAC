@@ -39,6 +39,7 @@ export default function MessageWindow({
         <Pressable
           style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}
           onPress={() => speak(message)}
+          disabled={messageButtons.length === 0}
         >
           {messageButtons.map((button, i) => (
             <Image
