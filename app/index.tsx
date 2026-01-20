@@ -1,6 +1,7 @@
 
 import { useRouter } from "expo-router";
-import { Button, FlatList, Text, View } from "react-native";
+import { useTransition } from "react";
+import { ActivityIndicator, Button, FlatList, Text, View } from "react-native";
 import { useBoards, usePagesetActions } from "./stores/boards";
 import { handleError } from "./utils/error";
 import { loadBoard, selectFile } from "./utils/file";
@@ -9,18 +10,21 @@ export default function Index() {
   const router = useRouter()
   const boards = useBoards()
   const { addBoard } = usePagesetActions()
+  const [loading, startLoading] = useTransition()
 
-  const handleOpenFile = async () => {
+  const openFile = async () => {
     try {
       const {id, uri} = await selectFile()
       console.log({id, uri})
-      const tree = await loadBoard(uri)
-      addBoard({
-        id,
-        uri,
-        name: tree.metadata.name || 'Untitled board',
+      startLoading(async () => {
+        const tree = await loadBoard(uri)
+        addBoard({
+          id,
+          uri,
+          name: tree.metadata.name || 'Untitled board',
+        })
+        router.push({ pathname: '/[board]', params: { board: id } })
       })
-      router.push({ pathname: '/[board]', params: { board: id } })
     } catch (e) {
       handleError(e)
     }
@@ -43,7 +47,11 @@ export default function Index() {
           />
         )}/>
         </>}
-        <Button title="Import board" onPress={handleOpenFile}/>
+        {loading && <ActivityIndicator size="large" />}
+        {!loading && <>
+          <Button title="Open template" onPress={() => router.push("/templates")} />
+          <Button title="Import board" onPress={openFile}/>
+        </>}
       </View>
     </View>
   </>

@@ -8,6 +8,7 @@ export default function RootLayout() {
     }}>
       <Stack.Screen name="index" options={{ headerTitle: 'FreeAAC' }} />
       <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
+      <Stack.Screen name="templates" options={{ headerTitle: 'Templates' }} />
     </Stack>
   )
 }
