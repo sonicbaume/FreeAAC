@@ -1,17 +1,19 @@
-import { AACTree, getProcessor } from "@willwade/aac-processors/browser";
+import { AACTree } from "@willwade/aac-processors/browser";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import MessageWindow from "../components/MessageWindow";
 import Page from "../components/Page";
-import { useCurrentPageId, usePagesetActions } from "../stores/pagesets";
+import { useBoards, useCurrentPageId, usePagesetActions } from "../stores/boards";
 import { useMessageWindowLocation } from "../stores/prefs";
 import { handleError } from "../utils/error";
-import { getFileExt, loadFile } from "../utils/file";
+import { loadBoard } from "../utils/file";
 import { getHomePageId } from "../utils/pagesets";
 
 export default function Board() {
   const { board } = useLocalSearchParams()
+  const boards = useBoards()
+  const uri = boards.find(b => b.id === board)?.uri
   const { setOptions } = useNavigation()
   const messageWindowLocation = useMessageWindowLocation()
   const currentPageId = useCurrentPageId()
@@ -19,17 +21,12 @@ export default function Board() {
   const [tree, setTree] = useState<AACTree>()
 
   useEffect(() => {(async () => {
-    if (typeof board !== 'string') return
+    if (!uri) return
     try {
-      const treeFile = await loadFile(board)
-      if (!treeFile) return handleError('Could not load file')
-      const ext = getFileExt(board)
-      const processor = getProcessor(`.${ext}`)
-      const tree = await processor.loadIntoTree(treeFile)
+      const tree = await loadBoard(uri)
       console.log(tree)
       if (Object.keys(tree.pages).length < 1) return handleError("No pages found")
       setTree(tree)
-
       if (!currentPageId || !(currentPageId in tree.pages)) {
         const homePageId = getHomePageId(tree)
         setCurrentPageId(homePageId)
@@ -37,7 +34,7 @@ export default function Board() {
     } catch (e) {
       handleError(e)
     }
-  })()}, [board])
+  })()}, [uri])
 
   const handleNavigateHome = () => {
     if (!tree) return

@@ -1,12 +1,11 @@
 
 
 
-import * as Crypto from 'expo-crypto';
+import { AACTree, getProcessor } from '@willwade/aac-processors/browser';
 import * as DocumentPicker from 'expo-document-picker';
 import { File, Paths } from 'expo-file-system';
 import { Platform } from "react-native";
-
-const getUUID = () => Crypto.randomUUID();
+import { uuid } from './uuid';
 
 export const saveFile = async (
   fileName: string,
@@ -61,7 +60,7 @@ export const getFileExt = (name: string): string => {
   return ext ? `${ext.toLowerCase()}` : ''
 }
 
-export const selectFile = async (): Promise<string> => {
+export const selectFile = async (): Promise<{id: string, uri: string}> => {
   const result = await DocumentPicker.getDocumentAsync({
     copyToCacheDirectory: true
   })
@@ -69,10 +68,20 @@ export const selectFile = async (): Promise<string> => {
   if (!asset) throw new Error("No file selected")
   const data = await getAssetData(asset)
   const ext = getFileExt(asset.name)
-  const uuid = `${getUUID()}.${ext}`
-  const fileName = await saveFile(uuid, data, 'document')
-  return fileName
+  const id = uuid()
+  const fileName = `${id}.${ext}`
+  const uri = await saveFile(fileName, data, 'document')
+  return {id, uri}
 }
 
 export const fixSvgData = (data: string): string =>
   data.replace('data:image/svg;base64', 'data:image/svg+xml;base64')
+
+export const loadBoard = async (uri: string): Promise<AACTree> => {
+  const boardFile = await loadFile(uri)
+  if (!boardFile) throw new Error('Could not load file')
+  const ext = getFileExt(uri)
+  const processor = getProcessor(`.${ext}`)
+  const tree = await processor.loadIntoTree(boardFile)
+  return tree
+}
