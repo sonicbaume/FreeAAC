@@ -2,9 +2,11 @@
 
 A free and open-source Augmentative and Alternative Communication (AAC) app for Android, iOS and web, built using React Native.
 
-### 🚀 Launch app: **[Web](https://free-aac.org)** | _Android_ | _iOS_
+### 🚀 Beta app: **[Web](https://free-aac.org)** | _Android_ | _iOS_
 
-> 💡 We are currently in the planning stage - please **[let us know what you think](https://github.com/sonicbaume/FreeAAC/discussions)** to help guide the project in the right direction.
+### 🗺 [Project roadmap](https://github.com/orgs/sonicbaume/projects/4/views/1)
+
+> 💡 We are in the very early stages of development - please say hello and **[let us know what you think](https://github.com/sonicbaume/FreeAAC/discussions)** to help guide the project in the right direction.
 
 ## Introduction
 
@@ -92,15 +94,17 @@ We want to build on the shoulders of those who came before by combining the best
 
 - ✋ _Sign up to be a tester, try releases, report problems and offer feedback._ [coming soon...]
 
-- 📝 [Request a feature](https://github.com/sonicbaume/FreeAAC/issues/new) by writing a user story.
+- 📝 [Request a feature](https://github.com/sonicbaume/FreeAAC/issues/new?type=feature) by writing a user story.
 
-- 📝 [Contribute to our roadmap](https://github.com/sonicbaume/FreeAAC/projects) by commenting on tasks.
+- 🐛 [Report a bug](https://github.com/sonicbaume/FreeAAC/issues/new?type=bug) so we're aware of any problems you're having.
+
+- 💬 [Contribute to our roadmap](https://github.com/orgs/sonicbaume/projects/4/views/1) by commenting on tasks.
 
 ### Developers can:
 
-- 🗺 Build features [listed in the roadmap](https://github.com/sonicbaume/FreeAAC/projects?query=is%3Aopen).
+- 🗺 Build a feature [from our roadmap](https://github.com/orgs/sonicbaume/projects/4/views/1) that is ready to be picked up.
 
-- 🔧 [Fix a problem identified in Issues](https://github.com/sonicbaume/FreeAAC/issues) and submitting a Pull Request.
+- 🔧 [Fix a bug that has been found](https://github.com/sonicbaume/FreeAAC/issues?q=is%3Aissue%20state%3Aopen%20type%3ABug) and submitting a Pull Request.
 
 - 🔍 Find and suggest libraries or models that could be used to improve or extend the app.
 
