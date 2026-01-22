@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import SettingsHeader from "./components/SettingsHeader";
 import SettingsItem from "./components/SettingsItem";
-import { useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
+import { useClearMessageOnPlay, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
 import { speak } from './utils/speech';
 
 export default function Settings() {
@@ -13,8 +13,15 @@ export default function Settings() {
   const messageWindowLocation = useMessageWindowLocation()
   const labelLocation = useLabelLocation()
   const speechOptions = useSpeechOptions()
+  const clearMessageOnPlay = useClearMessageOnPlay()
   const locales = useLocales()
-  const { togglePlayOnPress, setMessageWindowLocation, setLabelLocation, setSpeechOptions } = usePrefsActions()
+  const {
+    togglePlayOnPress,
+    setMessageWindowLocation,
+    setLabelLocation,
+    setSpeechOptions,
+    toggleClearMessageOnPlay
+  } = usePrefsActions()
   const [voices, setVoices] = useState<{value: string, label: string}[]>([])
 
   const introduceVoice = (voice: string | undefined) => {
@@ -90,6 +97,13 @@ export default function Settings() {
           value={labelLocation === "top"}
           setValue={val => setLabelLocation(val ? "top" : "bottom")}
           labels={['Below', 'Above']}
+        />
+        <SettingsItem
+          title="Clear message on play"
+          description="Clear the message once it has been played"
+          type="toggle"
+          value={clearMessageOnPlay}
+          setValue={toggleClearMessageOnPlay}
         />
       </View>
     </ScrollView>

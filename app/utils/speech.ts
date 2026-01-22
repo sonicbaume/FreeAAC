@@ -1,5 +1,5 @@
 import * as Speech from 'expo-speech';
-import { SpeechOptions } from '../stores/prefs';
+import { SpeechOptions } from 'expo-speech';
 
 export const speak = (text: string, options: SpeechOptions) => {
   let speech = text.trim()

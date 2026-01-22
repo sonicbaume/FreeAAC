@@ -2,7 +2,7 @@ import { AACButton } from "@willwade/aac-processors/browser";
 import { Delete, Home, X } from "lucide-react-native";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
-import { useSpeechOptions } from "../stores/prefs";
+import { useClearMessageOnPlay, useSpeechOptions } from "../stores/prefs";
 import { fixSvgData } from "../utils/file";
 import { speak } from "../utils/speech";
 
@@ -14,12 +14,20 @@ export default function MessageWindow({
   buttons: AACButton[];
 }) {
   const speechOptions = useSpeechOptions()
-  const messageButtonsIds = useMessageButtonsIds();
-  const { removeLastMessageButtonId, clearMessageButtonIds } = usePagesetActions();
+  const messageButtonsIds = useMessageButtonsIds()
+  const clearMessageOnPlay = useClearMessageOnPlay()
+  const { removeLastMessageButtonId, clearMessageButtonIds } = usePagesetActions()
   const messageButtons = messageButtonsIds
     .map(id => buttons.find(b => b.id === id))
     .filter(b => b !== undefined)
   const message =  messageButtons.map(b => b.message).join(' ')
+
+  const playMessage = () => speak(message, {
+    ...speechOptions,
+    onDone: () => {
+      if (clearMessageOnPlay) clearMessageButtonIds()
+    }
+  })
   
   return (
     <View style={{
@@ -38,7 +46,7 @@ export default function MessageWindow({
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
         <Pressable
           style={{ flex: 1, flexDirection: 'row-reverse', justifyContent: 'flex-start', overflowX: 'scroll' }}
-          onPress={() => speak(message, speechOptions)}
+          onPress={playMessage}
           disabled={messageButtons.length === 0}
         >
           <View style={{ display: 'flex', flexDirection: 'row', minWidth: '100%'}}>

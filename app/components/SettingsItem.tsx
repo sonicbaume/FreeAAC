@@ -11,7 +11,7 @@ interface SettingsItemToggle extends SettingItemBase {
   type: 'toggle';
   value: boolean;
   setValue: (val: boolean) => void;
-  labels: string[];
+  labels?: string[];
 }
 
 interface SettingsItemSlider extends SettingItemBase {
