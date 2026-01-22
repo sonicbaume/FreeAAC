@@ -4,8 +4,10 @@ import Tile from "./Tile";
 
 export default function Page({
   page,
+  homePageId,
 }: {
-  page: AACPage
+  page: AACPage;
+  homePageId?: string;
 }) {
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
@@ -19,6 +21,7 @@ export default function Page({
           <Tile
             key={`${rowIndex}_${colIndex}`}
             button={col}
+            homePageId={homePageId}
           />
         )}
         </View>

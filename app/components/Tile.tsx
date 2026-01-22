@@ -2,7 +2,7 @@ import { AACButton } from "@willwade/aac-processors/browser"
 import { SquareArrowOutUpRight } from "lucide-react-native"
 import { Image, Pressable, StyleSheet, Text } from "react-native"
 import { usePagesetActions } from "../stores/boards"
-import { useLabelLocation, usePlayOnPress, useSpeechOptions } from "../stores/prefs"
+import { useGoHomeOnPress, useLabelLocation, usePlayOnPress, useSpeechOptions } from "../stores/prefs"
 import { fixSvgData } from "../utils/file"
 import { speak } from "../utils/speech"
 
@@ -17,18 +17,22 @@ const Label = ({ text }: { text: string }) => {
 }
 export default function Tile({
   button,
+  homePageId,
 }: {
-  button: AACButton
+  button: AACButton;
+  homePageId?: string;
 }) {
   const speechOptions = useSpeechOptions()
   const playOnPress = usePlayOnPress()
   const labelLocation = useLabelLocation()
+  const goHomeOnPress = useGoHomeOnPress()
   const { setCurrentPageId, addMessageButtonId } = usePagesetActions()
   
   const handlePress = () => {
     if (button.action?.type === "SPEAK") {
       if (playOnPress) speak(button.action.message ?? button.message, speechOptions)
       addMessageButtonId(button.id)
+      if (goHomeOnPress && homePageId) setCurrentPageId(homePageId)
     } else if (button.action?.type === "NAVIGATE" && button.action.targetPageId) {
       setCurrentPageId(button.action.targetPageId)
     }

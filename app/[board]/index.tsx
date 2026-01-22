@@ -38,21 +38,21 @@ export default function Board() {
     }
   })()}, [uri])
 
-  const handleNavigateHome = () => {
-    if (!tree) return
-    try {
-      const homePageId = getHomePageId(tree)
-      setCurrentPageId(homePageId)
-    } catch (e) {
-      handleError(e)
-    }
-  }
-
   const page = useMemo(() => {
     if (!tree || !currentPageId) return
     if (!(currentPageId in tree.pages)) return handleError('Could not find page in tree')
     return tree.pages[currentPageId]
   }, [currentPageId, tree])
+
+  const homePageId = useMemo(() => {
+    try {
+      if (tree) return getHomePageId(tree)
+    } catch (e) {
+      handleError(e)
+    }
+  }, [tree])
+
+  const handleNavigateHome = () => homePageId && setCurrentPageId(homePageId)
 
   useEffect(() => page && setOptions({ title: page.name }), [page])
 
@@ -77,7 +77,7 @@ export default function Board() {
           alignItems: "center",
         }}
       >
-        {page && <Page page={page} />}
+        {page && <Page page={page} homePageId={homePageId} />}
         {!page && <ActivityIndicator size="large" />}
       </View>
       {messageWindowLocation === "bottom" && messageWindow}

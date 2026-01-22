@@ -14,12 +14,14 @@ interface PrefsState {
   messageWindowLocation: 'top' | 'bottom';
   speechOptions: SpeechOptions;
   clearMessageOnPlay: boolean;
+  goHomeOnPress: boolean;
   actions: {
     togglePlayOnPress: () => void;
     setMessageWindowLocation: (location: 'top' | 'bottom') => void;
     setLabelLocation: (location: 'top' | 'bottom') => void;
     setSpeechOptions: (options: Partial<SpeechOptions>) => void;
     toggleClearMessageOnPlay: () => void;
+    toggleGoHomeOnPress: () => void;
   }
 }
 
@@ -34,12 +36,14 @@ export const usePrefsStore = create<PrefsState>()(persist(
       voice: undefined
     },
     clearMessageOnPlay: false,
+    goHomeOnPress: false,
     actions: {
       togglePlayOnPress: () => set({ playOnPress: !(get().playOnPress) }),
       setMessageWindowLocation: (location: 'top' | 'bottom') => set({ messageWindowLocation: location }),
       setLabelLocation: (location: 'top' | 'bottom') => set({ labelLocation: location }),
       setSpeechOptions: (options: Partial<SpeechOptions>) => set({ speechOptions: { ...get().speechOptions, ...options } }),
-      toggleClearMessageOnPlay: () => set({ clearMessageOnPlay: !(get().clearMessageOnPlay) })
+      toggleClearMessageOnPlay: () => set({ clearMessageOnPlay: !(get().clearMessageOnPlay) }),
+      toggleGoHomeOnPress: () => set({ goHomeOnPress: !(get().goHomeOnPress) })
     }
   }),
   {
@@ -57,5 +61,6 @@ export const useMessageWindowLocation = () => usePrefsStore(s => s.messageWindow
 export const useLabelLocation = () => usePrefsStore(s => s.labelLocation)
 export const useSpeechOptions = () => usePrefsStore(s => s.speechOptions)
 export const useClearMessageOnPlay = () => usePrefsStore(s => s.clearMessageOnPlay)
+export const useGoHomeOnPress = () => usePrefsStore(s => s.goHomeOnPress)
 
 export const usePrefsActions = () => usePrefsStore(s => s.actions)

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import SettingsHeader from "./components/SettingsHeader";
 import SettingsItem from "./components/SettingsItem";
-import { useClearMessageOnPlay, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
+import { useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
 import { speak } from './utils/speech';
 
 export default function Settings() {
@@ -14,13 +14,15 @@ export default function Settings() {
   const labelLocation = useLabelLocation()
   const speechOptions = useSpeechOptions()
   const clearMessageOnPlay = useClearMessageOnPlay()
+  const goHomeOnPress = useGoHomeOnPress()
   const locales = useLocales()
   const {
     togglePlayOnPress,
     setMessageWindowLocation,
     setLabelLocation,
     setSpeechOptions,
-    toggleClearMessageOnPlay
+    toggleClearMessageOnPlay,
+    toggleGoHomeOnPress
   } = usePrefsActions()
   const [voices, setVoices] = useState<{value: string, label: string}[]>([])
 
@@ -104,6 +106,13 @@ export default function Settings() {
           type="toggle"
           value={clearMessageOnPlay}
           setValue={toggleClearMessageOnPlay}
+        />
+        <SettingsItem
+          title="Go home on press"
+          description="Go to the home page when a button is pressed"
+          type="toggle"
+          value={goHomeOnPress}
+          setValue={toggleGoHomeOnPress}
         />
       </View>
     </ScrollView>
