@@ -20,11 +20,16 @@ export const saveFile = async (
     file.write(new Uint8Array(data))
     return file.uri
   } else if (Platform.OS === "web") {
-    const root = await navigator.storage.getDirectory()
-    const fileHandle = await root.getFileHandle(fileName, { create: true })
-    const writable = await fileHandle.createWritable()
-    await writable.write(data)
-    await writable.close()
+    try {
+      const root = await navigator.storage.getDirectory()
+      const fileHandle = await root.getFileHandle(fileName, { create: true })
+      const writable = await fileHandle.createWritable()
+      await writable.write(data)
+      await writable.close()
+    } catch (e) {
+      if (e instanceof Error && e.name === "SecurityError")
+        throw new Error("This app does not work in private browsing mode")
+    }
     return fileName
   } else {
     throw "File save not yet supported on this platform"
