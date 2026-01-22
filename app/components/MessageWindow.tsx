@@ -37,10 +37,11 @@ export default function MessageWindow({
       </View>
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
         <Pressable
-          style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start' }}
+          style={{ flex: 1, flexDirection: 'row-reverse', justifyContent: 'flex-start', overflowX: 'scroll' }}
           onPress={() => speak(message, speechOptions)}
           disabled={messageButtons.length === 0}
         >
+          <View style={{ display: 'flex', flexDirection: 'row', minWidth: '100%'}}>
           {messageButtons.map((button, i) => (
             <Image
               key={i}
@@ -49,6 +50,7 @@ export default function MessageWindow({
               style={{ width: 60, height: 60 }}
             />
           ))}
+          </View>
         </Pressable>
         <View style={{ display: 'flex', flexDirection: 'row', padding: 10 }}>
           {messageButtonsIds.length > 0 && <>
