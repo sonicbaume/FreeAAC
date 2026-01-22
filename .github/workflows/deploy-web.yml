@@ -13,7 +13,7 @@ jobs:
         id: build
         run: |
           npm ci
-          npx expo export --platform web
+          npm run deploy:web
           touch dist/.nojekyll
       - name: Upload static files as artifact
         id: deployment
