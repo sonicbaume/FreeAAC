@@ -62,7 +62,7 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
         style={styles.dropdown}
         data={props.items}
         value={props.value}
-        onChange={props.setValue}
+        onChange={item => props.setValue(item.value)}
         labelField="label"
         valueField="value"
       />
