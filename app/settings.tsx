@@ -8,7 +8,8 @@ import SettingsItem from "./components/SettingsItem";
 import { useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
 import { speak } from './utils/speech';
 
-const tagToCode = (langTag: string) => langTag.split('-')[0]
+const tagToCode = (langTag: string) => langTag.split(/[-_]+/)[0]
+const harmoniseTag = (langTag: string) => langTag.replace('_','-')
 
 export default function Settings() {
   const playOnPress = usePlayOnPress()
@@ -36,17 +37,18 @@ export default function Settings() {
 
   useEffect(() => {(async () => {
     const deviceLangTags = locales.map(l => l.languageTag)
-    const deviceLangCodes  = locales.map(l => l.languageCode)
+    const deviceLangCodes  = [...new Set(locales.map(l => l.languageCode))]
     const allVoices = await getAvailableVoicesAsync()
     const allVoiceLangTags = [...new Set(allVoices.map(l => l.language))]
     const allVoiceLangCodes = [...new Set(allVoices.map(l => tagToCode(l.language)))]
-    const matchingLangTags = allVoiceLangTags.filter(l => deviceLangTags.includes(l))
-    const matchingLangCodes = allVoiceLangCodes.filter(l => deviceLangCodes.includes(l))
+    const matchingLangTags = allVoiceLangTags.filter(l => deviceLangTags.includes(harmoniseTag(l)))
+    const matchingLangCodes = allVoiceLangCodes.filter(l => deviceLangCodes.includes(harmoniseTag(l)))
     let localVoices = allVoices.filter(v => matchingLangTags.includes(v.language))
     if (localVoices.length < 2) localVoices = allVoices.filter(v => matchingLangCodes.includes(tagToCode(v.language)))
+    if (localVoices.length < 2) localVoices = allVoices
     const voiceOptions = localVoices.map(v => { return {value: v.identifier, label: v.name} })
     setVoices(voiceOptions)
-  })()}, [])
+  })()}, [locales])
 
   return (
     <ScrollView contentContainerStyle={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
