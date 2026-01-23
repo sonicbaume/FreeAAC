@@ -1,10 +1,10 @@
 import { AACButton } from "@willwade/aac-processors/browser"
 import { SquareArrowOutUpRight } from "lucide-react-native"
-import { Image, Pressable, StyleSheet, Text } from "react-native"
+import { Pressable, StyleSheet, Text } from "react-native"
 import { usePagesetActions } from "../stores/boards"
 import { useGoHomeOnPress, useLabelLocation, usePlayOnPress, useSpeechOptions } from "../stores/prefs"
-import { fixSvgData } from "../utils/file"
 import { speak } from "../utils/speech"
+import TileImage from "./TileImage"
 
 const Label = ({ text }: { text: string }) => {
   return (
@@ -47,15 +47,7 @@ export default function Tile({
       onPress={handlePress}
     >
       {labelLocation === "top" && <Label text={button.label} />}
-      {button.image &&
-      <Image
-        source={{
-          uri: fixSvgData(button.image)
-        }}
-        resizeMode="contain"
-        style={styles.symbol}
-      />
-      }
+      {button.image && <TileImage uri={button.image} style={styles.symbol} />}
       {labelLocation === "bottom" && <Label text={button.label} />}
       {button.action?.type === "NAVIGATE" &&
       <SquareArrowOutUpRight

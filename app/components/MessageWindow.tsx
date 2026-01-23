@@ -1,10 +1,10 @@
 import { AACButton } from "@willwade/aac-processors/browser";
 import { Delete, Home, X } from "lucide-react-native";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { useClearMessageOnPlay, useSpeechOptions } from "../stores/prefs";
-import { fixSvgData } from "../utils/file";
 import { speak } from "../utils/speech";
+import TileImage from "./TileImage";
 
 export default function MessageWindow({
   navigateHome,
@@ -50,11 +50,10 @@ export default function MessageWindow({
           disabled={messageButtons.length === 0}
         >
           <View style={{ display: 'flex', flexDirection: 'row', minWidth: '100%'}}>
-          {messageButtons.map((button, i) => (
-            <Image
+          {messageButtons.map((button, i) => button.image && (
+            <TileImage
               key={i}
-              source={{ uri: fixSvgData(button.image) }}
-              resizeMode="contain"
+              uri={button.image}
               style={{ width: 60, height: 60 }}
             />
           ))}
