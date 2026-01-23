@@ -1,3 +1,5 @@
+export const appName = "FreeAAC"
+
 export interface BoardTemplate {
   name: string;
   author: string;
