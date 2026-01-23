@@ -71,7 +71,7 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
 
   return (
     <View style={styles.container}>
-      <View style={{ display: 'flex' }}>
+      <View style={{ display: 'flex', flexShrink: 1 }}>
         <Text style={styles.title}>{props.title}</Text>
         {props.description && <Text style={styles.description}>{props.description}</Text>}
       </View>
