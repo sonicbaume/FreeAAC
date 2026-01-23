@@ -38,17 +38,18 @@ export default function Index() {
           data={boards}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
-          <Button
-            title={item.name}
-            onPress={() => {
-              router.push({ pathname: '/[board]', params: { board: item.id } })
-            }}
-          />
-        )}/>
+            <Button
+              title={item.name}
+              onPress={() => {
+                router.push({ pathname: '/[board]', params: { board: item.id } })
+              }}
+            />
+          )}
+        />
         </>}
         {loading && <ActivityIndicator size="large" />}
         {!loading && <>
-          <Button title="Open template" onPress={() => router.push("/templates")} />
+          <Button title="View templates" onPress={() => router.push("/templates")} />
           <Button title="Import board" onPress={openFile}/>
         </>}
       </View>
