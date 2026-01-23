@@ -8,6 +8,7 @@ export const unstable_settings = {
 export default function RootLayout() {
   return (
     <Stack screenOptions={{
+      headerBackButtonDisplayMode: "minimal",
       headerRight: () => <SettingsButton />
     }}>
       <Stack.Screen name="index" options={{ headerTitle: 'FreeAAC' }} />

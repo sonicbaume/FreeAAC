@@ -8,6 +8,8 @@ import SettingsItem from "./components/SettingsItem";
 import { useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
 import { speak } from './utils/speech';
 
+const tagToCode = (langTag: string) => langTag.split('-')[0]
+
 export default function Settings() {
   const playOnPress = usePlayOnPress()
   const messageWindowLocation = useMessageWindowLocation()
@@ -33,9 +35,15 @@ export default function Settings() {
   }
 
   useEffect(() => {(async () => {
-    const languages = locales.map(l => l.languageTag)
+    const deviceLangTags = locales.map(l => l.languageTag)
+    const deviceLangCodes  = locales.map(l => l.languageCode)
     const allVoices = await getAvailableVoicesAsync()
-    const localVoices = allVoices.filter(v => languages.includes(v.language))
+    const allVoiceLangTags = [...new Set(allVoices.map(l => l.language))]
+    const allVoiceLangCodes = [...new Set(allVoices.map(l => tagToCode(l.language)))]
+    const matchingLangTags = allVoiceLangTags.filter(l => deviceLangTags.includes(l))
+    const matchingLangCodes = allVoiceLangCodes.filter(l => deviceLangCodes.includes(l))
+    let localVoices = allVoices.filter(v => matchingLangTags.includes(v.language))
+    if (localVoices.length < 2) localVoices = allVoices.filter(v => matchingLangCodes.includes(tagToCode(v.language)))
     const voiceOptions = localVoices.map(v => { return {value: v.identifier, label: v.name} })
     setVoices(voiceOptions)
   })()}, [])
@@ -69,8 +77,8 @@ export default function Settings() {
           type="slider"
           value={speechOptions.pitch}
           setValue={pitch => setSpeechOptions({pitch})}
-          min={0}
-          max={2}
+          min={0.5}
+          max={1.5}
           step={0.1}
         />
         <SettingsItem
@@ -79,8 +87,8 @@ export default function Settings() {
           type="slider"
           value={speechOptions.rate}
           setValue={rate => setSpeechOptions({rate})}
-          min={0}
-          max={2}
+          min={0.5}
+          max={1.5}
           step={0.1}
         />
         <SettingsHeader title="Interface" icon={Monitor} />

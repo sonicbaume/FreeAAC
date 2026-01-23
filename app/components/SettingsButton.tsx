@@ -5,7 +5,7 @@ import { Pressable } from "react-native";
 export default function SettingsButton() {
   return (
     <Link href="/settings" asChild>
-      <Pressable style={{ padding: 10 }}>
+      <Pressable style={{ padding: 6 }}>
         <Settings size={24} color="black" />
       </Pressable>
     </Link>

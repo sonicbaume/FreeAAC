@@ -1,6 +1,6 @@
 import Slider from '@react-native-community/slider';
-import { Picker } from '@react-native-picker/picker';
 import { StyleSheet, Switch, Text, View } from "react-native";
+import { Dropdown } from 'react-native-element-dropdown';
 
 interface SettingItemBase {
   title: string;
@@ -58,20 +58,20 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
         />
       </View>)
     : props.type === 'select' ? (
-      <Picker
-        selectedValue={props.value}
-        onValueChange={props.setValue}
-      >
-        {props.items.map((item, i) => (
-          <Picker.Item key={i} label={item.label} value={item.value} />
-        ))}
-      </Picker>
+      <Dropdown
+        style={styles.dropdown}
+        data={props.items}
+        value={props.value}
+        onChange={props.setValue}
+        labelField="label"
+        valueField="value"
+      />
     )
     : null
 
   return (
     <View style={styles.container}>
-      <View style={{ flex: 1 }}>
+      <View style={{ display: 'flex' }}>
         <Text style={styles.title}>{props.title}</Text>
         {props.description && <Text style={styles.description}>{props.description}</Text>}
       </View>
@@ -86,6 +86,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     padding: 15,
+    justifyContent: 'space-between',
+    gap: 20
   },
   title: {
     fontSize: 16,
@@ -94,4 +96,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'light',
   },
+  dropdown: {
+    flex: 1,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    maxWidth: '50%'
+  }
 })
