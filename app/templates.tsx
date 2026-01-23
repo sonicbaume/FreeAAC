@@ -3,6 +3,7 @@ import { useTransition } from "react";
 import { ActivityIndicator, Button, Image, StyleSheet, Text, View } from "react-native";
 import { usePagesetActions } from "./stores/boards";
 import { BoardTemplate, licenseImageMap, templates } from "./utils/consts";
+import { handleError } from "./utils/error";
 import { getFileExt, saveFile } from "./utils/file";
 import { uuid } from "./utils/uuid";
 
@@ -13,14 +14,18 @@ export default function Templates () {
 
   const loadTemplate = (template: BoardTemplate) => {
     startLoading(async () => {
-      const response = await fetch(template.url)
-      const data = await response.arrayBuffer()
-      const ext = getFileExt(template.url.split('/').slice(-1)[0])
-      const id = uuid()
-      const fileName = `${id}.${ext}`
-      const uri = await saveFile(fileName, data, 'document')
-      addBoard({ id, uri, name: 'Sample board'})
-      router.push({ pathname: '/[board]', params: { board: id } })
+      try {
+        const response = await fetch(template.url)
+        const data = await response.arrayBuffer()
+        const ext = getFileExt(template.url.split('/').slice(-1)[0])
+        const id = uuid()
+        const fileName = `${id}.${ext}`
+        const uri = await saveFile(fileName, data, 'document')
+        addBoard({ id, uri, name: 'Sample board'})
+        router.push({ pathname: '/[board]', params: { board: id } })
+      } catch (e) {
+        handleError(e)
+      }
     })
   }
 
