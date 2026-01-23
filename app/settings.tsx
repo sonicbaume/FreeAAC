@@ -77,8 +77,8 @@ export default function Settings() {
           type="slider"
           value={speechOptions.pitch}
           setValue={pitch => setSpeechOptions({pitch})}
-          min={0}
-          max={2}
+          min={0.5}
+          max={1.5}
           step={0.1}
         />
         <SettingsItem
@@ -87,8 +87,8 @@ export default function Settings() {
           type="slider"
           value={speechOptions.rate}
           setValue={rate => setSpeechOptions({rate})}
-          min={0}
-          max={2}
+          min={0.5}
+          max={1.5}
           step={0.1}
         />
         <SettingsHeader title="Interface" icon={Monitor} />
