@@ -13,7 +13,7 @@ export default function RootLayout() {
   return (
     <Stack screenOptions={{
       headerBackButtonDisplayMode: "minimal",
-      headerRight: () => <SettingsButton />,
+      headerRight: () => <SettingsButton style={{ padding: 6, ...styles.settingsButton}} />,
     }}>
       <Stack.Screen name="index" options={{
         headerTitle: 'FreeAAC',
@@ -31,8 +31,9 @@ const styles = StyleSheet.create(
     icon: {
       marginLeft: 20,
       marginRight: 8
+    },
+    settingsButton: {
+      marginRight: 12
     }
-  } : {
-    icon: {}
-  }
+  } : {}
 )
