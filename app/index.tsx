@@ -15,7 +15,6 @@ export default function Index() {
   const openFile = async () => {
     try {
       const {id, uri} = await selectFile()
-      console.log({id, uri})
       startLoading(async () => {
         const tree = await loadBoard(uri)
         addBoard({

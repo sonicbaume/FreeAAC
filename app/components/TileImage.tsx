@@ -14,7 +14,6 @@ export default function TileImage ({
   if (isSvgDataUri(uri)) {
     const xml = atob(uri.split(';base64,')[1])
     const svgXml = xml.substring(xml.indexOf('<svg'), xml.indexOf('</svg>') + 6)
-    console.log(svgXml)
     return (
       <View style={style}>
         <SvgXml
