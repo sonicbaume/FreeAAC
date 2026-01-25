@@ -5,16 +5,23 @@ import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import SettingsHeader from "./components/SettingsHeader";
 import SettingsItem from "./components/SettingsItem";
-import { useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
+import { ButtonViewOption, buttonViewOptions, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
 import { speak } from './utils/speech';
 
 const tagToCode = (langTag: string) => langTag.split(/[-_]+/)[0]
 const harmoniseTag = (langTag: string) => langTag.replace('_','-')
 
+const buttonViewLabels: Record<ButtonViewOption, string> = {
+  'both': 'Symbol and text',
+  'symbol': 'Symbol only',
+  'text': 'Text only'
+}
+
 export default function Settings() {
   const playOnPress = usePlayOnPress()
   const messageWindowLocation = useMessageWindowLocation()
   const labelLocation = useLabelLocation()
+  const buttonView = useButtonView()
   const speechOptions = useSpeechOptions()
   const clearMessageOnPlay = useClearMessageOnPlay()
   const goHomeOnPress = useGoHomeOnPress()
@@ -23,6 +30,7 @@ export default function Settings() {
     togglePlayOnPress,
     setMessageWindowLocation,
     setLabelLocation,
+    setButtonView,
     setSpeechOptions,
     toggleClearMessageOnPlay,
     toggleGoHomeOnPress
@@ -95,20 +103,28 @@ export default function Settings() {
         />
         <SettingsHeader title="Interface" icon={Monitor} />
         <SettingsItem
+          title="Button view"
+          description="Choose what to display on the buttons"
+          type="select"
+          value={buttonView}
+          setValue={(val) => setButtonView(val as ButtonViewOption)}
+          items={buttonViewOptions.map(item => {return { label: buttonViewLabels[item], value: item }})}
+        />
+        {buttonView === "both" && <SettingsItem
+          title="Text position"
+          description="Choose whether the text appears above or below the symbol"
+          type="toggle"
+          value={labelLocation === "top"}
+          setValue={val => setLabelLocation(val ? "top" : "bottom")}
+          labels={['Below', 'Above']}
+        />}
+        <SettingsItem
           title="Message window position"
           description="Choose where the message window appears"
           type="toggle"
           value={messageWindowLocation === "top"}
           setValue={val => setMessageWindowLocation(val ? "top" : "bottom")}
           labels={['Bottom', 'Top']}
-        />
-        <SettingsItem
-          title="Label position"
-          description="Choose where labels appear in relation to icons"
-          type="toggle"
-          value={labelLocation === "top"}
-          setValue={val => setLabelLocation(val ? "top" : "bottom")}
-          labels={['Below', 'Above']}
         />
         <SettingsItem
           title="Clear message on play"
