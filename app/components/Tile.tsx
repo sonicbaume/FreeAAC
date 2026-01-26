@@ -2,7 +2,7 @@ import { AACButton } from "@willwade/aac-processors/browser"
 import { SquareArrowOutUpRight } from "lucide-react-native"
 import { Pressable, StyleSheet, Text } from "react-native"
 import { usePagesetActions } from "../stores/boards"
-import { useGoHomeOnPress, useLabelLocation, usePlayOnPress, useSpeechOptions } from "../stores/prefs"
+import { useButtonView, useGoHomeOnPress, useLabelLocation, usePlayOnPress, useSpeechOptions } from "../stores/prefs"
 import { speak } from "../utils/speech"
 import TileImage from "./TileImage"
 
@@ -26,7 +26,11 @@ export default function Tile({
   const playOnPress = usePlayOnPress()
   const labelLocation = useLabelLocation()
   const goHomeOnPress = useGoHomeOnPress()
+  const buttonView = useButtonView()
   const { setCurrentPageId, addMessageButtonId } = usePagesetActions()
+
+  const showText = buttonView === "both" || buttonView === "text"
+  const showSymbol = buttonView === "both" || buttonView === "symbol"
   
   const handlePress = () => {
     if (button.action?.type === "SPEAK") {
@@ -46,9 +50,9 @@ export default function Tile({
       }}
       onPress={handlePress}
     >
-      {labelLocation === "top" && <Label text={button.label} />}
-      {button.image && <TileImage uri={button.image} style={styles.symbol} />}
-      {labelLocation === "bottom" && <Label text={button.label} />}
+      {showText && labelLocation === "top" && <Label text={button.label} />}
+      {showSymbol && button.image && <TileImage uri={button.image} style={styles.symbol} />}
+      {showText && labelLocation === "bottom" && <Label text={button.label} />}
       {button.action?.type === "NAVIGATE" &&
       <SquareArrowOutUpRight
         style={{ position: 'absolute', top: 8, right: 8}}

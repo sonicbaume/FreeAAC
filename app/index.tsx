@@ -2,11 +2,13 @@
 import { useRouter } from "expo-router";
 import { useTransition } from "react";
 import { ActivityIndicator, Button, FlatList, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBoards, usePagesetActions } from "./stores/boards";
 import { handleError } from "./utils/error";
 import { loadBoard, selectFile } from "./utils/file";
 
 export default function Index() {
+  const insets = useSafeAreaInsets()
   const router = useRouter()
   const boards = useBoards()
   const { addBoard } = usePagesetActions()
@@ -30,7 +32,7 @@ export default function Index() {
   }
 
   return <>
-    <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
+    <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', paddingBottom: insets.bottom }}>
       <View style={{ width: 400, maxWidth: '100%', padding: 20, gap: 20 }}>
         {boards.length > 0 && <>
         <Text style={{ fontSize: 18 }}>My boards</Text>
