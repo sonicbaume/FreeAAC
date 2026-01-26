@@ -1,21 +1,22 @@
 import { useLocales } from 'expo-localization';
-import { getAvailableVoicesAsync } from "expo-speech";
 import { Monitor, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SettingsHeader from "./components/SettingsHeader";
 import SettingsItem from "./components/SettingsItem";
-import { ButtonViewOption, buttonViewOptions, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
-import { speak } from './utils/speech';
-
-const tagToCode = (langTag: string) => langTag.split(/[-_]+/)[0]
-const harmoniseTag = (langTag: string) => langTag.replace('_','-')
+import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
+import { handleError } from './utils/error';
+import { getVoiceOptions, speak } from './utils/speech';
 
 const buttonViewLabels: Record<ButtonViewOption, string> = {
   'both': 'Symbol and text',
   'symbol': 'Symbol only',
   'text': 'Text only'
+}
+const speechEngineLabels: Record<SpeechEngine, string> = {
+  'device': 'System TTS',
+  'kokoro': Platform.OS === 'web' ? 'Neural TTS (mobile only)' : 'Neural TTS'
 }
 
 export default function Settings() {
@@ -37,7 +38,7 @@ export default function Settings() {
     toggleClearMessageOnPlay,
     toggleGoHomeOnPress
   } = usePrefsActions()
-  const [voices, setVoices] = useState<{value: string, label: string}[]>([])
+  const [voices, setVoices] = useState<{value: string, label: string, langTag: string}[]>([])
 
   const introduceVoice = (voice: string | undefined) => {
     const voiceObject = voices.find(v => v.value === voice)
@@ -47,30 +48,27 @@ export default function Settings() {
 
   useEffect(() => {(async () => {
     const deviceLangTags = locales.map(l => l.languageTag)
-    const deviceLangCodes  = [...new Set(locales.map(l => l.languageCode))]
-    const allVoices = await getAvailableVoicesAsync()
-    const allVoiceLangTags = [...new Set(allVoices.map(l => l.language))]
-    const allVoiceLangCodes = [...new Set(allVoices.map(l => tagToCode(l.language)))]
-    const matchingLangTags = allVoiceLangTags.filter(l => deviceLangTags.includes(harmoniseTag(l)))
-    const matchingLangCodes = allVoiceLangCodes.filter(l => deviceLangCodes.includes(harmoniseTag(l)))
-    let localVoices = allVoices.filter(v => matchingLangTags.includes(v.language))
-    if (localVoices.length < 2) localVoices = allVoices.filter(v => matchingLangCodes.includes(tagToCode(v.language)))
-    if (localVoices.length < 2) localVoices = allVoices
-    const voiceOptions = localVoices.map(v => { return {value: v.identifier, label: v.name} })
+    const deviceLangCodes  = [...new Set(locales.map(l => l.languageCode))].filter(l => l !== null)
+    const voiceOptions = await getVoiceOptions(speechOptions.engine, deviceLangTags, deviceLangCodes)
     setVoices(voiceOptions)
-  })()}, [locales])
+  })()}, [locales, speechOptions.engine])
 
   return (
     <ScrollView>
       <View style={{...styles.container, paddingBottom: insets.bottom}}>
         <SettingsHeader title="Speech" icon={Speech} />
         <SettingsItem
-          title="Speak on press"
-          description="Speak every time a button is pressed"
-          type="toggle"
-          value={playOnPress}
-          setValue={togglePlayOnPress}
-          labels={['Off', 'On']}
+          title="Engine"
+          description="Text-to-speech engine"
+          type="select"
+          value={speechOptions.engine}
+          setValue={engine => {
+            if (engine !== "device" && Platform.OS === "web") {
+              return handleError("Unavailable on this platform")
+            }
+            setSpeechOptions({engine})
+          }}
+          items={speechEngines.map(value => {return { label: speechEngineLabels[value], value }})}
         />
         <SettingsItem
           title="Voice"
@@ -84,16 +82,6 @@ export default function Settings() {
           items={voices}
         />
         <SettingsItem
-          title="Pitch"
-          description="Pitch of the speaker's voice"
-          type="slider"
-          value={speechOptions.pitch}
-          setValue={pitch => setSpeechOptions({pitch})}
-          min={0.5}
-          max={1.5}
-          step={0.1}
-        />
-        <SettingsItem
           title="Rate"
           description="The rate of the speaker's speech"
           type="slider"
@@ -103,6 +91,24 @@ export default function Settings() {
           max={1.5}
           step={0.1}
         />
+        {speechOptions.engine === "device" && <SettingsItem
+          title="Pitch"
+          description="Pitch of the speaker's voice"
+          type="slider"
+          value={speechOptions.pitch}
+          setValue={pitch => setSpeechOptions({pitch})}
+          min={0.5}
+          max={1.5}
+          step={0.1}
+        />}
+        <SettingsItem
+          title="Speak on press"
+          description="Speak every time a button is pressed"
+          type="toggle"
+          value={playOnPress}
+          setValue={togglePlayOnPress}
+          labels={['Off', 'On']}
+        />
         <SettingsHeader title="Interface" icon={Monitor} />
         <SettingsItem
           title="Button view"
@@ -110,7 +116,7 @@ export default function Settings() {
           type="select"
           value={buttonView}
           setValue={(val) => setButtonView(val as ButtonViewOption)}
-          items={buttonViewOptions.map(item => {return { label: buttonViewLabels[item], value: item }})}
+          items={buttonViewOptions.map(value => {return { label: buttonViewLabels[value], value }})}
         />
         {buttonView === "both" && <SettingsItem
           title="Text position"

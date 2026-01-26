@@ -5,10 +5,14 @@ import { zustandStorage } from './middleware';
 export const buttonViewOptions = [ 'both', 'symbol', 'text' ] as const
 export type ButtonViewOption = typeof buttonViewOptions[number]
 
+export const speechEngines = [ 'device', 'kokoro' ]
+export type SpeechEngine = typeof speechEngines[number]
+
 export interface SpeechOptions {
   pitch: number;
   rate: number;
   voice: string | undefined;
+  engine: SpeechEngine;
 }
 
 interface PrefsState {
@@ -39,7 +43,8 @@ export const usePrefsStore = create<PrefsState>()(persist(
     speechOptions: {
       pitch: 1,
       rate: 1,
-      voice: undefined
+      voice: undefined,
+      engine: 'device'
     },
     clearMessageOnPlay: false,
     goHomeOnPress: false,
