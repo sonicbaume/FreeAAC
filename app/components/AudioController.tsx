@@ -43,7 +43,7 @@ export default function AudioController () {
   const speechOptions = useSpeechOptions()
   const { setSpeak } = useAudioActions()
 
-  const model = useTts(speechOptions.engine)
+  const model = useTts(speechOptions)
 
   const speak = useCallback(async (inputText: string, options?: Partial<SpeechOptions>) => {
     let text = inputText.trim()

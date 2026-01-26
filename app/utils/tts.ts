@@ -1,6 +1,6 @@
-import { SpeechEngine } from "../stores/prefs"
+import { SpeechOptions } from "../stores/prefs"
 
-export const useTts = (engine: SpeechEngine):
+export const useTts = (options: SpeechOptions):
   { stream: (props: any) => Promise<void> } | undefined =>
 {
   console.error("Not available on this platform")
