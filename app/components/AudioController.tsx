@@ -53,7 +53,8 @@ export default function AudioController () {
       Speech.speak(text, {...speechOptions, ...options})
       return
     }
-    if (!model) return
+    
+    if (!model || isPlaying) return
     setIsPlaying(true)
 
     try {
