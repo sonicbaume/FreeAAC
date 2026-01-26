@@ -10,6 +10,9 @@ export const speechEngines = [ 'device', 'kokoro' ]
 export type SpeechEngine = typeof speechEngines[number]
 
 export interface SpeechOptions extends ExpoSpeechOptions {
+  pitch: number;
+  rate: number;
+  voice?: string;
   engine: SpeechEngine;
 }
 
