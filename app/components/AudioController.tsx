@@ -9,6 +9,7 @@ import {
 } from 'react-native-audio-api';
 import { useAudioActions } from "../stores/audio";
 import { useSpeechOptions } from "../stores/prefs";
+import { handleError } from '../utils/error';
 import { useTts } from '../utils/tts';
 
 /**
@@ -94,9 +95,9 @@ export default function AudioController () {
         onNext,
         onEnd,
       });
-    } catch (error) {
-      console.error('Error generating or playing audio:', error);
-      setIsPlaying(false);
+    } catch (e) {
+      handleError(e)
+      setIsPlaying(false)
     }
   }
 
