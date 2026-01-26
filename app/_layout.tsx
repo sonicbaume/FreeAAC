@@ -4,7 +4,6 @@ import { Stack } from "expo-router";
 import { Platform, StyleSheet, View } from "react-native";
 import AudioController from "./components/AudioController";
 import SettingsButton from "./components/SettingsButton";
-import TtsController from "./components/TtsController";
 import { useSpeechOptions } from "./stores/prefs";
 
 export const unstable_settings = {
@@ -34,7 +33,6 @@ export default function RootLayout() {
       <Stack.Screen name="templates" options={{ headerTitle: 'Templates' }} />
     </Stack>
     <AudioController />
-    {speechOptions.engine === "kokoro" && <TtsController />}
   </>
 }
 

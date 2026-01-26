@@ -1,22 +1,17 @@
 import { create } from "zustand";
 
 interface AudioState {
-  onNext: (audioVec: Float32Array) => Promise<void>;
-  onEnd: () => Promise<void>;
+  speak: (text: string) => Promise<void>;
   actions: {
-    setOnNext: (onNext: (audioVec: Float32Array) => Promise<void>) => void;
-    setOnEnd: (onEnd: () => Promise<void>) => void;
+    setSpeak: (callback: (text: string) => Promise<void>) => void;
   }
 }
 export const useAudioStore = create<AudioState>((set) => ({
-  onNext: async (audioVec: Float32Array) => {},
-  onEnd: async () => {},
+  speak: async (text: string) => {},
   actions: {
-    setOnNext: (callback) => set({onNext: callback}),
-    setOnEnd: (callback) => set({onEnd: callback})
+    setSpeak: (callback) => set({speak: callback})
   }
 }))
 
-export const useOnNext = () => useAudioStore(s => s.onNext)
-export const useOnEnd = () => useAudioStore(s => s.onEnd)
+export const useSpeak = () => useAudioStore(s => s.speak)
 export const useAudioActions = () => useAudioStore(s => s.actions)

@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { Platform } from "react-native";
 import {
   AudioBuffer,
   AudioBufferSourceNode,
   AudioContext,
   AudioManager
 } from 'react-native-audio-api';
+import { KOKORO_MEDIUM, KOKORO_VOICE_AF_HEART, useTextToSpeech } from "react-native-executorch";
 import { useAudioActions } from "../stores/audio";
 
 /**
@@ -35,7 +37,58 @@ export default function AudioController () {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceRef = useRef<AudioBufferSourceNode>(null);
-  const { setOnNext, setOnEnd } = useAudioActions()
+  const { setSpeak } = useAudioActions()
+
+  const model = Platform.OS !== "web" && useTextToSpeech({model: KOKORO_MEDIUM, voice: KOKORO_VOICE_AF_HEART})
+
+  const speak = async (inputText: string) => {
+    if (!inputText.trim() || !model) return
+    setIsPlaying(true)
+
+    try {
+      const audioContext = audioContextRef.current;
+      if (!audioContext) return;
+
+      if (audioContext.state === 'suspended') {
+        await audioContext.resume();
+      }
+
+      const onNext = async (audioVec: Float32Array) => {
+        return new Promise<void>((resolve) => {
+          const audioBuffer = createAudioBufferFromVector(
+            audioVec,
+            audioContext,
+            24000
+          );
+
+          const source = (sourceRef.current =
+            audioContext.createBufferSource());
+          source.buffer = audioBuffer;
+          source.connect(audioContext.destination);
+
+          source.onEnded = () => resolve();
+
+          source.start();
+        });
+      };
+
+      const onEnd = async () => {
+        setIsPlaying(false);
+        await audioContext.suspend();
+      };
+
+      await model.stream({
+        text: inputText,
+        onNext,
+        onEnd,
+      });
+    } catch (error) {
+      console.error('Error generating or playing audio:', error);
+      setIsPlaying(false);
+    }
+  }
+
+  useEffect(() => setSpeak(speak), [model, audioContextRef, sourceRef])
 
   useEffect(() => {
     AudioManager.setAudioSessionOptions({
@@ -46,33 +99,6 @@ export default function AudioController () {
 
     audioContextRef.current = new AudioContext({ sampleRate: 24000 });
     audioContextRef.current.suspend();
-
-    setOnNext(async (audioVec: Float32Array) => {
-      const audioContext = audioContextRef.current;
-      if (!audioContext) return;
-      return new Promise<void>((resolve) => {
-        const audioBuffer = createAudioBufferFromVector(
-          audioVec,
-          audioContext,
-          24000
-        );
-
-        const source = (sourceRef.current = audioContext.createBufferSource());
-        source.buffer = audioBuffer;
-        source.connect(audioContext.destination);
-
-        source.onEnded = () => resolve();
-
-        source.start();
-      });
-    })
-
-    setOnEnd(async () => {
-      const audioContext = audioContextRef.current;
-      if (!audioContext) return;
-      setIsPlaying(false);
-      await audioContext.suspend();
-    })
 
     return () => {
       audioContextRef.current?.close();

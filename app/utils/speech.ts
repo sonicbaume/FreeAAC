@@ -41,18 +41,13 @@ const korokoVoices: Pick<Voice, 'identifier' | 'name' | 'language'>[] = [
   }
 ]
 
-export const speak = async (text: string, options: SpeechOptions & Options, model?: any, onNext?: any, onEnd?: any) => {
+export const speak = async (text: string, options: SpeechOptions & Options, ttsSpeak: (text: string) => Promise<void>) => {
   let speech = text.trim()
   if (options.engine === "device") {
     if (speech === "I") speech = "i"  // avoid "capital I" output
     Speech.speak(speech, options)
   } else if (options.engine === "kokoro") {
-    if (!model) throw new Error("Model not provided")
-    await model.stream({
-      text: speech,
-      onNext,
-      onEnd,
-    });
+    ttsSpeak(speech)
   } else {
     throw new Error("Invalid engine")
   }
