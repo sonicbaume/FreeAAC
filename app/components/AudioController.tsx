@@ -1,6 +1,6 @@
 import * as Speech from 'expo-speech';
 import { SpeechOptions } from 'expo-speech';
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AudioBuffer,
   AudioBufferSourceNode,
@@ -45,7 +45,7 @@ export default function AudioController () {
 
   const model = useTts(speechOptions.engine)
 
-  const speak = async (inputText: string, options?: Partial<SpeechOptions>) => {
+  const speak = useCallback(async (inputText: string, options?: Partial<SpeechOptions>) => {
     let text = inputText.trim()
     if (!text) return
 
@@ -99,9 +99,9 @@ export default function AudioController () {
       handleError(e)
       setIsPlaying(false)
     }
-  }
+  }, [speechOptions, model, audioContextRef, sourceRef])
 
-  useEffect(() => setSpeak(speak), [model, audioContextRef, sourceRef])
+  useEffect(() => setSpeak(speak), [speak])
 
   useEffect(() => {
     AudioManager.setAudioSessionOptions({
