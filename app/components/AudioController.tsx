@@ -7,9 +7,9 @@ import {
   AudioContext,
   AudioManager
 } from 'react-native-audio-api';
-import { KOKORO_MEDIUM, KOKORO_VOICE_AF_HEART, useTextToSpeech } from "react-native-executorch";
 import { useAudioActions } from "../stores/audio";
 import { useSpeechOptions } from "../stores/prefs";
+import { useTts } from '../utils/tts';
 
 /**
  * Converts an audio vector (Float32Array) to an AudioBuffer for playback
@@ -42,22 +42,18 @@ export default function AudioController () {
   const speechOptions = useSpeechOptions()
   const { setSpeak } = useAudioActions()
 
-  const model = useTextToSpeech({
-    model: KOKORO_MEDIUM,
-    voice: KOKORO_VOICE_AF_HEART,
-    preventLoad: speechOptions.engine !== "kokoro"}
-  )
+  const model = useTts(speechOptions.engine)
 
   const speak = async (inputText: string, options?: Partial<SpeechOptions>) => {
     let text = inputText.trim()
-    if (!text || !model) return
+    if (!text) return
 
     if (speechOptions.engine === "device") {
       if (text === "I") text = "i"  // avoid "capital I" output
       Speech.speak(text, {...speechOptions, ...options})
       return
     }
-    
+    if (!model) return
     setIsPlaying(true)
 
     try {
