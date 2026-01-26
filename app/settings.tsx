@@ -1,11 +1,13 @@
 import { useLocales } from 'expo-localization';
 import { Monitor, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Platform, ScrollView, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SettingsHeader from "./components/SettingsHeader";
 import SettingsItem from "./components/SettingsItem";
+import { useOnEnd, useOnNext } from './stores/audio';
 import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
+import { useTtsModel } from './stores/tts';
 import { handleError } from './utils/error';
 import { getVoiceOptions, speak } from './utils/speech';
 
@@ -39,11 +41,14 @@ export default function Settings() {
     toggleGoHomeOnPress
   } = usePrefsActions()
   const [voices, setVoices] = useState<{value: string, label: string, langTag: string}[]>([])
+  const ttsModel = useTtsModel()
+  const onNext = useOnNext()
+  const onEnd = useOnEnd()
 
   const introduceVoice = (voice: string | undefined) => {
     const voiceObject = voices.find(v => v.value === voice)
     const name = voiceObject?.label.replace(/\(.*\)/, '')
-    if (name) speak(`Hello, my name is ${name}`, {...speechOptions, voice})
+    if (name) speak(`Hello, my name is ${name}`, {...speechOptions, voice}, ttsModel, onNext, onEnd)
   }
 
   useEffect(() => {(async () => {
@@ -57,6 +62,7 @@ export default function Settings() {
     <ScrollView>
       <View style={{...styles.container, paddingBottom: insets.bottom}}>
         <SettingsHeader title="Speech" icon={Speech} />
+        <Text>Model download: {ttsModel.downloadProgress}</Text>
         <SettingsItem
           title="Engine"
           description="Text-to-speech engine"

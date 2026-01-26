@@ -1,6 +1,6 @@
 import * as Speech from 'expo-speech';
 import { getAvailableVoicesAsync, SpeechOptions, Voice } from 'expo-speech';
-import { SpeechEngine } from '../stores/prefs';
+import { SpeechOptions as Options, SpeechEngine } from '../stores/prefs';
 
 const tagToCode = (langTag: string) => langTag.split(/[-_]+/)[0]
 const harmoniseTag = (langTag: string) => langTag.replace('_','-')
@@ -41,10 +41,21 @@ const korokoVoices: Pick<Voice, 'identifier' | 'name' | 'language'>[] = [
   }
 ]
 
-export const speak = (text: string, options: SpeechOptions) => {
+export const speak = async (text: string, options: SpeechOptions & Options, model?: any, onNext?: any, onEnd?: any) => {
   let speech = text.trim()
-  if (speech === "I") speech = "i"  // avoid "capital I" output
-  Speech.speak(speech, options)
+  if (options.engine === "device") {
+    if (speech === "I") speech = "i"  // avoid "capital I" output
+    Speech.speak(speech, options)
+  } else if (options.engine === "kokoro") {
+    if (!model) throw new Error("Model not provided")
+    await model.stream({
+      text: speech,
+      onNext,
+      onEnd,
+    });
+  } else {
+    throw new Error("Invalid engine")
+  }
 }
 
 export const getVoiceOptions = async (engine: SpeechEngine, deviceLangTags: string[], deviceLangCodes: string[]) => {
