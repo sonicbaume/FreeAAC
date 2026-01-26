@@ -45,7 +45,7 @@ export default function Settings() {
   const introduceVoice = (voice: string | undefined) => {
     const voiceObject = voices.find(v => v.value === voice)
     const name = voiceObject?.label.replace(/\(.*\)/, '')
-    if (name) speak(`Hello, my name is ${name}`)
+    if (name) speak(`Hello, my name is ${name}`, {voice: voiceObject?.value})
   }
 
   useEffect(() => {(async () => {
