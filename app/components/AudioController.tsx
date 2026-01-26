@@ -41,9 +41,12 @@ export default function AudioController () {
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceRef = useRef<AudioBufferSourceNode>(null);
   const speechOptions = useSpeechOptions()
-  const { setSpeak } = useAudioActions()
+  const { setSpeak, setTtsStatus } = useAudioActions()
 
-  const model = useTts(speechOptions)
+  const { isReady, isGenerating, downloadProgress, ...model } = useTts(speechOptions)
+  useEffect(() => setTtsStatus({
+    isReady, isGenerating, downloadProgress
+  }), [isReady, isGenerating, downloadProgress])
 
   const speak = useCallback(async (inputText: string, options?: Partial<SpeechOptions>) => {
     let text = inputText.trim()

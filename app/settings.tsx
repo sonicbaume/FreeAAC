@@ -1,11 +1,11 @@
 import { useLocales } from 'expo-localization';
 import { Monitor, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Platform, ScrollView, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SettingsHeader from "./components/SettingsHeader";
 import SettingsItem from "./components/SettingsItem";
-import { useSpeak } from './stores/audio';
+import { useSpeak, useTtsStatus } from './stores/audio';
 import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
 import { handleError } from './utils/error';
 import { getVoiceOptions } from './utils/speech';
@@ -30,6 +30,7 @@ export default function Settings() {
   const clearMessageOnPlay = useClearMessageOnPlay()
   const goHomeOnPress = useGoHomeOnPress()
   const locales = useLocales()
+  const ttsStatus = useTtsStatus()
   const {
     togglePlayOnPress,
     setMessageWindowLocation,
@@ -72,6 +73,11 @@ export default function Settings() {
           }}
           items={speechEngines.map(value => {return { label: speechEngineLabels[value], value }})}
         />
+        {speechOptions.engine === "kokoro" && <>
+        <Text>Ready: {ttsStatus.isReady ? 'Yes' : 'No'}</Text>
+        <Text>Generating: {ttsStatus.isGenerating ? 'Yes' : 'No'}</Text>
+        <Text>Download: {(ttsStatus.downloadProgress*100).toFixed(0)}%</Text>
+        </>}
         <SettingsItem
           title="Voice"
           description="The speaker's voice"
