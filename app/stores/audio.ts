@@ -1,9 +1,10 @@
+import { SpeechOptions } from "expo-speech";
 import { create } from "zustand";
 
 interface AudioState {
-  speak: (text: string) => Promise<void>;
+  speak: (text: string, options?: Partial<SpeechOptions>) => Promise<void>;
   actions: {
-    setSpeak: (callback: (text: string) => Promise<void>) => void;
+    setSpeak: (callback: (text: string, options?: Partial<SpeechOptions>) => Promise<void>) => void;
   }
 }
 export const useAudioStore = create<AudioState>((set) => ({

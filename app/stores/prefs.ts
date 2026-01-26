@@ -1,3 +1,4 @@
+import { SpeechOptions as ExpoSpeechOptions } from 'expo-speech';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { zustandStorage } from './middleware';
@@ -8,10 +9,7 @@ export type ButtonViewOption = typeof buttonViewOptions[number]
 export const speechEngines = [ 'device', 'kokoro' ]
 export type SpeechEngine = typeof speechEngines[number]
 
-export interface SpeechOptions {
-  pitch: number;
-  rate: number;
-  voice: string | undefined;
+export interface SpeechOptions extends ExpoSpeechOptions {
   engine: SpeechEngine;
 }
 

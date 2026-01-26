@@ -1,5 +1,6 @@
+import * as Speech from 'expo-speech';
+import { SpeechOptions } from 'expo-speech';
 import { useEffect, useRef, useState } from "react";
-import { Platform } from "react-native";
 import {
   AudioBuffer,
   AudioBufferSourceNode,
@@ -8,6 +9,7 @@ import {
 } from 'react-native-audio-api';
 import { KOKORO_MEDIUM, KOKORO_VOICE_AF_HEART, useTextToSpeech } from "react-native-executorch";
 import { useAudioActions } from "../stores/audio";
+import { useSpeechOptions } from "../stores/prefs";
 
 /**
  * Converts an audio vector (Float32Array) to an AudioBuffer for playback
@@ -37,12 +39,25 @@ export default function AudioController () {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceRef = useRef<AudioBufferSourceNode>(null);
+  const speechOptions = useSpeechOptions()
   const { setSpeak } = useAudioActions()
 
-  const model = Platform.OS !== "web" && useTextToSpeech({model: KOKORO_MEDIUM, voice: KOKORO_VOICE_AF_HEART})
+  const model = useTextToSpeech({
+    model: KOKORO_MEDIUM,
+    voice: KOKORO_VOICE_AF_HEART,
+    preventLoad: speechOptions.engine !== "kokoro"}
+  )
 
-  const speak = async (inputText: string) => {
-    if (!inputText.trim() || !model) return
+  const speak = async (inputText: string, options?: Partial<SpeechOptions>) => {
+    let text = inputText.trim()
+    if (!text || !model) return
+
+    if (speechOptions.engine === "device") {
+      if (text === "I") text = "i"  // avoid "capital I" output
+      Speech.speak(text, {...speechOptions, ...options})
+      return
+    }
+    
     setIsPlaying(true)
 
     try {

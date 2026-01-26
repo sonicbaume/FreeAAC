@@ -8,7 +8,7 @@ import SettingsItem from "./components/SettingsItem";
 import { useSpeak } from './stores/audio';
 import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
 import { handleError } from './utils/error';
-import { getVoiceOptions, speak } from './utils/speech';
+import { getVoiceOptions } from './utils/speech';
 
 const buttonViewLabels: Record<ButtonViewOption, string> = {
   'both': 'Symbol and text',
@@ -40,12 +40,12 @@ export default function Settings() {
     toggleGoHomeOnPress
   } = usePrefsActions()
   const [voices, setVoices] = useState<{value: string, label: string, langTag: string}[]>([])
-  const ttsSpeak = useSpeak()
+  const speak = useSpeak()
 
   const introduceVoice = (voice: string | undefined) => {
     const voiceObject = voices.find(v => v.value === voice)
     const name = voiceObject?.label.replace(/\(.*\)/, '')
-    if (name) speak(`Hello, my name is ${name}`, {...speechOptions, voice}, ttsSpeak)
+    if (name) speak(`Hello, my name is ${name}`)
   }
 
   useEffect(() => {(async () => {

@@ -4,8 +4,7 @@ import { useRef } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useSpeak } from "../stores/audio";
 import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
-import { useClearMessageOnPlay, useSpeechOptions } from "../stores/prefs";
-import { speak } from "../utils/speech";
+import { useClearMessageOnPlay } from "../stores/prefs";
 import TileImage from "./TileImage";
 
 export default function MessageWindow({
@@ -16,11 +15,10 @@ export default function MessageWindow({
   buttons: AACButton[];
 }) {
   const messageScrollView = useRef<ScrollView>(null)
-  const speechOptions = useSpeechOptions()
   const messageButtonsIds = useMessageButtonsIds()
   const clearMessageOnPlay = useClearMessageOnPlay()
   const { removeLastMessageButtonId, clearMessageButtonIds } = usePagesetActions()
-  const ttsSpeak = useSpeak()
+  const speak = useSpeak()
 
   const messageButtons = messageButtonsIds
     .map(id => buttons.find(b => b.id === id))
@@ -28,11 +26,10 @@ export default function MessageWindow({
   const message =  messageButtons.map(b => b.message).join(' ')
 
   const playMessage = () => speak(message, {
-    ...speechOptions,
     onDone: () => {
       if (clearMessageOnPlay) clearMessageButtonIds()
     }
-  }, ttsSpeak)
+  })
   
   return (
     <View style={{
