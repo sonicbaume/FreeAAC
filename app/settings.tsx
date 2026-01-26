@@ -3,6 +3,7 @@ import { getAvailableVoicesAsync } from "expo-speech";
 import { Monitor, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SettingsHeader from "./components/SettingsHeader";
 import SettingsItem from "./components/SettingsItem";
 import { ButtonViewOption, buttonViewOptions, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
@@ -18,6 +19,7 @@ const buttonViewLabels: Record<ButtonViewOption, string> = {
 }
 
 export default function Settings() {
+  const insets = useSafeAreaInsets()
   const playOnPress = usePlayOnPress()
   const messageWindowLocation = useMessageWindowLocation()
   const labelLocation = useLabelLocation()
@@ -59,8 +61,8 @@ export default function Settings() {
   })()}, [locales])
 
   return (
-    <ScrollView contentContainerStyle={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <View style={styles.container}>
+    <ScrollView>
+      <View style={{...styles.container, paddingBottom: insets.bottom}}>
         <SettingsHeader title="Speech" icon={Speech} />
         <SettingsItem
           title="Speak on press"
@@ -148,11 +150,9 @@ export default function Settings() {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-    height: '100%',
     width: 600,
     maxWidth: '100%',
-    padding: 20
+    padding: 20,
+    marginHorizontal: 'auto'
   }
 })

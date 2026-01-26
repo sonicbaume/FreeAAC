@@ -71,7 +71,10 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
 
   return (
     <View style={styles.container}>
-      <View style={{ display: 'flex', flexShrink: 1 }}>
+      <View style={{
+        display: 'flex',
+        flexShrink: 1,
+      }}>
         <Text style={styles.title}>{props.title}</Text>
         {props.description && <Text style={styles.description}>{props.description}</Text>}
       </View>
@@ -101,6 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 10,
     paddingHorizontal: 10,
-    maxWidth: '50%'
+    maxWidth: '50%',
+    minWidth: 150
   }
 })

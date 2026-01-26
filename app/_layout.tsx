@@ -1,7 +1,7 @@
 import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import SettingsButton from "./components/SettingsButton";
 
 export const unstable_settings = {
@@ -13,11 +13,17 @@ export default function RootLayout() {
   return (
     <Stack screenOptions={{
       headerBackButtonDisplayMode: "minimal",
-      headerRight: () => <SettingsButton style={{ padding: 6, ...styles.settingsButton}} />,
+      headerRight: () => <View style={styles.headerRight}>
+        <SettingsButton style={{ padding: 6 }} />
+      </View>,
     }}>
       <Stack.Screen name="index" options={{
         headerTitle: 'FreeAAC',
-        headerLeft: () => <Image source={assets?.at(0)} style={{ width: 32, height: 32, ...styles.icon }} />,
+        headerLeft: () => (
+          <View style={{ ...styles.headerLeft, marginRight: 12 }}>
+            <Image source={assets?.at(0)} style={{ width: 32, height: 32 }} />
+          </View>
+        ),
       }}
       />
       <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
@@ -28,12 +34,11 @@ export default function RootLayout() {
 
 const styles = StyleSheet.create(
   Platform.OS === "web" ? {
-    icon: {
-      marginLeft: 20,
-      marginRight: 8
+    headerLeft: {
+      marginLeft: 16
     },
-    settingsButton: {
-      marginRight: 12
+    headerRight: {
+      marginRight: 16
     }
   } : {}
 )
