@@ -67,6 +67,8 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
         onChange={item => props.setValue(item.value)}
         labelField="label"
         valueField="value"
+        selectedTextStyle={{ fontSize: 14, cursor: 'default' }}
+        itemTextStyle={{ fontSize: 14 }}
       />
     )
     : null
@@ -112,8 +114,9 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: 6,
     paddingHorizontal: 10,
-    minWidth: 150
+    minWidth: 150,
+    minHeight: 30,
   }
 })
