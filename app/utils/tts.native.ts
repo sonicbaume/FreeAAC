@@ -2,6 +2,7 @@ import { KOKORO_MEDIUM, KOKORO_VOICE_AF_HEART, KOKORO_VOICE_AF_RIVER, KOKORO_VOI
 import { VoiceConfig } from "react-native-executorch/lib/typescript/types/tts"
 import { SpeechOptions } from "../stores/prefs"
 import { korokoVoices } from "./consts"
+import { ExecuTorchTtsModel } from "./types"
 
 const kokoroVoiceMap: Record<string, VoiceConfig> = {
   af_heart: KOKORO_VOICE_AF_HEART,
@@ -14,7 +15,7 @@ const kokoroVoiceMap: Record<string, VoiceConfig> = {
   bm_daniel: KOKORO_VOICE_BM_DANIEL
 }
 
-export const useTts = (options: SpeechOptions) => {
+export const useTts = (options: SpeechOptions): ExecuTorchTtsModel => {
   const voice = (options.voice && options.voice in kokoroVoiceMap)
     ? kokoroVoiceMap[options.voice]
     : kokoroVoiceMap[korokoVoices[0].identifier]
