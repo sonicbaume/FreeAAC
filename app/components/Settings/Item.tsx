@@ -1,10 +1,12 @@
 import Slider from '@react-native-community/slider';
+import { JSX } from 'react';
 import { StyleSheet, Switch, Text, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 
 interface SettingItemBase {
   title: string;
   description?: string;
+  rightButton?: JSX.Element;
 }
 
 interface SettingsItemToggle extends SettingItemBase {
@@ -78,7 +80,10 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
         <Text style={styles.title}>{props.title}</Text>
         {props.description && <Text style={styles.description}>{props.description}</Text>}
       </View>
-      {component}
+      <View style={styles.rightContainer}>
+        {component}
+        {props.rightButton}
+      </View>
     </View>
   )
 }
@@ -92,6 +97,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 20
   },
+  rightContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6
+  },
   title: {
     fontSize: 16,
   },
@@ -100,11 +111,9 @@ const styles = StyleSheet.create({
     fontWeight: 'light',
   },
   dropdown: {
-    flex: 1,
     backgroundColor: 'white',
     borderRadius: 10,
     paddingHorizontal: 10,
-    maxWidth: '50%',
     minWidth: 150
   }
 })

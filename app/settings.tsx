@@ -1,7 +1,7 @@
 import { useLocales } from 'expo-localization';
-import { Monitor, Speech } from "lucide-react-native";
+import { Monitor, Speech, Volume2 } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Platform, ScrollView, StyleSheet, View } from "react-native";
+import { Platform, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SettingsHeader from "./components/Settings/Header";
 import SettingsItem from "./components/Settings/Item";
@@ -44,12 +44,12 @@ export default function Settings() {
   const [voices, setVoices] = useState<{value: string, label: string, langTag: string}[]>([])
   const speak = useSpeak()
 
-  const showVoiceSettings = (speechOptions.engine === "kokoro" && ttsStatus.isReady) || speechOptions.engine === "device"
+  const canIntroduce = (speechOptions.engine === "kokoro" && ttsStatus.isReady) || speechOptions.engine === "device"
 
   const introduceVoice = (voice: string | undefined) => {
     const voiceObject = voices.find(v => v.value === voice)
     const name = voiceObject?.label.replace(/\(.*\)/, '')
-    if (name) speak(`Hello, my name is ${name}`, {voice: voiceObject?.value})
+    if (name) speak(`Hi there! My name is ${name}`, {voice: voiceObject?.value})
   }
 
   useEffect(() => {(async () => {
@@ -77,17 +77,22 @@ export default function Settings() {
           items={speechEngines.map(value => {return { label: speechEngineLabels[value], value }})}
         />
         {speechOptions.engine === "kokoro" && <TtsStatus />}
-        {showVoiceSettings && <SettingsItem
+        <SettingsItem
           title="Voice"
           description="The speaker's voice"
           type="select"
           value={speechOptions.voice}
-          setValue={voice => {
-            setSpeechOptions({voice})
-            introduceVoice(voice)
-          }}
+          setValue={voice => setSpeechOptions({voice})}
           items={voices}
-        />}
+          rightButton={(
+            <Pressable
+              disabled={!canIntroduce}
+              onPress={() => introduceVoice(speechOptions.voice)}
+            >
+              <Volume2 size={24} color={canIntroduce ? "darkgrey" : "lightgrey"} />
+            </Pressable>
+          )}
+        />
         <SettingsItem
           title="Rate"
           description="The rate of the speaker's speech"
