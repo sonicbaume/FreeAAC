@@ -4,15 +4,13 @@ import { Stack } from "expo-router";
 import { Platform, StyleSheet, View } from "react-native";
 import AudioController from "./components/AudioController";
 import SettingsButton from "./components/Settings/Button";
-import { useSpeechOptions } from "./stores/prefs";
 
 export const unstable_settings = {
   initialRouteName: 'index',
 };
 
 export default function RootLayout() {
-  const [assets, error] = useAssets([require('../assets/images/icon-64x64.png')]);
-  const speechOptions = useSpeechOptions()
+  const [assets, error] = useAssets([require('../assets/images/icon-64x64.png')])
   return <>
     <Stack screenOptions={{
       headerBackButtonDisplayMode: "minimal",
