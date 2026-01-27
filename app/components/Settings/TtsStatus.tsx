@@ -6,7 +6,6 @@ const iconSize = 20
 
 export default function TtsStatus() {
   const { isReady, isGenerating, downloadProgress } = useTtsStatus()
-  console.log({isReady, downloadProgress})
   let statusText = "Ready"
   let statusIcon = <CheckCircleIcon size={iconSize} color="green" />
   if (!isReady) {

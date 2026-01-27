@@ -1,6 +1,7 @@
 import { KOKORO_MEDIUM, KOKORO_VOICE_AF_HEART, KOKORO_VOICE_AF_RIVER, KOKORO_VOICE_AF_SARAH, KOKORO_VOICE_AM_ADAM, KOKORO_VOICE_AM_MICHAEL, KOKORO_VOICE_AM_SANTA, KOKORO_VOICE_BF_EMMA, KOKORO_VOICE_BM_DANIEL, useTextToSpeech } from "react-native-executorch"
 import { VoiceConfig } from "react-native-executorch/lib/typescript/types/tts"
 import { SpeechOptions } from "../stores/prefs"
+import { korokoVoices } from "./consts"
 
 const kokoroVoiceMap: Record<string, VoiceConfig> = {
   af_heart: KOKORO_VOICE_AF_HEART,
@@ -14,9 +15,12 @@ const kokoroVoiceMap: Record<string, VoiceConfig> = {
 }
 
 export const useTts = (options: SpeechOptions) => {
+  const voice = (options.voice && options.voice in kokoroVoiceMap)
+    ? kokoroVoiceMap[options.voice]
+    : kokoroVoiceMap[korokoVoices[0].identifier]
   return useTextToSpeech({
     model: KOKORO_MEDIUM,
-    voice: options.voice ? kokoroVoiceMap[options.voice] : KOKORO_VOICE_AF_HEART,
+    voice,
     preventLoad: options.engine !== "kokoro"}
   )
 }
