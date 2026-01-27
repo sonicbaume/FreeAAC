@@ -63,35 +63,35 @@ export const licenseImageMap: {
 export const korokoVoices: Pick<Voice, 'identifier' | 'name' | 'language'>[] = [
   {
     identifier: 'af_heart',
-    name: 'Heart',
+    name: '🇺🇸 Heart',
     language: 'en-US'
   }, {
     identifier: 'af_river',
-    name: 'River',
+    name: '🇺🇸 River',
     language: 'en-US'
   }, {
     identifier: 'af_sarah',
-    name: 'Sarah',
+    name: '🇺🇸 Sarah',
     language: 'en-US'
   }, {
     identifier: 'am_adam',
-    name: 'Adam',
+    name: '🇺🇸 Adam',
     language: 'en-US'
   }, {
     identifier: 'am_michael',
-    name: 'Michael',
+    name: '🇺🇸 Michael',
     language: 'en-US'
   }, {
     identifier: 'am_santa',
-    name: 'Santa',
+    name: '🇺🇸 Santa',
     language: 'en-US'
   }, {
     identifier: 'bf_emma',
-    name: 'Emma',
+    name: '🇬🇧 Emma',
     language: 'en-GB'
   }, {
     identifier: 'bm_daniel',
-    name: 'Daniel',
+    name: '🇬🇧 Daniel',
     language: 'en-GB'
   }
 ]

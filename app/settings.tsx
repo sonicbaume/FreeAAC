@@ -1,4 +1,5 @@
 import { useLocales } from 'expo-localization';
+import { getAvailableVoicesAsync } from 'expo-speech';
 import { Monitor, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Platform, ScrollView, StyleSheet, View } from "react-native";
@@ -7,10 +8,25 @@ import SettingsHeader from "./components/Settings/Header";
 import SettingsItem from "./components/Settings/Item";
 import PreviewButton from './components/Settings/PreviewButton';
 import TtsStatus from './components/Settings/TtsStatus';
-import { useSpeak, useTtsStatus } from './stores/audio';
+import { useSpeak } from './stores/audio';
 import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
+import { korokoVoices } from './utils/consts';
 import { handleError } from './utils/error';
-import { getVoiceOptions } from './utils/speech';
+
+const tagToCode = (langTag: string) => langTag.split(/[-_]+/)[0]
+const harmoniseTag = (langTag: string) => langTag.replace('_','-')
+
+export const getVoiceOptions = async (engine: SpeechEngine, deviceLangCodes: string[]) => {
+  const allVoices = (
+    engine === "device" ? await getAvailableVoicesAsync() :
+    engine === "kokoro" ? korokoVoices :
+    [])
+  const allVoiceLangCodes = [...new Set(allVoices.map(l => tagToCode(l.language)))]
+  const matchingLangCodes = allVoiceLangCodes.filter(l => deviceLangCodes.includes(harmoniseTag(l)))
+  let localVoices = allVoices.filter(v => matchingLangCodes.includes(tagToCode(v.language)))
+  if (localVoices.length < 2) localVoices = allVoices
+  return localVoices.map(v => { return {value: v.identifier, label: v.name, langTag: v.language} })
+}
 
 const buttonViewLabels: Record<ButtonViewOption, string> = {
   'both': 'Symbol and text',
@@ -18,8 +34,8 @@ const buttonViewLabels: Record<ButtonViewOption, string> = {
   'text': 'Text only'
 }
 const speechEngineLabels: Record<SpeechEngine, string> = {
-  'device': 'System TTS',
-  'kokoro': Platform.OS === 'web' ? 'Neural TTS (mobile only)' : 'Neural TTS'
+  'device': '🤖 System TTS',
+  'kokoro': Platform.OS === 'web' ? '✨ Neural TTS (mobile only)' : '✨ Neural TTS'
 }
 
 export default function Settings() {
@@ -32,7 +48,6 @@ export default function Settings() {
   const clearMessageOnPlay = useClearMessageOnPlay()
   const goHomeOnPress = useGoHomeOnPress()
   const locales = useLocales()
-  const ttsStatus = useTtsStatus()
   const {
     togglePlayOnPress,
     setMessageWindowLocation,
@@ -50,13 +65,12 @@ export default function Settings() {
     const name = voiceObject?.label.replace(/\(.*\)/, '')
     if (name) speak(`Hi there! My name is ${name}`, {voice: voiceObject?.value})
   }
-  const introduceRate = () => speak("This is the speed at which I talk")
+  const introduceRate = () => speak("This is how fast I talk")
   const introducePitch = () => speak("This is the pitch of my voice")
 
   useEffect(() => {(async () => {
-    const deviceLangTags = locales.map(l => l.languageTag)
     const deviceLangCodes  = [...new Set(locales.map(l => l.languageCode))].filter(l => l !== null)
-    const voiceOptions = await getVoiceOptions(speechOptions.engine, deviceLangTags, deviceLangCodes)
+    const voiceOptions = await getVoiceOptions(speechOptions.engine, deviceLangCodes)
     setVoices(voiceOptions)
 
     if (speechOptions.voice === undefined ||
