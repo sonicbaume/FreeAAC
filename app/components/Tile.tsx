@@ -1,6 +1,5 @@
 import { AACButton } from "@willwade/aac-processors/browser"
-import { SquareArrowOutUpRight } from "lucide-react-native"
-import { Pressable, StyleSheet, Text } from "react-native"
+import { Pressable, StyleSheet, Text, View } from "react-native"
 import { useSpeak } from "../stores/audio"
 import { usePagesetActions } from "../stores/boards"
 import { useButtonView, useGoHomeOnPress, useLabelLocation, usePlayOnPress } from "../stores/prefs"
@@ -54,10 +53,7 @@ export default function Tile({
       {showSymbol && button.image && <TileImage uri={button.image} style={styles.symbol} />}
       {showText && labelLocation === "bottom" && <Label text={button.label} />}
       {button.action?.type === "NAVIGATE" &&
-      <SquareArrowOutUpRight
-        style={{ position: 'absolute', top: 8, right: 8}}
-        size={18}
-      />
+        <View style={styles.linkOverlay} />
       }
     </Pressable>
   )
@@ -70,7 +66,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
-    borderRadius: 10
+    borderRadius: 10,
+  },
+  linkOverlay: {
+    position: 'absolute',
+    top: -20,
+    right: -20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgb(242, 242, 242)',
+    shadowColor: 'black',
+    boxShadow: '#999 -1px 1px 5px'
   },
   label: {
     paddingVertical: 5,
