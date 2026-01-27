@@ -24,6 +24,7 @@ interface PrefsState {
   speechOptions: SpeechOptions;
   clearMessageOnPlay: boolean;
   goHomeOnPress: boolean;
+  showShareButton: boolean;
   actions: {
     togglePlayOnPress: () => void;
     setMessageWindowLocation: (location: 'top' | 'bottom') => void;
@@ -32,6 +33,7 @@ interface PrefsState {
     setSpeechOptions: (options: Partial<SpeechOptions>) => void;
     toggleClearMessageOnPlay: () => void;
     toggleGoHomeOnPress: () => void;
+    toggleShowShareButton: () => void;
   }
 }
 
@@ -49,6 +51,7 @@ export const usePrefsStore = create<PrefsState>()(persist(
     },
     clearMessageOnPlay: false,
     goHomeOnPress: false,
+    showShareButton: false,
     actions: {
       togglePlayOnPress: () => set({ playOnPress: !(get().playOnPress) }),
       setMessageWindowLocation: (location: 'top' | 'bottom') => set({ messageWindowLocation: location }),
@@ -56,7 +59,8 @@ export const usePrefsStore = create<PrefsState>()(persist(
       setButtonView: (view: ButtonViewOption) => set({ buttonView: view }),
       setSpeechOptions: (options: Partial<SpeechOptions>) => set({ speechOptions: { ...get().speechOptions, ...options } }),
       toggleClearMessageOnPlay: () => set({ clearMessageOnPlay: !(get().clearMessageOnPlay) }),
-      toggleGoHomeOnPress: () => set({ goHomeOnPress: !(get().goHomeOnPress) })
+      toggleGoHomeOnPress: () => set({ goHomeOnPress: !(get().goHomeOnPress) }),
+      toggleShowShareButton: () => set({ showShareButton: !(get().showShareButton) })
     }
   }),
   {
@@ -76,5 +80,6 @@ export const useButtonView = () => usePrefsStore(s => s.buttonView)
 export const useSpeechOptions = () => usePrefsStore(s => s.speechOptions)
 export const useClearMessageOnPlay = () => usePrefsStore(s => s.clearMessageOnPlay)
 export const useGoHomeOnPress = () => usePrefsStore(s => s.goHomeOnPress)
+export const useShowShareButton = () => usePrefsStore(s => s.showShareButton)
 
 export const usePrefsActions = () => usePrefsStore(s => s.actions)

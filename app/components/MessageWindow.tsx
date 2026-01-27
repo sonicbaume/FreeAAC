@@ -1,10 +1,11 @@
 import { AACButton } from "@willwade/aac-processors/browser";
-import { Delete, Home, X } from "lucide-react-native";
-import { useRef } from "react";
+import * as Clipboard from 'expo-clipboard';
+import { ClipboardCheck, Copy, Delete, Home, X } from "lucide-react-native";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { useSpeak } from "../stores/audio";
 import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
-import { useClearMessageOnPlay } from "../stores/prefs";
+import { useClearMessageOnPlay, useShowShareButton } from "../stores/prefs";
 import TileImage from "./TileImage";
 
 export default function MessageWindow({
@@ -14,9 +15,11 @@ export default function MessageWindow({
   navigateHome: () => void;
   buttons: AACButton[];
 }) {
+  const [copied, setCopied] = useState(false)
   const messageScrollView = useRef<ScrollView>(null)
   const messageButtonsIds = useMessageButtonsIds()
   const clearMessageOnPlay = useClearMessageOnPlay()
+  const showShareButton = useShowShareButton()
   const { removeLastMessageButtonId, clearMessageButtonIds } = usePagesetActions()
   const speak = useSpeak()
 
@@ -25,12 +28,18 @@ export default function MessageWindow({
     .filter(b => b !== undefined)
   const message =  messageButtons.map(b => b.message).join(' ')
 
+  const copyMessage = async () => {
+    const success = await Clipboard.setStringAsync(message)
+    if (success) setCopied(true)
+  }
+  useEffect(() => setCopied(false), [message])
+
   const playMessage = () => speak(message, {
     onDone: () => {
       if (clearMessageOnPlay) clearMessageButtonIds()
     }
   })
-  
+
   return (
     <View style={{
       height: 60,
@@ -63,6 +72,15 @@ export default function MessageWindow({
         </ScrollView>
         <View style={{ display: 'flex', flexDirection: 'row', padding: 10 }}>
           {messageButtonsIds.length > 0 && <>
+            {showShareButton &&
+            <Pressable
+              style={styles.button}
+              onPress={copyMessage}
+              disabled={messageButtonsIds.length === 0}
+            >
+              {copied ? <ClipboardCheck size={30} color="green" /> : <Copy size={30} />}
+            </Pressable>
+            }
             <Pressable
               style={styles.button}
               onPress={removeLastMessageButtonId}
