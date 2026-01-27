@@ -21,7 +21,7 @@ export default function RootLayout() {
       <Stack.Screen name="index" options={{
         headerTitle: 'FreeAAC',
         headerLeft: () => (
-          <View style={{ ...styles.headerLeft, marginRight: 12 }}>
+          <View style={styles.headerLeft}>
             <Image source={assets?.at(0)} style={{ width: 32, height: 32 }} />
           </View>
         ),
@@ -37,10 +37,19 @@ export default function RootLayout() {
 const styles = StyleSheet.create(
   Platform.OS === "web" ? {
     headerLeft: {
-      marginLeft: 16
+      marginLeft: 16,
+      marginRight: 12
     },
     headerRight: {
       marginRight: 16
     }
+  } :
+  Platform.OS === "android" ? {
+    headerLeft: {
+      marginRight: 12
+    },
+  } :
+  Platform.OS === "ios" ? {
+
   } : {}
 )
