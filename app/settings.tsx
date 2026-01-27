@@ -9,7 +9,7 @@ import SettingsItem from "./components/Settings/Item";
 import PreviewButton from './components/Settings/PreviewButton';
 import TtsStatus from './components/Settings/TtsStatus';
 import { useSpeak } from './stores/audio';
-import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
+import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useShowShareButton, useSpeechOptions } from "./stores/prefs";
 import { korokoVoices } from './utils/consts';
 import { handleError } from './utils/error';
 
@@ -47,6 +47,7 @@ export default function Settings() {
   const speechOptions = useSpeechOptions()
   const clearMessageOnPlay = useClearMessageOnPlay()
   const goHomeOnPress = useGoHomeOnPress()
+  const showShareButton = useShowShareButton()
   const locales = useLocales()
   const {
     togglePlayOnPress,
@@ -55,7 +56,8 @@ export default function Settings() {
     setButtonView,
     setSpeechOptions,
     toggleClearMessageOnPlay,
-    toggleGoHomeOnPress
+    toggleGoHomeOnPress,
+    toggleShowShareButton
   } = usePrefsActions()
   const [voices, setVoices] = useState<{value: string, label: string, langTag: string}[]>([])
   const speak = useSpeak()
@@ -174,6 +176,13 @@ export default function Settings() {
           type="toggle"
           value={goHomeOnPress}
           setValue={toggleGoHomeOnPress}
+        />
+        <SettingsItem
+          title="Show copy button"
+          description="Display a button to copy to clipboard"
+          type="toggle"
+          value={showShareButton}
+          setValue={toggleShowShareButton}
         />
       </View>
     </ScrollView>
