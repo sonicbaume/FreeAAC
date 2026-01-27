@@ -45,8 +45,6 @@ export default function Settings() {
   const [voices, setVoices] = useState<{value: string, label: string, langTag: string}[]>([])
   const speak = useSpeak()
 
-  const canIntroduce = (speechOptions.engine === "kokoro" && ttsStatus.isReady) || speechOptions.engine === "device"
-
   const introduceVoice = (voice: string | undefined) => {
     const voiceObject = voices.find(v => v.value === voice)
     const name = voiceObject?.label.replace(/\(.*\)/, '')
@@ -60,6 +58,11 @@ export default function Settings() {
     const deviceLangCodes  = [...new Set(locales.map(l => l.languageCode))].filter(l => l !== null)
     const voiceOptions = await getVoiceOptions(speechOptions.engine, deviceLangTags, deviceLangCodes)
     setVoices(voiceOptions)
+
+    if (speechOptions.voice === undefined ||
+      voiceOptions.find(v => v.value === speechOptions.voice) === undefined) {
+      setSpeechOptions({voice: voiceOptions[0].value})
+    }
   })()}, [locales, speechOptions.engine])
 
   return (
@@ -87,12 +90,7 @@ export default function Settings() {
           value={speechOptions.voice}
           setValue={voice => setSpeechOptions({voice})}
           items={voices}
-          rightButton={(
-            <PreviewButton
-              disabled={!canIntroduce}
-              onPress={() => introduceVoice(speechOptions.voice)}
-            />
-          )}
+          rightButton={<PreviewButton onPress={() => introduceVoice(speechOptions.voice)} />}
         />
         <SettingsItem
           title="Rate"
