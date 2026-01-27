@@ -1,3 +1,5 @@
+import { Voice } from "expo-speech";
+
 export const appName = "FreeAAC"
 
 export interface BoardTemplate {
@@ -57,3 +59,39 @@ export const licenseImageMap: {
     'CC-BY-NC-ND': require('../../assets/images/cc/dark/by-nc-nd.png')
   }
 }
+
+export const korokoVoices: Pick<Voice, 'identifier' | 'name' | 'language'>[] = [
+  {
+    identifier: 'af_heart',
+    name: 'Heart',
+    language: 'en-US'
+  }, {
+    identifier: 'af_river',
+    name: 'River',
+    language: 'en-US'
+  }, {
+    identifier: 'af_sarah',
+    name: 'Sarah',
+    language: 'en-US'
+  }, {
+    identifier: 'am_adam',
+    name: 'Adam',
+    language: 'en-US'
+  }, {
+    identifier: 'am_michael',
+    name: 'Michael',
+    language: 'en-US'
+  }, {
+    identifier: 'am_santa',
+    name: 'Santa',
+    language: 'en-US'
+  }, {
+    identifier: 'bf_emma',
+    name: 'Emma',
+    language: 'en-GB'
+  }, {
+    identifier: 'bm_daniel',
+    name: 'Daniel',
+    language: 'en-GB'
+  }
+]

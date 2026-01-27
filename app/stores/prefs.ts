@@ -1,3 +1,4 @@
+import { SpeechOptions as ExpoSpeechOptions } from 'expo-speech';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { zustandStorage } from './middleware';
@@ -5,10 +6,14 @@ import { zustandStorage } from './middleware';
 export const buttonViewOptions = [ 'both', 'symbol', 'text' ] as const
 export type ButtonViewOption = typeof buttonViewOptions[number]
 
-export interface SpeechOptions {
+export const speechEngines = [ 'device', 'kokoro' ]
+export type SpeechEngine = typeof speechEngines[number]
+
+export interface SpeechOptions extends ExpoSpeechOptions {
   pitch: number;
   rate: number;
-  voice: string | undefined;
+  voice?: string;
+  engine: SpeechEngine;
 }
 
 interface PrefsState {
@@ -39,7 +44,8 @@ export const usePrefsStore = create<PrefsState>()(persist(
     speechOptions: {
       pitch: 1,
       rate: 1,
-      voice: undefined
+      voice: undefined,
+      engine: 'device'
     },
     clearMessageOnPlay: false,
     goHomeOnPress: false,

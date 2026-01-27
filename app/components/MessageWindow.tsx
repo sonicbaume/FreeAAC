@@ -2,9 +2,9 @@ import { AACButton } from "@willwade/aac-processors/browser";
 import { Delete, Home, X } from "lucide-react-native";
 import { useRef } from "react";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { useSpeak } from "../stores/audio";
 import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
-import { useClearMessageOnPlay, useSpeechOptions } from "../stores/prefs";
-import { speak } from "../utils/speech";
+import { useClearMessageOnPlay } from "../stores/prefs";
 import TileImage from "./TileImage";
 
 export default function MessageWindow({
@@ -15,17 +15,17 @@ export default function MessageWindow({
   buttons: AACButton[];
 }) {
   const messageScrollView = useRef<ScrollView>(null)
-  const speechOptions = useSpeechOptions()
   const messageButtonsIds = useMessageButtonsIds()
   const clearMessageOnPlay = useClearMessageOnPlay()
   const { removeLastMessageButtonId, clearMessageButtonIds } = usePagesetActions()
+  const speak = useSpeak()
+
   const messageButtons = messageButtonsIds
     .map(id => buttons.find(b => b.id === id))
     .filter(b => b !== undefined)
   const message =  messageButtons.map(b => b.message).join(' ')
 
   const playMessage = () => speak(message, {
-    ...speechOptions,
     onDone: () => {
       if (clearMessageOnPlay) clearMessageButtonIds()
     }

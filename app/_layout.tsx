@@ -2,15 +2,16 @@ import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
 import { Platform, StyleSheet, View } from "react-native";
-import SettingsButton from "./components/SettingsButton";
+import AudioController from "./components/AudioController";
+import SettingsButton from "./components/Settings/Button";
 
 export const unstable_settings = {
   initialRouteName: 'index',
 };
 
 export default function RootLayout() {
-  const [assets, error] = useAssets([require('../assets/images/icon-64x64.png')]);
-  return (
+  const [assets, error] = useAssets([require('../assets/images/icon-64x64.png')])
+  return <>
     <Stack screenOptions={{
       headerBackButtonDisplayMode: "minimal",
       headerRight: () => <View style={styles.headerRight}>
@@ -29,7 +30,8 @@ export default function RootLayout() {
       <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
       <Stack.Screen name="templates" options={{ headerTitle: 'Templates' }} />
     </Stack>
-  )
+    <AudioController />
+  </>
 }
 
 const styles = StyleSheet.create(
