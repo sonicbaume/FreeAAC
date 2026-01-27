@@ -97,6 +97,7 @@ export default function AudioController () {
 
       await model.stream({
         text: inputText,
+        speed: speechOptions.rate,
         onNext,
         onEnd,
       });
