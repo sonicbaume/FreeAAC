@@ -1,4 +1,6 @@
-# 🌈 FreeAAC
+<img align="left" src="assets/images/icon-64x64.png" />
+
+# FreeAAC
 
 A free and open-source Augmentative and Alternative Communication (AAC) app for Android, iOS and web, built using React Native.
 

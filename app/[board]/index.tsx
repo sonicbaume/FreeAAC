@@ -54,7 +54,7 @@ export default function Board() {
 
   const handleNavigateHome = () => homePageId && setCurrentPageId(homePageId)
 
-  useEffect(() => page && setOptions({ title: page.name }), [page])
+  useEffect(() => setOptions({ title: page?.name ?? "Loading..." }), [page])
 
   const buttons = useMemo(() => {
     if (!tree) return []
