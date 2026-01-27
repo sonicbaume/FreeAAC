@@ -1,10 +1,11 @@
 import { useLocales } from 'expo-localization';
 import { Monitor, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import SettingsHeader from "./components/SettingsHeader";
-import SettingsItem from "./components/SettingsItem";
+import SettingsHeader from "./components/Settings/Header";
+import SettingsItem from "./components/Settings/Item";
+import TtsStatus from './components/Settings/TtsStatus';
 import { useSpeak, useTtsStatus } from './stores/audio';
 import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
 import { handleError } from './utils/error';
@@ -43,6 +44,8 @@ export default function Settings() {
   const [voices, setVoices] = useState<{value: string, label: string, langTag: string}[]>([])
   const speak = useSpeak()
 
+  const showVoiceSettings = (speechOptions.engine === "kokoro" && ttsStatus.isReady) || speechOptions.engine === "device"
+
   const introduceVoice = (voice: string | undefined) => {
     const voiceObject = voices.find(v => v.value === voice)
     const name = voiceObject?.label.replace(/\(.*\)/, '')
@@ -73,12 +76,8 @@ export default function Settings() {
           }}
           items={speechEngines.map(value => {return { label: speechEngineLabels[value], value }})}
         />
-        {speechOptions.engine === "kokoro" && <>
-        <Text>Ready: {ttsStatus.isReady ? 'Yes' : 'No'}</Text>
-        <Text>Generating: {ttsStatus.isGenerating ? 'Yes' : 'No'}</Text>
-        <Text>Download: {(ttsStatus.downloadProgress*100).toFixed(0)}%</Text>
-        </>}
-        <SettingsItem
+        {speechOptions.engine === "kokoro" && <TtsStatus />}
+        {showVoiceSettings && <SettingsItem
           title="Voice"
           description="The speaker's voice"
           type="select"
@@ -88,7 +87,7 @@ export default function Settings() {
             introduceVoice(voice)
           }}
           items={voices}
-        />
+        />}
         <SettingsItem
           title="Rate"
           description="The rate of the speaker's speech"

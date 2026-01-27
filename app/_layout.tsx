@@ -3,7 +3,7 @@ import { Image } from "expo-image";
 import { Stack } from "expo-router";
 import { Platform, StyleSheet, View } from "react-native";
 import AudioController from "./components/AudioController";
-import SettingsButton from "./components/SettingsButton";
+import SettingsButton from "./components/Settings/Button";
 import { useSpeechOptions } from "./stores/prefs";
 
 export const unstable_settings = {
