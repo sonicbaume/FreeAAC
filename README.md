@@ -1,7 +1,6 @@
-<p style="display: flex; flex-direction: row; align-items: center; gap: 2rem;">
-  <img src="assets/images/icon-64x64.png" />
-  <h1>FreeAAC</h1>
-</p>
+<img align="left" src="assets/images/icon-64x64.png" />
+
+# FreeAAC
 
 A free and open-source Augmentative and Alternative Communication (AAC) app for Android, iOS and web, built using React Native.
 
