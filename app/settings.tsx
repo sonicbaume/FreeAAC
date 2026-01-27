@@ -1,10 +1,11 @@
 import { useLocales } from 'expo-localization';
-import { Monitor, Speech, Volume2 } from "lucide-react-native";
+import { Monitor, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Platform, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SettingsHeader from "./components/Settings/Header";
 import SettingsItem from "./components/Settings/Item";
+import PreviewButton from './components/Settings/PreviewButton';
 import TtsStatus from './components/Settings/TtsStatus';
 import { useSpeak, useTtsStatus } from './stores/audio';
 import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useSpeechOptions } from "./stores/prefs";
@@ -51,6 +52,8 @@ export default function Settings() {
     const name = voiceObject?.label.replace(/\(.*\)/, '')
     if (name) speak(`Hi there! My name is ${name}`, {voice: voiceObject?.value})
   }
+  const introduceRate = () => speak("This is the speed at which I talk")
+  const introducePitch = () => speak("This is the pitch of my voice")
 
   useEffect(() => {(async () => {
     const deviceLangTags = locales.map(l => l.languageTag)
@@ -85,12 +88,10 @@ export default function Settings() {
           setValue={voice => setSpeechOptions({voice})}
           items={voices}
           rightButton={(
-            <Pressable
+            <PreviewButton
               disabled={!canIntroduce}
               onPress={() => introduceVoice(speechOptions.voice)}
-            >
-              <Volume2 size={24} color={canIntroduce ? "darkgrey" : "lightgrey"} />
-            </Pressable>
+            />
           )}
         />
         <SettingsItem
@@ -102,6 +103,7 @@ export default function Settings() {
           min={0.5}
           max={1.5}
           step={0.1}
+          rightButton={<PreviewButton onPress={() => introduceRate()} />}
         />
         {speechOptions.engine === "device" && <SettingsItem
           title="Pitch"
@@ -112,6 +114,7 @@ export default function Settings() {
           min={0.5}
           max={1.5}
           step={0.1}
+          rightButton={<PreviewButton onPress={() => introducePitch()} />}
         />}
         <SettingsItem
           title="Speak on press"
