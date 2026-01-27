@@ -25,7 +25,7 @@ export default function Templates () {
         const fileName = `${id}.${ext}`
         const uri = await saveFile(fileName, data, 'document')
         addBoard({ id, uri, name: template.name})
-        router.push({ pathname: '/[board]', params: { board: id } })
+        router.replace({ pathname: '/[board]', params: { board: id } })
       } catch (e) {
         handleError(e)
       }
