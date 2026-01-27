@@ -2,12 +2,15 @@ import * as Application from 'expo-application';
 import { useAssets } from 'expo-asset';
 import { Image } from 'expo-image';
 import { useLocales } from 'expo-localization';
+import { Link } from 'expo-router';
 import { getAvailableVoicesAsync } from 'expo-speech';
-import { Info, Monitor, Speech } from "lucide-react-native";
+import { Bug, Info, Lightbulb, Monitor, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import GithubIcon from './components/Icons/Github';
 import SettingsHeader from "./components/Settings/Header";
 import SettingsItem from "./components/Settings/Item";
+import LinkButton from './components/Settings/LinkButton';
 import PreviewButton from './components/Settings/PreviewButton';
 import TtsStatus from './components/Settings/TtsStatus';
 import { useSpeak } from './stores/audio';
@@ -179,7 +182,7 @@ export default function Settings() {
           setValue={toggleGoHomeOnPress}
         />
         <SettingsHeader title="About" icon={Info} />
-        <View style={{ padding: 15 }}>
+        <View style={{ padding: 15, display: 'flex', gap: 12 }}>
           <View style={{ display: 'flex', flexDirection: 'row', gap: 12 }}>
             <Image source={assets?.at(0)} style={{ width: 64, height: 64 }} />
             <View>
@@ -187,11 +190,27 @@ export default function Settings() {
               {appVersion && <Text>Version {appVersion}</Text>}
             </View>
           </View>
+          <LinkButton
+            url="https://github.com/sonicbaume/FreeAAC"
+            title="Visit project page"
+            icon={GithubIcon}
+          />
+          <LinkButton
+            url="https://github.com/sonicbaume/FreeAAC/issues/new?type=bug"
+            title="Report an issue"
+            icon={Bug}
+          />
+          <LinkButton
+            url="https://github.com/sonicbaume/FreeAAC/issues/new?type=feature"
+            title="Suggest a feature"
+            icon={Lightbulb}
+          />
+          <Link href="https://sonic.bau.me" style={{ textAlign: 'center', marginTop: 24, color: "grey" }}>©️ Sonic Baume LTD 2026</Link>
+          <Text style={{ textAlign: 'center', color: "grey" }}>Released under GPL v3.0</Text>
         </View>
       </View>
     </ScrollView>
   )
-
 }
 
 const styles = StyleSheet.create({
