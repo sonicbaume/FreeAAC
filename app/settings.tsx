@@ -1,9 +1,11 @@
+import * as Application from 'expo-application';
+import { useAssets } from 'expo-asset';
+import { Image } from 'expo-image';
 import { useLocales } from 'expo-localization';
 import { getAvailableVoicesAsync } from 'expo-speech';
-import { Monitor, Speech } from "lucide-react-native";
+import { Info, Monitor, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Platform, ScrollView, StyleSheet, View } from "react-native";
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 import SettingsHeader from "./components/Settings/Header";
 import SettingsItem from "./components/Settings/Item";
 import PreviewButton from './components/Settings/PreviewButton';
@@ -39,7 +41,8 @@ const speechEngineLabels: Record<SpeechEngine, string> = {
 }
 
 export default function Settings() {
-  const insets = useSafeAreaInsets()
+  const [assets, error] = useAssets([require('../assets/images/icon-64x64.png')])
+  const appVersion = Application.nativeApplicationVersion
   const playOnPress = usePlayOnPress()
   const messageWindowLocation = useMessageWindowLocation()
   const labelLocation = useLabelLocation()
@@ -81,7 +84,7 @@ export default function Settings() {
 
   return (
     <ScrollView>
-      <View style={{...styles.container, paddingBottom: insets.bottom}}>
+      <View style={{...styles.container, paddingBottom: 200}}>
         <SettingsHeader title="Speech" icon={Speech} />
         <SettingsItem
           title="Engine"
@@ -175,6 +178,16 @@ export default function Settings() {
           value={goHomeOnPress}
           setValue={toggleGoHomeOnPress}
         />
+        <SettingsHeader title="About" icon={Info} />
+        <View style={{ padding: 15 }}>
+          <View style={{ display: 'flex', flexDirection: 'row', gap: 12 }}>
+            <Image source={assets?.at(0)} style={{ width: 64, height: 64 }} />
+            <View>
+              <Text style={{ fontSize: 24, marginBottom: 4 }}>FreeAAC</Text>
+              {appVersion && <Text>Version {appVersion}</Text>}
+            </View>
+          </View>
+        </View>
       </View>
     </ScrollView>
   )
