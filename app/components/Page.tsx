@@ -17,12 +17,16 @@ export default function Page({
     <View style={styles.container}>
       {page.grid.map((row, rowIndex) =>
        <View key={rowIndex} style={styles.row}>
-        {row.map((col, colIndex) => col &&
-          <Tile
+        {row.map((col, colIndex) => col
+        ? <Tile
             key={`${rowIndex}_${colIndex}`}
             button={col}
             homePageId={homePageId}
           />
+        : <View
+            key={`${rowIndex}_${colIndex}`}
+            style={{ flex: 1 }}
+          ></View>
         )}
         </View>
       )}
