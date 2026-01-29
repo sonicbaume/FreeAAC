@@ -55,21 +55,21 @@ export default function MessageWindow({
         </Pressable>
       </View>
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
-        <ScrollView
-          ref={messageScrollView}
-          horizontal={true}
-          onContentSizeChange={() => messageScrollView.current?.scrollToEnd()}
-          onTouchEnd={playMessage}
-          onPointerUp={playMessage}
-        >
-          {messageButtons.map((button, i) => button.image && (
-            <TileImage
-              key={i}
-              uri={button.image}
-              style={{ width: 60, height: 60 }}
-            />
-          ))}
-        </ScrollView>
+        <Pressable onPress={playMessage} style={{ flex: 1 }}>
+          <ScrollView
+            ref={messageScrollView}
+            horizontal={true}
+            onContentSizeChange={() => messageScrollView.current?.scrollToEnd()}
+          >
+            {messageButtons.map((button, i) => button.image && (
+              <TileImage
+                key={i}
+                uri={button.image}
+                style={{ width: 60, height: 60 }}
+              />
+            ))}
+          </ScrollView>
+        </Pressable>
         <View style={{ display: 'flex', flexDirection: 'row', padding: 10 }}>
           {messageButtonsIds.length > 0 && <>
             {showShareButton &&
