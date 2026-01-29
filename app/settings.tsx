@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import { useLocales } from 'expo-localization';
 import { Link } from 'expo-router';
 import { getAvailableVoicesAsync } from 'expo-speech';
-import { Bug, Info, Lightbulb, Monitor, Speech } from "lucide-react-native";
+import { Bug, Info, Lightbulb, Monitor, Shield, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
 import GithubIcon from './components/Icons/Github';
@@ -200,19 +200,24 @@ export default function Settings() {
             </View>
           </View>
           <LinkButton
-            url="https://github.com/sonicbaume/FreeAAC"
+            href="https://github.com/sonicbaume/FreeAAC"
             title="Visit project page"
             icon={GithubIcon}
           />
           <LinkButton
-            url="https://github.com/sonicbaume/FreeAAC/issues/new?type=bug"
+            href="https://github.com/sonicbaume/FreeAAC/issues/new?type=bug"
             title="Report an issue"
             icon={Bug}
           />
           <LinkButton
-            url="https://github.com/sonicbaume/FreeAAC/issues/new?type=feature"
+            href="https://github.com/sonicbaume/FreeAAC/issues/new?type=feature"
             title="Suggest a feature"
             icon={Lightbulb}
+          />
+          <LinkButton
+            href="/privacy"
+            title="Privacy policy"
+            icon={Shield}
           />
           <Link href="https://sonic.bau.me" style={{ textAlign: 'center', marginTop: 24, color: "grey" }}>©️ Sonic Baume LTD 2026</Link>
           <Text style={{ textAlign: 'center', color: "grey" }}>Released under GPL v3.0</Text>

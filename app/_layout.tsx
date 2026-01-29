@@ -29,6 +29,7 @@ export default function RootLayout() {
       />
       <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
       <Stack.Screen name="templates" options={{ headerTitle: 'Templates' }} />
+      <Stack.Screen name="privacy" options={{ headerTitle: 'Privacy policy' }} />
     </Stack>
     <AudioController />
   </>
