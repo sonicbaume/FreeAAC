@@ -111,7 +111,7 @@ export default function AudioController () {
 
   useEffect(() => {
     AudioManager.setAudioSessionOptions({
-      iosCategory: 'playAndRecord',
+      iosCategory: 'playback',
       iosMode: 'spokenAudio',
       iosOptions: ['defaultToSpeaker'],
     });
