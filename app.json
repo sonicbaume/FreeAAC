@@ -12,7 +12,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "org.freeaac",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSMicrophoneUsageDescription": "This app uses the microphone to let you record your own speech to use on buttons."
       }
     },
     "android": {
