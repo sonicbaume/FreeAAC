@@ -94,7 +94,7 @@ We want to build on the shoulders of those who came before by combining the best
 
 ### AAC users can:
 
-- ✋ _Sign up to be a tester, try releases, report problems and offer feedback._ [coming soon...]
+- ✋ Sign up to test our [iOS](https://testflight.apple.com/join/rAEtsbD6) or [Android](https://play.google.com/store/apps/details?id=org.freeaac) apps, report problems and offer feedback.
 
 - 📝 [Request a feature](https://github.com/sonicbaume/FreeAAC/issues/new?type=feature) by writing a user story.
 
