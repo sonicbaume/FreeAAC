@@ -220,7 +220,7 @@ export default function Settings() {
             icon={Shield}
           />
           <Link href="https://sonic.bau.me" style={{ textAlign: 'center', marginTop: 24, color: "grey" }}>©️ Sonic Baume LTD 2026</Link>
-          <Text style={{ textAlign: 'center', color: "grey" }}>Released under GPL v3.0</Text>
+          <Text style={{ textAlign: 'center', color: "grey" }}>Released under AGPL v3</Text>
         </View>
       </View>
     </ScrollView>
