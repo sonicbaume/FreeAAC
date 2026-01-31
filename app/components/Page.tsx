@@ -1,6 +1,14 @@
-import { AACPage } from "@willwade/aac-processors/browser";
-import { StyleSheet, View } from "react-native";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { AACButton, AACPage } from "@willwade/aac-processors/browser";
+import { useCallback } from "react";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import type { SortableGridRenderItem } from 'react-native-sortables';
+import Sortable from "react-native-sortables";
 import Tile from "./Tile";
+
+const pagePadding = 10
+const rowGap = 10
 
 export default function Page({
   page,
@@ -11,25 +19,28 @@ export default function Page({
 }) {
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
+  const insets = useSafeAreaInsets()
+  const headerHeight = useHeaderHeight()
+  const { height } = useWindowDimensions()
+  const rowHeight = ((height - insets.top - insets.bottom - headerHeight - 60 - pagePadding*2) / rows) - rowGap
   if (!rows || !cols) return <></>
+
+  const grid = page.grid.flat()
+
+  const renderButton = useCallback<SortableGridRenderItem<AACButton | null>>(({item}) =>
+    item ? <Tile button={item} homePageId={homePageId} height={rowHeight} /> : <View style={{ height: rowHeight }}  />
+  , [rowHeight])
 
   return (
     <View style={styles.container}>
-      {page.grid.map((row, rowIndex) =>
-       <View key={rowIndex} style={styles.row}>
-        {row.map((col, colIndex) => col
-        ? <Tile
-            key={`${rowIndex}_${colIndex}`}
-            button={col}
-            homePageId={homePageId}
-          />
-        : <View
-            key={`${rowIndex}_${colIndex}`}
-            style={{ flex: 1 }}
-          ></View>
-        )}
-        </View>
-      )}
+      <Sortable.Grid
+        columns={cols}
+        data={grid}
+        renderItem={renderButton}
+        rowGap={rowGap}
+        columnGap={10}
+        sortEnabled={false}
+      />
     </View>
   )
 }
@@ -40,7 +51,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     gap: 10,
-    padding: 10
+    padding: pagePadding
   },
   row: {
     display: 'flex',
