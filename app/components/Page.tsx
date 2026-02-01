@@ -1,4 +1,4 @@
-import { AACPage } from "@willwade/aac-processors/browser";
+import type { AACPage } from "@willwade/aac-processors/browser";
 import { StyleSheet, View } from "react-native";
 import Tile from "./Tile";
 

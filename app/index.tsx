@@ -6,7 +6,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBoards, usePagesetActions } from "./stores/boards";
 import { handleError } from "./utils/error";
 import { loadBoard, selectFile } from "./utils/file";
-
 export default function Index() {
   const insets = useSafeAreaInsets()
   const router = useRouter()

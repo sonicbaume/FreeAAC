@@ -3,9 +3,34 @@
 
 import { AACTree, getProcessor } from '@willwade/aac-processors/browser';
 import * as DocumentPicker from 'expo-document-picker';
-import { File, Paths } from 'expo-file-system';
+import { Directory, File, Paths } from 'expo-file-system';
 import { Platform } from "react-native";
 import { uuid } from './uuid';
+
+let unzip: undefined | ((source: string, target: string, charset?: string | undefined) => Promise<string>) = undefined
+
+const zipAdapter = async (input: string | Buffer | ArrayBuffer | Uint8Array) => {
+  console.log("USING ZIP ADAPTER")
+  if (Platform.OS !== "android" && Platform.OS !== "ios")
+    throw "Cannot use react-native-zip-archive on this platform"
+  if (!unzip) unzip = (await import('react-native-zip-archive')).unzip
+  const outDir = new Directory(Paths.cache, uuid())
+  if (typeof(input) === "string") {
+    outDir.create()
+    unzip(input, outDir.uri)
+  } else {
+    throw 'Only strings supported in zip adapter'
+  }
+  return {
+    zip: {
+      listFiles: (): string[] => outDir.list().map(item => item.uri),
+      readFile: async (name: string): Promise<Uint8Array> => {
+        const buffer = await loadFile(Paths.join(outDir, name))
+        return new Uint8Array(buffer)
+      }
+    }
+  }
+}
 
 export const saveFile = async (
   fileName: string,
@@ -83,7 +108,9 @@ export const loadBoard = async (uri: string): Promise<AACTree> => {
   const boardFile = await loadFile(uri)
   if (!boardFile) throw new Error('Could not load file')
   const ext = getFileExt(uri)
-  const processor = getProcessor(`.${ext}`)
+  let options = {}
+  if (Platform.OS === "android" || Platform.OS === "ios") options = { zipAdapter }
+  const processor = getProcessor(`.${ext}`, options)
   const tree = await processor.loadIntoTree(boardFile)
   return tree
 }

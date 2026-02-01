@@ -1,4 +1,4 @@
-import { AACButton } from "@willwade/aac-processors/browser";
+import type { AACButton } from "@willwade/aac-processors/browser";
 import * as Clipboard from 'expo-clipboard';
 import { ClipboardCheck, Copy, Delete, Home, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";

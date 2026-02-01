@@ -1,4 +1,4 @@
-import { AACTree } from "@willwade/aac-processors/browser";
+import type { AACTree } from "@willwade/aac-processors/browser";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";

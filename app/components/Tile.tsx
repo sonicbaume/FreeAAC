@@ -1,4 +1,4 @@
-import { AACButton } from "@willwade/aac-processors/browser"
+import type { AACButton } from "@willwade/aac-processors/browser"
 import { Pressable, StyleSheet, Text, View } from "react-native"
 import { useSpeak } from "../stores/audio"
 import { usePagesetActions } from "../stores/boards"
