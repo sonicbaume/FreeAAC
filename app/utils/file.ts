@@ -7,20 +7,24 @@ import { Directory, File, Paths } from 'expo-file-system';
 import { Platform } from "react-native";
 import { uuid } from './uuid';
 
-let unzip: undefined | ((source: string, target: string, charset?: string | undefined) => Promise<string>) = undefined
-
 const zipAdapter = async (input: string | Buffer | ArrayBuffer | Uint8Array) => {
   console.log("USING ZIP ADAPTER")
   if (Platform.OS !== "android" && Platform.OS !== "ios")
     throw "Cannot use react-native-zip-archive on this platform"
-  if (!unzip) unzip = (await import('react-native-zip-archive')).unzip
+  const { unzip } = await import('react-native-zip-archive')
+  let inputPath = ""
   const outDir = new Directory(Paths.cache, uuid())
+  outDir.create()
   if (typeof(input) === "string") {
-    outDir.create()
-    unzip(input, outDir.uri)
+    inputPath = input
   } else {
-    throw 'Only strings supported in zip adapter'
+    const inFile = new File(Paths.cache, `${uuid()}.zip`)
+    inputPath = inFile.uri
+    inFile.create()
+    inFile.write(new Uint8Array(input))
   }
+  console.log({unzip})
+  const result = await unzip(inputPath, outDir.uri)
   return {
     zip: {
       listFiles: (): string[] => outDir.list().map(item => item.uri),
