@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import type { SortableGridRenderItem } from 'react-native-sortables';
 import Sortable from "react-native-sortables";
+import { uuid } from "../utils/uuid";
 import Tile from "./Tile";
 
 const pagePadding = 10
@@ -45,6 +46,7 @@ export default function Page({
         rowGap={rowGap}
         columnGap={colGap}
         sortEnabled={false}
+        keyExtractor={item => item?.id ?? uuid()}
       />
     </View>
   )
