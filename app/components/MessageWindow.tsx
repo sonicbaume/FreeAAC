@@ -67,7 +67,11 @@ export default function MessageWindow({
         </Pressable>
       </View>
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
-        <Pressable onPress={playMessage} style={{ flex: 1 }}>
+        <Pressable
+          onPress={playMessage}
+          style={{ flex: 1 }}
+          disabled={messageButtons.length === 0}
+        >
           <ScrollView
             ref={messageScrollView}
             horizontal={true}
