@@ -1,9 +1,9 @@
 import { AACButton } from "@willwade/aac-processors/browser";
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from "expo-router";
-import { ClipboardCheck, Copy, Delete, Home, Layers, Settings, X } from "lucide-react-native";
+import { ClipboardCheck, Copy, Delete, EllipsisVertical, Home, Layers, Settings, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSpeak } from "../stores/audio";
 import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { useClearMessageOnPlay, useShowShareButton } from "../stores/prefs";
@@ -19,6 +19,7 @@ export default function MessageWindow({
   isHome: boolean;
 }) {
   const [copied, setCopied] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const messageScrollView = useRef<ScrollView>(null)
   const messageButtonsIds = useMessageButtonsIds()
   const clearMessageOnPlay = useClearMessageOnPlay()
@@ -49,7 +50,7 @@ export default function MessageWindow({
     else navigateHome()
   }
 
-  return (
+  return <>
     <View style={{
       height: 60,
       flexDirection: "row",
@@ -94,7 +95,6 @@ export default function MessageWindow({
             <Pressable
               style={styles.button}
               onPress={copyMessage}
-              disabled={messageButtonsIds.length === 0}
             >
               {copied ? <ClipboardCheck size={30} color="green" /> : <Copy size={30} />}
             </Pressable>
@@ -102,26 +102,80 @@ export default function MessageWindow({
             <Pressable
               style={styles.button}
               onPress={removeLastMessageButtonId}
-              disabled={messageButtonsIds.length === 0}
             >
               <Delete size={30} />
             </Pressable>
             <Pressable
               style={styles.button}
               onPress={clearMessageButtonIds}
-              disabled={messageButtonsIds.length === 0}
             >
               <X size={30} />
+            </Pressable>
+            <Pressable
+              style={styles.button}
+              onPress={() => setShowModal(true)}
+            >
+              <EllipsisVertical size={30} />
             </Pressable>
           </>}
         </View>
       </View>
     </View>
-  )
+    <Modal
+      visible={showModal}
+      animationType="none"
+      onRequestClose={() => setShowModal(false)}
+      transparent
+    >
+      <TouchableOpacity
+        style={{ flex:1 }}
+        onPress={() => setShowModal(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={{ display: 'flex', flexDirection: 'row' }}>
+            <Pressable
+              style={styles.modalButton}
+              onPress={() => { clearMessageButtonIds(); setShowModal(false) }}
+            >
+              <X size={40} />
+              <Text style={styles.modalButtonText}>Clear message</Text>
+            </Pressable>
+            <Pressable
+              style={styles.modalButton}
+              onPress={() => { copyMessage(); setShowModal(false) }}
+            >
+              <Copy size={40} />
+              <Text style={styles.modalButtonText}>Copy to clipboard</Text>
+            </Pressable>
+          </View>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  </>
 }
 
 const styles = StyleSheet.create({
   button: {
     padding: 5
+  },
+  modalContainer: {
+    width: '80%',
+    maxWidth: 600,
+    backgroundColor: 'lightgrey',
+    margin: 'auto',
+    overflow: 'hidden',
+    borderRadius: 20,
+  },
+  modalButton: {
+    width: '50%',
+    aspectRatio: 1,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  modalButtonText: {
+    fontSize: 20,
+    textAlign: 'center'
   }
 })
