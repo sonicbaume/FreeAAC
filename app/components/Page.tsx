@@ -1,14 +1,14 @@
-import { useHeaderHeight } from "@react-navigation/elements";
 import { AACButton, AACPage } from "@willwade/aac-processors/browser";
-import { useCallback } from "react";
-import { StyleSheet, useWindowDimensions, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useCallback, useState } from "react";
+import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import type { SortableGridRenderItem } from 'react-native-sortables';
 import Sortable from "react-native-sortables";
 import Tile from "./Tile";
 
 const pagePadding = 10
 const rowGap = 10
+const colGap = 10
+const getRowHeight = (pageHeight: number, rows: number) => (pageHeight - pagePadding*2 - (rowGap * (rows-1))) / rows
 
 export default function Page({
   page,
@@ -17,28 +17,33 @@ export default function Page({
   page: AACPage;
   homePageId?: string;
 }) {
+  const [pageHeight, setPageHeight] = useState(0)
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
-  const insets = useSafeAreaInsets()
-  const headerHeight = useHeaderHeight()
-  const { height } = useWindowDimensions()
-  const rowHeight = ((height - insets.top - insets.bottom - headerHeight - 60 - pagePadding*2) / rows) - rowGap
+  const rowHeight = getRowHeight(pageHeight, rows)
   if (!rows || !cols) return <></>
+
+  const handleLayout = (event: LayoutChangeEvent) => setPageHeight(event.nativeEvent.layout.height)
 
   const grid = page.grid.flat()
 
-  const renderButton = useCallback<SortableGridRenderItem<AACButton | null>>(({item}) =>
-    item ? <Tile button={item} homePageId={homePageId} height={rowHeight} /> : <View style={{ height: rowHeight }}  />
+  const renderButton = useCallback<SortableGridRenderItem<AACButton | null>>(({item}) => item
+    ? <Tile
+        button={item}
+        homePageId={homePageId}
+        height={rowHeight}
+      />
+    : <View style={{ height: rowHeight }} />
   , [rowHeight])
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={handleLayout}>
       <Sortable.Grid
         columns={cols}
         data={grid}
         renderItem={renderButton}
         rowGap={rowGap}
-        columnGap={10}
+        columnGap={colGap}
         sortEnabled={false}
       />
     </View>
