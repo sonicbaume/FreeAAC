@@ -30,8 +30,12 @@
       "favicon": "./assets/images/icon.png"
     },
     "plugins": [
-      "expo-router",
       [
+        "expo-router",
+        {
+          "origin": "https://free-aac.org"
+        }
+      ], [
         "expo-splash-screen",
         {
           "image": "./assets/images/icon.png",
