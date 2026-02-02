@@ -3,10 +3,10 @@ import * as Clipboard from 'expo-clipboard';
 import { useRouter } from "expo-router";
 import { ClipboardCheck, Copy, Delete, EllipsisVertical, Home, Layers, Settings, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSpeak } from "../stores/audio";
 import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
-import { useClearMessageOnPlay, useShowBackspace, useShowShareButton } from "../stores/prefs";
+import { useButtonView, useClearMessageOnPlay, useLabelLocation, useShowBackspace, useShowShareButton } from "../stores/prefs";
 import TileImage from "./TileImage";
 
 export default function MessageWindow({
@@ -20,14 +20,19 @@ export default function MessageWindow({
 }) {
   const [copied, setCopied] = useState(false)
   const [showModal, setShowModal] = useState(false)
-  const messageScrollView = useRef<ScrollView>(null)
+  const scrollView = useRef<ScrollView>(null)
   const messageButtonsIds = useMessageButtonsIds()
   const clearMessageOnPlay = useClearMessageOnPlay()
   const showShareButton = useShowShareButton()
   const showBackspace = useShowBackspace()
+  const buttonView = useButtonView()
+  const labelLocation = useLabelLocation()
   const { removeLastMessageButtonId, clearMessageButtonIds } = usePagesetActions()
   const speak = useSpeak()
   const { replace, push } = useRouter()
+
+  const showSymbols = buttonView === "both" || buttonView === "symbol"
+  const showText = buttonView === "both" || buttonView === "text"
 
   const messageButtons = messageButtonsIds
     .map(id => buttons.find(b => b.id === id))
@@ -67,25 +72,30 @@ export default function MessageWindow({
         </Pressable>
       </View>
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
-        <Pressable
-          onPress={playMessage}
-          style={{ flex: 1 }}
-          disabled={messageButtons.length === 0}
+        <ScrollView
+          ref={scrollView}
+          horizontal={true}
+          onContentSizeChange={() => scrollView.current?.scrollToEnd()}
+          onTouchEnd={() => Platform.OS !== "web" && playMessage()}
+          onPointerUp={() => Platform.OS === "web" && playMessage()}
+          style={{ cursor: messageButtons.length > 0 ? 'pointer' : undefined }}
         >
-          <ScrollView
-            ref={messageScrollView}
-            horizontal={true}
-            onContentSizeChange={() => messageScrollView.current?.scrollToEnd()}
-          >
+          <View style={{ display: 'flex', justifyContent: 'center' }}>
+            {showText && labelLocation === "top" && <Text>{message}</Text>}
+            {showSymbols &&
+            <View style={{ display: 'flex', flexDirection: 'row' }}>
             {messageButtons.map((button, i) => button.image && (
               <TileImage
                 key={i}
                 uri={button.image}
-                style={{ width: 60, height: 60 }}
+                style={{ width: 40, height: 40 }}
               />
             ))}
-          </ScrollView>
-        </Pressable>
+            </View>
+            }
+            {showText && labelLocation === "bottom" && <Text>{message}</Text>}
+          </View>
+        </ScrollView>
         <View style={{ display: 'flex', flexDirection: 'row', padding: 10 }}>
           {messageButtonsIds.length === 0 &&
             <Pressable
