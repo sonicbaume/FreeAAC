@@ -31,6 +31,7 @@ export default function Tile({
 
   const showText = buttonView === "both" || buttonView === "text"
   const showSymbol = buttonView === "both" || buttonView === "symbol"
+  const isLink = button.action?.type === "NAVIGATE"
   
   const handlePress = () => {
     if (button.action?.type === "SPEAK") {
@@ -49,15 +50,13 @@ export default function Tile({
         style={{
           ...styles.container,
           ...button.style,
-          height
+          height,
+          borderTopRightRadius: isLink ? 50 : undefined
         }}
       >
         {showText && labelLocation === "top" && <Label text={button.label} />}
         {showSymbol && button.image && <TileImage uri={button.image} style={styles.symbol} />}
         {showText && labelLocation === "bottom" && <Label text={button.label} />}
-        {button.action?.type === "NAVIGATE" &&
-          <View style={styles.linkOverlay} />
-        }
       </Sortable.Touchable>
     </View>
   )
