@@ -1,6 +1,7 @@
 import { Voice } from "expo-speech";
 
 export const appName = "FreeAAC"
+export const appDescription = "A free, open-source app for people who use Augmentative and Alternative Communication"
 
 export interface BoardTemplate {
   name: string;

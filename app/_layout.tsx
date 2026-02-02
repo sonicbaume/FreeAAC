@@ -1,9 +1,11 @@
 import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
+import Head from "expo-router/head";
 import { Platform, StyleSheet, View } from "react-native";
 import AudioController from "./components/AudioController";
 import SettingsButton from "./components/Settings/Button";
+import { appDescription, appName } from "./utils/consts";
 
 export const unstable_settings = {
   initialRouteName: 'index',
@@ -11,7 +13,13 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const [assets, error] = useAssets([require('../assets/images/icon-64x64.png')])
-  return <>
+  return <Head.Provider>
+    {Platform.OS === "web" &&
+    <Head>
+      <title>{appName}</title>
+      <meta name="description" content={appDescription} />
+    </Head>
+    }
     <Stack screenOptions={{
       headerBackButtonDisplayMode: "minimal",
       headerRight: () => <View style={styles.headerRight}>
@@ -32,7 +40,7 @@ export default function RootLayout() {
       <Stack.Screen name="privacy" options={{ headerTitle: 'Privacy policy' }} />
     </Stack>
     <AudioController />
-  </>
+  </Head.Provider>
 }
 
 const styles = StyleSheet.create(
