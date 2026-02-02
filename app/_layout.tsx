@@ -24,9 +24,6 @@ export default function RootLayout() {
     <GestureHandlerRootView>
       <Stack screenOptions={{
         headerBackButtonDisplayMode: "minimal",
-        headerRight: () => <View style={styles.headerRight}>
-          <SettingsButton style={{ padding: 6 }} />
-        </View>,
       }}>
         <Stack.Screen name="index" options={{
           headerTitle: 'FreeAAC',
@@ -35,6 +32,9 @@ export default function RootLayout() {
               <Image source={assets?.at(0)} style={{ width: 32, height: 32 }} />
             </View>
           ),
+          headerRight: () => <View style={styles.headerRight}>
+            <SettingsButton style={{ padding: 6 }} />
+          </View>,
         }}
         />
         <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />

@@ -41,7 +41,7 @@ export const usePrefsStore = create<PrefsState>()(persist(
   (set, get) => ({
     playOnPress: true,
     labelLocation: 'bottom',
-    messageWindowLocation: 'bottom',
+    messageWindowLocation: 'top',
     buttonView: 'both',
     speechOptions: {
       pitch: 1,

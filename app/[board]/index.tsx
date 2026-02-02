@@ -1,5 +1,5 @@
 import { AACTree } from "@willwade/aac-processors/browser";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -16,7 +16,6 @@ export default function Board() {
   const { board } = useLocalSearchParams()
   const boards = useBoards()
   const uri = boards.find(b => b.id === board)?.uri
-  const { setOptions } = useNavigation()
   const messageWindowLocation = useMessageWindowLocation()
   const currentPageId = useCurrentPageId()
   const { setCurrentPageId } = usePagesetActions()
@@ -54,8 +53,6 @@ export default function Board() {
 
   const handleNavigateHome = () => homePageId && setCurrentPageId(homePageId)
 
-  useEffect(() => setOptions({ title: page?.name ?? "Loading..." }), [page])
-
   const buttons = useMemo(() => {
     if (!tree) return []
     return Object.values(tree.pages).map(page => page.buttons).flat() 
@@ -65,9 +62,11 @@ export default function Board() {
   <MessageWindow
     navigateHome={handleNavigateHome}
     buttons={buttons}
+    isHome={homePageId === page?.id}
   />)
   
-  return (
+  return <>
+    <Stack.Screen options={{ headerShown: false }} />
     <View style={{ flex: 1, paddingBottom: insets.bottom }}>
       {messageWindowLocation === "top" && messageWindow}
       <View
@@ -82,5 +81,5 @@ export default function Board() {
       </View>
       {messageWindowLocation === "bottom" && messageWindow}
     </View>
-  )
+  </>
 }
