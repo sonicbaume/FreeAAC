@@ -11,23 +11,23 @@ const zipAdapter = async (input: string | Buffer | ArrayBuffer | Uint8Array) => 
   console.log("USING ZIP ADAPTER")
   if (Platform.OS !== "android" && Platform.OS !== "ios")
     throw "Cannot use react-native-zip-archive on this platform"
-  const { unzip } = await import('react-native-zip-archive')
+  const { unarchive } = await import('react-native-unarchive')
   let inputPath = ""
   const outDir = new Directory(Paths.cache, uuid())
   outDir.create()
+  const outDirPath = outDir.uri.substring(7)
   if (typeof(input) === "string") {
     inputPath = input
   } else {
     const inFile = new File(Paths.cache, `${uuid()}.zip`)
-    inputPath = inFile.uri
     inFile.create()
     inFile.write(new Uint8Array(input))
+    inputPath = inFile.uri.substring(7)
   }
-  console.log({unzip})
-  const result = await unzip(inputPath, outDir.uri)
+  const result = await unarchive(inputPath, outDirPath)
   return {
     zip: {
-      listFiles: (): string[] => outDir.list().map(item => item.uri),
+      listFiles: (): string[] => result.files.map(f => f.relativePath),
       readFile: async (name: string): Promise<Uint8Array> => {
         const buffer = await loadFile(Paths.join(outDir, name))
         return new Uint8Array(buffer)
@@ -112,8 +112,7 @@ export const loadBoard = async (uri: string): Promise<AACTree> => {
   const boardFile = await loadFile(uri)
   if (!boardFile) throw new Error('Could not load file')
   const ext = getFileExt(uri)
-  let options = {}
-  if (Platform.OS === "android" || Platform.OS === "ios") options = { zipAdapter }
+  const options = (Platform.OS === "android" || Platform.OS === "ios") ? { zipAdapter } : undefined
   const processor = getProcessor(`.${ext}`, options)
   const tree = await processor.loadIntoTree(boardFile)
   return tree
