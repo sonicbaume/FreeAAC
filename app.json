@@ -35,7 +35,8 @@
         {
           "origin": "https://free-aac.org"
         }
-      ], [
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/images/icon.png",
@@ -49,7 +50,8 @@
       ],
       "expo-localization",
       "expo-asset",
-      "react-native-audio-api"
+      "react-native-audio-api",
+      "expo-head"
     ],
     "experiments": {
       "typedRoutes": true,
