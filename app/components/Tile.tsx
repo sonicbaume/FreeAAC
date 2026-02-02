@@ -1,5 +1,6 @@
 import { AACButton } from "@willwade/aac-processors/browser"
-import { Pressable, StyleSheet, Text, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
+import Sortable from "react-native-sortables"
 import { useSpeak } from "../stores/audio"
 import { usePagesetActions } from "../stores/boards"
 import { useButtonView, useGoHomeOnPress, useLabelLocation, usePlayOnPress } from "../stores/prefs"
@@ -7,18 +8,18 @@ import TileImage from "./TileImage"
 
 const Label = ({ text }: { text: string }) => {
   return (
-    <Text
-      style={styles.label}
-    >
+    <Text style={styles.label}>
       {text}
     </Text>
   )
 }
 export default function Tile({
   button,
+  height,
   homePageId,
 }: {
   button: AACButton;
+  height: number;
   homePageId?: string;
 }) {
   const playOnPress = usePlayOnPress()
@@ -42,20 +43,23 @@ export default function Tile({
   }
 
   return (
-    <Pressable
-      style={{
-        ...styles.container,
-        ...button.style,
-      }}
-      onPress={handlePress}
-    >
-      {showText && labelLocation === "top" && <Label text={button.label} />}
-      {showSymbol && button.image && <TileImage uri={button.image} style={styles.symbol} />}
-      {showText && labelLocation === "bottom" && <Label text={button.label} />}
-      {button.action?.type === "NAVIGATE" &&
-        <View style={styles.linkOverlay} />
-      }
-    </Pressable>
+    <View style={{ height }}>
+      <Sortable.Touchable
+        onTap={handlePress}
+        style={{
+          ...styles.container,
+          ...button.style,
+          height
+        }}
+      >
+        {showText && labelLocation === "top" && <Label text={button.label} />}
+        {showSymbol && button.image && <TileImage uri={button.image} style={styles.symbol} />}
+        {showText && labelLocation === "bottom" && <Label text={button.label} />}
+        {button.action?.type === "NAVIGATE" &&
+          <View style={styles.linkOverlay} />
+        }
+      </Sortable.Touchable>
+    </View>
   )
 }
 
@@ -63,8 +67,6 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     overflow: 'hidden',
     borderRadius: 10,
   },
@@ -82,10 +84,9 @@ const styles = StyleSheet.create({
   label: {
     paddingVertical: 5,
     textAlign: 'center',
+    flexShrink: 1
   },
   symbol: {
     flex: 1,
-    height: '100%',
-    width: '100%',
   },
 })

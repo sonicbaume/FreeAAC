@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { Stack } from "expo-router";
 import Head from "expo-router/head";
 import { Platform, StyleSheet, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AudioController from "./components/AudioController";
 import SettingsButton from "./components/Settings/Button";
 import { appDescription, appName } from "./utils/consts";
@@ -20,25 +21,27 @@ export default function RootLayout() {
       <meta name="description" content={appDescription} />
     </Head>
     }
-    <Stack screenOptions={{
-      headerBackButtonDisplayMode: "minimal",
-      headerRight: () => <View style={styles.headerRight}>
-        <SettingsButton style={{ padding: 6 }} />
-      </View>,
-    }}>
-      <Stack.Screen name="index" options={{
-        headerTitle: 'FreeAAC',
-        headerLeft: () => (
-          <View style={styles.headerLeft}>
-            <Image source={assets?.at(0)} style={{ width: 32, height: 32 }} />
-          </View>
-        ),
-      }}
-      />
-      <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
-      <Stack.Screen name="templates" options={{ headerTitle: 'Templates' }} />
-      <Stack.Screen name="privacy" options={{ headerTitle: 'Privacy policy' }} />
-    </Stack>
+    <GestureHandlerRootView>
+      <Stack screenOptions={{
+        headerBackButtonDisplayMode: "minimal",
+        headerRight: () => <View style={styles.headerRight}>
+          <SettingsButton style={{ padding: 6 }} />
+        </View>,
+      }}>
+        <Stack.Screen name="index" options={{
+          headerTitle: 'FreeAAC',
+          headerLeft: () => (
+            <View style={styles.headerLeft}>
+              <Image source={assets?.at(0)} style={{ width: 32, height: 32 }} />
+            </View>
+          ),
+        }}
+        />
+        <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
+        <Stack.Screen name="templates" options={{ headerTitle: 'Templates' }} />
+        <Stack.Screen name="privacy" options={{ headerTitle: 'Privacy policy' }} />
+      </Stack>
+    </GestureHandlerRootView>
     <AudioController />
   </Head.Provider>
 }

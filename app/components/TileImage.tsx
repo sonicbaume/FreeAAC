@@ -1,4 +1,5 @@
-import { Image, ImageStyle, StyleProp, View } from "react-native";
+import { Image } from "expo-image";
+import { ImageStyle, StyleProp, View } from "react-native";
 import { SvgUri, SvgXml } from "react-native-svg";
 
 const isSvgDataUri = (uri: string) => uri.startsWith('data:image/svg') && uri.includes(';base64,')
@@ -37,7 +38,7 @@ export default function TileImage ({
     return (
       <Image
         source={{uri}}
-        resizeMode="contain"
+        contentFit="contain"
         style={style}
       />
     )
