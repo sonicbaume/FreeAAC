@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSpeak } from "../stores/audio";
 import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
-import { useClearMessageOnPlay, useShowShareButton } from "../stores/prefs";
+import { useClearMessageOnPlay, useShowBackspace, useShowShareButton } from "../stores/prefs";
 import TileImage from "./TileImage";
 
 export default function MessageWindow({
@@ -24,6 +24,7 @@ export default function MessageWindow({
   const messageButtonsIds = useMessageButtonsIds()
   const clearMessageOnPlay = useClearMessageOnPlay()
   const showShareButton = useShowShareButton()
+  const showBackspace = useShowBackspace()
   const { removeLastMessageButtonId, clearMessageButtonIds } = usePagesetActions()
   const speak = useSpeak()
   const { replace, push } = useRouter()
@@ -99,12 +100,14 @@ export default function MessageWindow({
               {copied ? <ClipboardCheck size={30} color="green" /> : <Copy size={30} />}
             </Pressable>
             }
+            {showBackspace &&
             <Pressable
               style={styles.button}
               onPress={removeLastMessageButtonId}
             >
               <Delete size={30} />
             </Pressable>
+            }
             <Pressable
               style={styles.button}
               onPress={clearMessageButtonIds}
