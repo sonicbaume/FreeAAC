@@ -1,10 +1,12 @@
 import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
+import Head from "expo-router/head";
 import { Platform, StyleSheet, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AudioController from "./components/AudioController";
 import SettingsButton from "./components/Settings/Button";
+import { appDescription, appName } from "./utils/consts";
 
 export const unstable_settings = {
   initialRouteName: 'index',
@@ -12,7 +14,13 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const [assets, error] = useAssets([require('../assets/images/icon-64x64.png')])
-  return <>
+  return <Head.Provider>
+    {Platform.OS === "web" &&
+    <Head>
+      <title>{appName}</title>
+      <meta name="description" content={appDescription} />
+    </Head>
+    }
     <GestureHandlerRootView>
       <Stack screenOptions={{
         headerBackButtonDisplayMode: "minimal",
@@ -35,7 +43,7 @@ export default function RootLayout() {
       </Stack>
     </GestureHandlerRootView>
     <AudioController />
-  </>
+  </Head.Provider>
 }
 
 const styles = StyleSheet.create(
