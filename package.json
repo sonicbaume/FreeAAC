@@ -19,6 +19,7 @@
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
     "@willwade/aac-processors": "^0.1.5",
+    "events": "^3.3.0",
     "expo": "~54.0.31",
     "expo-application": "~7.0.8",
     "expo-asset": "~12.0.12",
@@ -54,9 +55,10 @@
     "react-native-safe-area-context": "~5.6.0",
     "react-native-screens": "~4.16.0",
     "react-native-svg": "^15.15.1",
+    "react-native-unarchive": "^1.1.0",
     "react-native-web": "^0.21.0",
     "react-native-worklets": "0.5.1",
-    "react-native-zip-archive": "^7.0.2",
+    "timers": "^0.1.1",
     "zustand": "^5.0.10"
   },
   "devDependencies": {
