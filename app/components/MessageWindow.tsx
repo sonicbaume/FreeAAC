@@ -146,7 +146,7 @@ export default function MessageWindow({
       transparent
     >
       <Pressable
-        style={{ flex:1 }}
+        style={{ flex:1, backdropFilter: 'blur(3px)' }}
         onPress={() => setShowModal(false)}
       >
         <View style={styles.modalContainer}>
