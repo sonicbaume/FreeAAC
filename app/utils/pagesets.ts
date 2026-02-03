@@ -1,4 +1,4 @@
-import { AACTree } from "@willwade/aac-processors/browser"
+import type { AACTree } from "@willwade/aac-processors/browser"
 
 export const getHomePageId = (tree: AACTree): string => {
   const defaultPageId = tree.metadata.defaultHomePageId ?? Object.keys(tree.pages)[0]

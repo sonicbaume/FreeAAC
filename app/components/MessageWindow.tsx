@@ -1,4 +1,4 @@
-import { AACButton } from "@willwade/aac-processors/browser";
+import type { AACButton } from "@willwade/aac-processors/browser";
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from "expo-router";
 import { ClipboardCheck, Copy, Delete, EllipsisVertical, Fullscreen, Home, Layers, Settings, X } from "lucide-react-native";

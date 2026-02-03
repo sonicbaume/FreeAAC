@@ -3,9 +3,38 @@
 
 import { AACTree, getProcessor } from '@willwade/aac-processors/browser';
 import * as DocumentPicker from 'expo-document-picker';
-import { File, Paths } from 'expo-file-system';
+import { Directory, File, Paths } from 'expo-file-system';
 import { Platform } from "react-native";
 import { uuid } from './uuid';
+
+const zipAdapter = async (input: string | Buffer | ArrayBuffer | Uint8Array) => {
+  console.log("USING ZIP ADAPTER")
+  if (Platform.OS !== "android" && Platform.OS !== "ios")
+    throw "Cannot use react-native-zip-archive on this platform"
+  const { unarchive } = await import('react-native-unarchive')
+  let inputPath = ""
+  const outDir = new Directory(Paths.cache, uuid())
+  outDir.create()
+  const outDirPath = outDir.uri.substring(7)
+  if (typeof(input) === "string") {
+    inputPath = input
+  } else {
+    const inFile = new File(Paths.cache, `${uuid()}.zip`)
+    inFile.create()
+    inFile.write(new Uint8Array(input))
+    inputPath = inFile.uri.substring(7)
+  }
+  const result = await unarchive(inputPath, outDirPath)
+  return {
+    zip: {
+      listFiles: (): string[] => result.files.map(f => f.relativePath),
+      readFile: async (name: string): Promise<Uint8Array> => {
+        const buffer = await loadFile(Paths.join(outDir, name))
+        return new Uint8Array(buffer)
+      }
+    }
+  }
+}
 
 export const saveFile = async (
   fileName: string,
@@ -83,7 +112,8 @@ export const loadBoard = async (uri: string): Promise<AACTree> => {
   const boardFile = await loadFile(uri)
   if (!boardFile) throw new Error('Could not load file')
   const ext = getFileExt(uri)
-  const processor = getProcessor(`.${ext}`)
+  const options = (Platform.OS === "android" || Platform.OS === "ios") ? { zipAdapter } : undefined
+  const processor = getProcessor(`.${ext}`, options)
   const tree = await processor.loadIntoTree(boardFile)
   return tree
 }

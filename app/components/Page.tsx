@@ -1,8 +1,7 @@
-import { AACButton, AACPage } from "@willwade/aac-processors/browser";
+import type { AACButton, AACPage } from "@willwade/aac-processors/browser";
 import { useCallback, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
-import type { SortableGridRenderItem } from 'react-native-sortables';
-import Sortable from "react-native-sortables";
+import Sortable, { type SortableGridRenderItem } from "react-native-sortables";
 import { uuid } from "../utils/uuid";
 import Tile from "./Tile";
 

@@ -1,4 +1,4 @@
-import { AACButton } from "@willwade/aac-processors/browser"
+import type { AACButton } from "@willwade/aac-processors/browser"
 import { StyleSheet, Text, View } from "react-native"
 import Sortable from "react-native-sortables"
 import { useSpeak } from "../stores/audio"
