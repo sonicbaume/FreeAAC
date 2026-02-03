@@ -25,6 +25,7 @@ interface PrefsState {
   clearMessageOnPlay: boolean;
   goHomeOnPress: boolean;
   showShareButton: boolean;
+  showBackspace: boolean;
   actions: {
     togglePlayOnPress: () => void;
     setMessageWindowLocation: (location: 'top' | 'bottom') => void;
@@ -34,6 +35,7 @@ interface PrefsState {
     toggleClearMessageOnPlay: () => void;
     toggleGoHomeOnPress: () => void;
     toggleShowShareButton: () => void;
+    toggleShowBackspace: () => void;
   }
 }
 
@@ -41,7 +43,7 @@ export const usePrefsStore = create<PrefsState>()(persist(
   (set, get) => ({
     playOnPress: true,
     labelLocation: 'bottom',
-    messageWindowLocation: 'bottom',
+    messageWindowLocation: 'top',
     buttonView: 'both',
     speechOptions: {
       pitch: 1,
@@ -52,6 +54,7 @@ export const usePrefsStore = create<PrefsState>()(persist(
     clearMessageOnPlay: false,
     goHomeOnPress: false,
     showShareButton: false,
+    showBackspace: true,
     actions: {
       togglePlayOnPress: () => set({ playOnPress: !(get().playOnPress) }),
       setMessageWindowLocation: (location: 'top' | 'bottom') => set({ messageWindowLocation: location }),
@@ -60,7 +63,8 @@ export const usePrefsStore = create<PrefsState>()(persist(
       setSpeechOptions: (options: Partial<SpeechOptions>) => set({ speechOptions: { ...get().speechOptions, ...options } }),
       toggleClearMessageOnPlay: () => set({ clearMessageOnPlay: !(get().clearMessageOnPlay) }),
       toggleGoHomeOnPress: () => set({ goHomeOnPress: !(get().goHomeOnPress) }),
-      toggleShowShareButton: () => set({ showShareButton: !(get().showShareButton) })
+      toggleShowShareButton: () => set({ showShareButton: !(get().showShareButton) }),
+      toggleShowBackspace: () => set({ showBackspace: !(get().showBackspace) })
     }
   }),
   {
@@ -81,5 +85,6 @@ export const useSpeechOptions = () => usePrefsStore(s => s.speechOptions)
 export const useClearMessageOnPlay = () => usePrefsStore(s => s.clearMessageOnPlay)
 export const useGoHomeOnPress = () => usePrefsStore(s => s.goHomeOnPress)
 export const useShowShareButton = () => usePrefsStore(s => s.showShareButton)
+export const useShowBackspace = () => usePrefsStore(s => s.showBackspace)
 
 export const usePrefsActions = () => usePrefsStore(s => s.actions)
