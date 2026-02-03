@@ -2,6 +2,7 @@ import type { AACButton, AACPage } from "@willwade/aac-processors/browser";
 import { useCallback, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Sortable, { type SortableGridRenderItem } from "react-native-sortables";
+import { useEditMode } from "../stores/boards";
 import { uuid } from "../utils/uuid";
 import Tile from "./Tile";
 
@@ -18,6 +19,7 @@ export default function Page({
   homePageId?: string;
 }) {
   const [pageHeight, setPageHeight] = useState(0)
+  const editMode = useEditMode()
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
   const rowHeight = getRowHeight(pageHeight, rows)
@@ -37,14 +39,21 @@ export default function Page({
   , [rowHeight])
 
   return (
-    <View style={styles.container} onLayout={handleLayout}>
+    <View
+      style={{
+        ...styles.container,
+        borderWidth: editMode ? 6 : 0,
+        padding: editMode ? pagePadding - 6 : pagePadding
+      }}
+      onLayout={handleLayout}
+    >
       <Sortable.Grid
         columns={cols}
         data={grid}
         renderItem={renderButton}
         rowGap={rowGap}
         columnGap={colGap}
-        sortEnabled={false}
+        sortEnabled={editMode}
         keyExtractor={item => item?.id ?? uuid()}
       />
     </View>
@@ -57,7 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     gap: 10,
-    padding: pagePadding
+    borderStyle: 'dashed'
   },
   row: {
     display: 'flex',

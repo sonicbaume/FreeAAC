@@ -1,11 +1,11 @@
 import type { AACButton } from "@willwade/aac-processors/browser";
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from "expo-router";
-import { ClipboardCheck, Copy, Delete, EllipsisVertical, Fullscreen, Home, Layers, Settings, X } from "lucide-react-native";
+import { ClipboardCheck, Copy, Delete, EllipsisVertical, Fullscreen, Home, Layers, Pencil, Settings, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSpeak } from "../stores/audio";
-import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
+import { useEditMode, useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { useButtonView, useClearMessageOnPlay, useLabelLocation, useShowBackspace, useShowShareButton } from "../stores/prefs";
 import TileImage from "./TileImage";
 
@@ -27,7 +27,8 @@ export default function MessageWindow({
   const showBackspace = useShowBackspace()
   const buttonView = useButtonView()
   const labelLocation = useLabelLocation()
-  const { removeLastMessageButtonId, clearMessageButtonIds } = usePagesetActions()
+  const editMode = useEditMode()
+  const { removeLastMessageButtonId, clearMessageButtonIds, toggleEditMode } = usePagesetActions()
   const speak = useSpeak()
   const { replace, push } = useRouter()
 
@@ -69,6 +70,7 @@ export default function MessageWindow({
       flexDirection: "row",
       backgroundColor: 'white',
     }}>
+      {!editMode &&
       <View style={{ padding: 10 }}>
         <Pressable
           style={styles.button}
@@ -78,6 +80,7 @@ export default function MessageWindow({
           {isHome && <Layers size={30} />}
         </Pressable>
       </View>
+      }
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
         <ScrollView
           ref={scrollView}
@@ -131,12 +134,22 @@ export default function MessageWindow({
         </View>
       </View>
       <View style={{ padding: 10 }}>
+        {editMode &&
+        <Pressable
+          style={styles.button}
+          onPress={() => toggleEditMode()}
+        >
+          <X size={30} />
+        </Pressable>
+        }
+        {!editMode &&
         <Pressable
           style={styles.button}
           onPress={() => setShowModal(true)}
         >
           <EllipsisVertical size={30} />
         </Pressable>
+        }
       </View>
     </View>
     <Modal
@@ -166,6 +179,7 @@ export default function MessageWindow({
               <Text style={styles.modalButtonText}>Settings</Text>
             </Pressable>
           </View>
+          {messageButtons.length > 0 &&
           <View style={{ display: 'flex', flexDirection: 'row' }}>
             <Pressable
               style={styles.modalButton}
@@ -182,6 +196,21 @@ export default function MessageWindow({
               <Text style={styles.modalButtonText}>Copy to clipboard</Text>
             </Pressable>
           </View>
+          }
+          {messageButtons.length === 0 &&
+          <View style={{ display: 'flex', flexDirection: 'row' }}>
+            <Pressable
+              style={styles.modalButton}
+              onPress={() => { toggleEditMode(); setShowModal(false) }}
+            >
+              <Pencil size={40} />
+              <Text style={styles.modalButtonText}>Edit board</Text>
+            </Pressable>
+            <View
+              style={styles.modalButton}
+            />
+          </View>
+          }
         </View>
       </Pressable>
     </Modal>
