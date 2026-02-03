@@ -32,6 +32,9 @@ export default function Tile({
   const showText = buttonView === "both" || buttonView === "text"
   const showSymbol = buttonView === "both" || buttonView === "symbol"
   const isLink = button.action?.type === "NAVIGATE"
+  const labelJustify = buttonView === "text" ? "center" :
+    labelLocation === "bottom" ? "flex-end" :
+    "flex-start"
   
   const handlePress = () => {
     if (button.action?.type === "SPEAK") {
@@ -51,7 +54,8 @@ export default function Tile({
           ...styles.container,
           ...button.style,
           height,
-          borderTopRightRadius: isLink ? 50 : undefined
+          borderTopRightRadius: isLink ? 50 : undefined,
+          justifyContent: labelJustify
         }}
       >
         {showText && labelLocation === "top" && <Label text={button.label} />}
