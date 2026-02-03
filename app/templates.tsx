@@ -1,7 +1,6 @@
 import { useRouter } from "expo-router";
 import { useCallback, useTransition } from "react";
 import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Sortable, { SortableGridRenderItem } from "react-native-sortables";
 import BoardCard from "./components/BoardCard";
 import { usePagesetActions } from "./stores/boards";
@@ -11,7 +10,6 @@ import { getFileExt, saveFile } from "./utils/file";
 import { uuid } from "./utils/uuid";
 
 export default function Templates () {
-  const insets = useSafeAreaInsets()
   const router = useRouter()
   const [loading, startLoading] = useTransition()
   const { addBoard } = usePagesetActions()
@@ -50,7 +48,7 @@ export default function Templates () {
           renderItem={renderTemplate}
           columns={2}
           sortEnabled={false}
-          rowGap={20}
+          rowGap={30}
           keyExtractor={item => item.url}
         />}
       </View>

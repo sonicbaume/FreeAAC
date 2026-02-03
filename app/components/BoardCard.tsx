@@ -1,8 +1,9 @@
 import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
+import { Link } from "expo-router";
 import { Download } from "lucide-react-native";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { BoardTemplate, licenseImageMap } from "../utils/consts";
+import { BoardTemplate, licenseImageMap, licenseLinkMap } from "../utils/consts";
 
 export default function BoardCard({
   board,
@@ -15,13 +16,20 @@ export default function BoardCard({
   const sizeMB = Math.max(board.size / 1024 / 1024, 1).toFixed(0)
   return (
     <View style={styles.card}>
-      <View style={{ padding: 10, gap: 5 }}>
+      <Image
+        source={board.imageUrl}
+        style={{ width: '100%', aspectRatio: 1.91, marginBottom: 5 }}
+        contentFit="fill"
+      />
+      <View style={{ padding: 10 }}>
         <Text style={{ fontSize: 20 }}>{board.name}</Text>
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text style={{ fontSize: 14 }}>{board.author}</Text>
-          {assets && <Image source={assets[0]} style={{ aspectRatio: 82 / 31, width: 50 }} />}
+          {assets && 
+          <Link href={licenseLinkMap[board.license]} target="_blank" asChild>
+            <Image source={assets[0]} style={{ aspectRatio: 82 / 31, width: 50 }} />
+          </Link>}
         </View>
-        <Text style={{ fontSize: 12 }} numberOfLines={5}>{board.description}</Text>
       </View>
       <Pressable onPress={onSelect} style={styles.button}>
         <Download size={20} color="white" />
@@ -38,7 +46,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     width: 300,
     maxWidth: '90%',
-    aspectRatio: 1.3,
     borderRadius: 20,
     overflow: 'hidden',
     marginHorizontal: 'auto'

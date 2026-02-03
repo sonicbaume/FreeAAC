@@ -1,3 +1,4 @@
+import { ExternalPathString } from "expo-router";
 import { Voice } from "expo-speech";
 
 export const appName = "FreeAAC"
@@ -9,6 +10,7 @@ export interface BoardTemplate {
   license: string;
   description: string;
   url: string;
+  imageUrl: string;
   size: number;
 }
 
@@ -19,6 +21,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY-NC-SA',
     description: 'CommuniKate 20 is a functional communication board with 20 buttons per board created by Kate McCallum for the adult population of communicators that she serves.',
     url: 'https://data.free-aac.org/communikate-20.obz',
+    imageUrl: 'https://data.free-aac.org/communikate-20.png',
     size: 13473789
   },
   {
@@ -27,6 +30,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY-NC-SA',
     description: 'CommuniKate 12 is a smaller version of CommuniKate 20, it has only 12 buttons per board but offers the same style of layout and functional style of communication.',
     url: 'https://data.free-aac.org/communikate-12.obz',
+    imageUrl: 'https://data.free-aac.org/communikate-12.png',
     size: 13034790
   },
   {
@@ -35,6 +39,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Project core is a research-based initiative to ensure all communicators have at least one option for beginning core-base communication.',
     url: 'https://data.free-aac.org/project-core.obf',
+    imageUrl: 'https://data.free-aac.org/project-core.png',
     size: 740720
   },
   {
@@ -43,6 +48,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Quick Core 24 is a core, motor-planning based vocabulary set with up to 24 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
     url: 'https://data.free-aac.org/quick-core-24.obz',
+    imageUrl: 'https://data.free-aac.org/quick-core-24.png',
     size: 9459924
   },
   {
@@ -51,6 +57,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Quick Core 40 is a core, motor-planning based vocabulary set with up to 40 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
     url: 'https://data.free-aac.org/quick-core-40.obz',
+    imageUrl: 'https://data.free-aac.org/quick-core-40.png',
     size: 35437986
   },
   {
@@ -59,6 +66,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Quick Core 60 is a core, motor-planning based vocabulary set with up to 60 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
     url: 'https://data.free-aac.org/quick-core-60.obz',
+    imageUrl: 'https://data.free-aac.org/quick-core-60.png',
     size: 34898633
   },
   {
@@ -67,6 +75,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Quick Core 84 is a core, motor-planning based vocabulary set with up to 84 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
     url: 'https://data.free-aac.org/quick-core-84.obz',
+    imageUrl: 'https://data.free-aac.org/quick-core-84.png',
     size: 70257878
   },
   {
@@ -75,6 +84,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Quick Core 112 is a core, motor-planning based vocabulary set with up to 112 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
     url: 'https://data.free-aac.org/quick-core-112.obz',
+    imageUrl: 'https://data.free-aac.org/quick-core-112.png',
     size: 70393954
   },
   {
@@ -83,6 +93,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Vocal Flair 24 is a core, flat-but-dynamic-styled vocabulary set with up to 24 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
     url: 'https://data.free-aac.org/vocal-flair-24.obz',
+    imageUrl: 'https://data.free-aac.org/vocal-flair-24.png',
     size: 47790492
   },
   {
@@ -91,6 +102,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Vocal Flair 40 is a core, flat-but-dynamic-styled vocabulary set with up to 40 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
     url: 'https://data.free-aac.org/vocal-flair-40.obz',
+    imageUrl: 'https://data.free-aac.org/vocal-flair-40.png',
     size: 45693565
   },
   {
@@ -99,6 +111,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Vocal Flair 60 is a core, flat-but-dynamic-styled vocabulary set with up to 60 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
     url: 'https://data.free-aac.org/vocal-flair-60.obz',
+    imageUrl: 'https://data.free-aac.org/vocal-flair-60.png',
     size: 49749643
   },
   {
@@ -107,6 +120,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Vocal Flair 84 is a core, flat-but-dynamic-styled vocabulary set with up to 84 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
     url: 'https://data.free-aac.org/vocal-flair-84.obz',
+    imageUrl: 'https://data.free-aac.org/vocal-flair-84.png',
     size: 57289383
   },
   {
@@ -115,6 +129,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Vocal Flair 84 is a core, flat-but-dynamic-styled vocabulary set with up to 84 buttons per board, including a keyboard on the main board. It has built-in progression to gradually expand the vocabulary over time.',
     url: 'https://data.free-aac.org/vocal-flair-84-with-keyboard.obz',
+    imageUrl: 'https://data.free-aac.org/vocal-flair-84-with-keyboard.png',
     size: 56888236
   },
   {
@@ -123,6 +138,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Vocal Flair 112 is a core, flat-but-dynamic-styled vocabulary set with up to 112 buttons per board, including a keyboard on the main board. It has built-in progression to gradually expand the vocabulary over time.',
     url: 'https://data.free-aac.org/vocal-flair-112.obz',
+    imageUrl: 'https://data.free-aac.org/vocal-flair-112.png',
     size: 56793687
   },
   {
@@ -131,6 +147,7 @@ export const templates: BoardTemplate[] = [
     license: 'CC-BY',
     description: 'Sequoia-15 is a branching vocabulary set, built in an effort to support communication organized by pragmatic function but with the goal of encouraging expansion into generalized and core-oriented vocabulary.',
     url: 'https://data.free-aac.org/sequoia-15.obz',
+    imageUrl: 'https://data.free-aac.org/sequoia-15.png',
     size: 37270902
   }
 ]
@@ -155,6 +172,15 @@ export const licenseImageMap: {
     'CC-BY-SA': require('../../assets/images/cc/dark/by-sa.png'),
     'CC-BY-NC-ND': require('../../assets/images/cc/dark/by-nc-nd.png')
   }
+}
+
+export const licenseLinkMap: Record<string, ExternalPathString> = {
+  'CC-BY': 'https://creativecommons.org/licenses/by/4.0/',
+  'CC-BY-NC': 'https://creativecommons.org/licenses/by-nc/4.0/',
+  'CC-BY-NC-SA': 'https://creativecommons.org/licenses/by-nc-sa/4.0/',
+  'CC-BY-ND': 'https://creativecommons.org/licenses/by-nd/4.0/',
+  'CC-BY-SA': 'https://creativecommons.org/licenses/by-sa/4.0/',
+  'CC-BY-NC-ND': 'https://creativecommons.org/licenses/by-nc-nd/4.0/'
 }
 
 export const korokoVoices: Pick<Voice, 'identifier' | 'name' | 'language'>[] = [
