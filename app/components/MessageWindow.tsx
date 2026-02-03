@@ -1,7 +1,7 @@
 import { AACButton } from "@willwade/aac-processors/browser";
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from "expo-router";
-import { ClipboardCheck, Copy, Delete, EllipsisVertical, Home, Layers, Settings, X } from "lucide-react-native";
+import { ClipboardCheck, Copy, Delete, EllipsisVertical, Fullscreen, Home, Layers, Settings, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
 import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useSpeak } from "../stores/audio";
@@ -56,6 +56,13 @@ export default function MessageWindow({
     else navigateHome()
   }
 
+  const requestFullscreen = () => {
+    if (Platform.OS !== "web") return
+    const element = document.documentElement
+    if (element.requestFullscreen) element.requestFullscreen()
+    setShowModal(false)
+  }
+
   return <>
     <View style={{
       height: 60,
@@ -97,14 +104,6 @@ export default function MessageWindow({
           </View>
         </ScrollView>
         <View style={{ display: 'flex', flexDirection: 'row', padding: 10 }}>
-          {messageButtonsIds.length === 0 &&
-            <Pressable
-              style={styles.button}
-              onPress={() => push('/settings')}
-            >
-              <Settings size={30} />
-            </Pressable>
-          }
           {messageButtonsIds.length > 0 && <>
             {showShareButton &&
             <Pressable
@@ -128,14 +127,16 @@ export default function MessageWindow({
             >
               <X size={30} />
             </Pressable>
-            <Pressable
-              style={styles.button}
-              onPress={() => setShowModal(true)}
-            >
-              <EllipsisVertical size={30} />
-            </Pressable>
           </>}
         </View>
+      </View>
+      <View style={{ padding: 10 }}>
+        <Pressable
+          style={styles.button}
+          onPress={() => setShowModal(true)}
+        >
+          <EllipsisVertical size={30} />
+        </Pressable>
       </View>
     </View>
     <Modal
@@ -149,6 +150,22 @@ export default function MessageWindow({
         onPress={() => setShowModal(false)}
       >
         <View style={styles.modalContainer}>
+          <View style={{ display: 'flex', flexDirection: 'row' }}>
+            <Pressable
+              style={styles.modalButton}
+              onPress={requestFullscreen}
+            >
+              <Fullscreen size={40} />
+              <Text style={styles.modalButtonText}>Full screen</Text>
+            </Pressable>
+            <Pressable
+              style={styles.modalButton}
+              onPress={() => { setShowModal(false); push('/settings') }}
+            >
+              <Settings size={40} />
+              <Text style={styles.modalButtonText}>Settings</Text>
+            </Pressable>
+          </View>
           <View style={{ display: 'flex', flexDirection: 'row' }}>
             <Pressable
               style={styles.modalButton}
@@ -178,18 +195,19 @@ const styles = StyleSheet.create({
   modalContainer: {
     width: '80%',
     maxWidth: 600,
-    backgroundColor: 'lightgrey',
+    backgroundColor: 'white',
     margin: 'auto',
     overflow: 'hidden',
     borderRadius: 20,
   },
   modalButton: {
     width: '50%',
-    aspectRatio: 1,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: 40,
+    backgroundColor: 'lightgrey',
+    cursor: 'pointer'
   },
   modalButtonText: {
     fontSize: 20,
