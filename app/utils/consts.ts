@@ -21,22 +21,118 @@ export const templates: BoardTemplate[] = [
     url: 'https://data.free-aac.org/communikate-20.obz',
     size: 13473789
   },
-  // {
-  //   name: 'CommuniKate 12',
-  //   author: 'Kate McCallum',
-  //   license: 'CC-BY-NC-SA',
-  //   description: 'CommuniKate 12 is a smaller version of CommuniKate 20, it has only 12 buttons per board but offers the same style of layout and functional style of communication.',
-  //   url: 'https://data.free-aac.org/communikate-12.obz',
-  //   size: 13034790
-  // },
-  // {
-  //   name: 'Project Core',
-  //   author: 'UNC Chapel Hill',
-  //   license: 'CC-BY',
-  //   description: 'Project core is a research-based initiative to ensure all communicators have at least one option for beginning core-base communication.',
-  //   url: 'https://data.free-aac.org/project-core.obf',
-  //   size: 740720
-  // }
+  {
+    name: 'CommuniKate 12',
+    author: 'Kate McCallum',
+    license: 'CC-BY-NC-SA',
+    description: 'CommuniKate 12 is a smaller version of CommuniKate 20, it has only 12 buttons per board but offers the same style of layout and functional style of communication.',
+    url: 'https://data.free-aac.org/communikate-12.obz',
+    size: 13034790
+  },
+  {
+    name: 'Project Core',
+    author: 'UNC Chapel Hill',
+    license: 'CC-BY',
+    description: 'Project core is a research-based initiative to ensure all communicators have at least one option for beginning core-base communication.',
+    url: 'https://data.free-aac.org/project-core.obf',
+    size: 740720
+  },
+  {
+    name: 'Quick Core 24',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Quick Core 24 is a core, motor-planning based vocabulary set with up to 24 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
+    url: 'https://data.free-aac.org/quick-core-24.obz',
+    size: 9459924
+  },
+  {
+    name: 'Quick Core 40',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Quick Core 40 is a core, motor-planning based vocabulary set with up to 40 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
+    url: 'https://data.free-aac.org/quick-core-40.obz',
+    size: 35437986
+  },
+  {
+    name: 'Quick Core 60',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Quick Core 60 is a core, motor-planning based vocabulary set with up to 60 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
+    url: 'https://data.free-aac.org/quick-core-60.obz',
+    size: 34898633
+  },
+  {
+    name: 'Quick Core 84',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Quick Core 84 is a core, motor-planning based vocabulary set with up to 84 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
+    url: 'https://data.free-aac.org/quick-core-84.obz',
+    size: 70257878
+  },
+  {
+    name: 'Quick Core 112',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Quick Core 112 is a core, motor-planning based vocabulary set with up to 112 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
+    url: 'https://data.free-aac.org/quick-core-112.obz',
+    size: 70393954
+  },
+  {
+    name: 'Vocal Flair 24',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Vocal Flair 24 is a core, flat-but-dynamic-styled vocabulary set with up to 24 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
+    url: 'https://data.free-aac.org/vocal-flair-24.obz',
+    size: 47790492
+  },
+  {
+    name: 'Vocal Flair 40',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Vocal Flair 40 is a core, flat-but-dynamic-styled vocabulary set with up to 40 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
+    url: 'https://data.free-aac.org/vocal-flair-40.obz',
+    size: 45693565
+  },
+  {
+    name: 'Vocal Flair 60',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Vocal Flair 60 is a core, flat-but-dynamic-styled vocabulary set with up to 60 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
+    url: 'https://data.free-aac.org/vocal-flair-60.obz',
+    size: 49749643
+  },
+  {
+    name: 'Vocal Flair 84',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Vocal Flair 84 is a core, flat-but-dynamic-styled vocabulary set with up to 84 buttons per board. It has built-in progression to gradually expand the vocabulary over time.',
+    url: 'https://data.free-aac.org/vocal-flair-84.obz',
+    size: 57289383
+  },
+  {
+    name: 'Vocal Flair 84 with Keyboard',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Vocal Flair 84 is a core, flat-but-dynamic-styled vocabulary set with up to 84 buttons per board, including a keyboard on the main board. It has built-in progression to gradually expand the vocabulary over time.',
+    url: 'https://data.free-aac.org/vocal-flair-84-with-keyboard.obz',
+    size: 56888236
+  },
+  {
+    name: 'Vocal Flair 112',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Vocal Flair 112 is a core, flat-but-dynamic-styled vocabulary set with up to 112 buttons per board, including a keyboard on the main board. It has built-in progression to gradually expand the vocabulary over time.',
+    url: 'https://data.free-aac.org/vocal-flair-112.obz',
+    size: 56793687
+  },
+  {
+    name: 'Sequoia 15',
+    author: 'OpenAAC',
+    license: 'CC-BY',
+    description: 'Sequoia-15 is a branching vocabulary set, built in an effort to support communication organized by pragmatic function but with the goal of encouraging expansion into generalized and core-oriented vocabulary.',
+    url: 'https://data.free-aac.org/sequoia-15.obz',
+    size: 37270902
+  }
 ]
 
 export const licenseImageMap: {
