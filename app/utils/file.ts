@@ -117,3 +117,13 @@ export const loadBoard = async (uri: string): Promise<AACTree> => {
   const tree = await processor.loadIntoTree(boardFile)
   return tree
 }
+
+export const loadTemplate = async (templateUrl: string) => {
+  const response = await fetch(templateUrl)
+  const data = await response.arrayBuffer()
+  const ext = getFileExt(templateUrl.split('/').slice(-1)[0])
+  const id = uuid()
+  const fileName = `${id}.${ext}`
+  const uri = await saveFile(fileName, data, 'document')
+  return { uri, id }
+}

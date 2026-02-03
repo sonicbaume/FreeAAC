@@ -1,19 +1,32 @@
 import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Download } from "lucide-react-native";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useTransition } from "react";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import { usePagesetActions } from "../stores/boards";
 import { BoardTemplate, licenseImageMap, licenseLinkMap } from "../utils/consts";
+import { loadTemplate } from "../utils/file";
 
 export default function BoardCard({
   board,
-  onSelect,
 }: {
   board: BoardTemplate;
-  onSelect: () => void;
 }) {
   const [assets, error] = useAssets([licenseImageMap.light[board.license]])
   const sizeMB = Math.max(board.size / 1024 / 1024, 1).toFixed(0)
+  const [isLoading, startLoading] = useTransition()
+  const { replace } = useRouter()
+  const { addBoard } = usePagesetActions()
+
+  const load = () => {
+    startLoading(async () => {
+      const { uri, id } = await loadTemplate(board.url)
+      addBoard({ id, uri, name: board.name})
+      replace({ pathname: '/[board]', params: { board: id } })
+    })
+  }
+
   return (
     <View style={styles.card}>
       <Image
@@ -31,9 +44,15 @@ export default function BoardCard({
           </Link>}
         </View>
       </View>
-      <Pressable onPress={onSelect} style={styles.button}>
-        <Download size={20} color="white" />
-        <Text style={styles.buttonText}>Install ({sizeMB}MB)</Text>
+      <Pressable onPress={load} style={styles.button} disabled={isLoading}>
+        {!isLoading && <>
+          <Download size={20} color="white" />
+          <Text style={styles.buttonText}>Install ({sizeMB}MB)</Text>
+        </>}
+        {isLoading && <>
+          <ActivityIndicator size="small" />
+          <Text style={styles.buttonText}>Installing...</Text>
+        </>}
       </Pressable>
     </View>
   )
