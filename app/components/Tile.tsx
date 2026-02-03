@@ -92,5 +92,6 @@ const styles = StyleSheet.create({
   },
   symbol: {
     flex: 1,
+    pointerEvents: 'none'
   },
 })
