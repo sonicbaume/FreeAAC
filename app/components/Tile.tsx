@@ -1,9 +1,9 @@
-import type { AACButton } from "@willwade/aac-processors/browser"
 import { StyleSheet, Text, View } from "react-native"
 import Sortable from "react-native-sortables"
 import { useSpeak } from "../stores/audio"
 import { usePagesetActions } from "../stores/boards"
 import { useButtonView, useGoHomeOnPress, useLabelLocation, usePlayOnPress } from "../stores/prefs"
+import { BoardButton } from "../utils/types"
 import TileImage from "./TileImage"
 
 const Label = ({ text }: { text: string }) => {
@@ -18,7 +18,7 @@ export default function Tile({
   height,
   homePageId,
 }: {
-  button: AACButton;
+  button: BoardButton;
   height: number;
   homePageId?: string;
 }) {

@@ -1,8 +1,8 @@
-import type { AACButton, AACPage } from "@willwade/aac-processors/browser";
 import { useCallback, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
-import Sortable, { type SortableGridRenderItem } from "react-native-sortables";
+import Sortable, { SortableGridDragEndCallback, type SortableGridRenderItem } from "react-native-sortables";
 import { useEditMode } from "../stores/boards";
+import { BoardButton, BoardPage } from "../utils/types";
 import { uuid } from "../utils/uuid";
 import Tile from "./Tile";
 
@@ -13,9 +13,11 @@ const getRowHeight = (pageHeight: number, rows: number) => (pageHeight - pagePad
 
 export default function Page({
   page,
+  savePage,
   homePageId,
 }: {
-  page: AACPage;
+  page: BoardPage;
+  savePage: (page: BoardPage) => void;
   homePageId?: string;
 }) {
   const [pageHeight, setPageHeight] = useState(0)
@@ -29,7 +31,7 @@ export default function Page({
 
   const grid = page.grid.flat()
 
-  const renderButton = useCallback<SortableGridRenderItem<AACButton | null>>(({item}) => item
+  const renderButton = useCallback<SortableGridRenderItem<BoardButton | null>>(({item}) => item
     ? <Tile
         button={item}
         homePageId={homePageId}
@@ -37,6 +39,13 @@ export default function Page({
       />
     : <View style={{ height: rowHeight }} />
   , [rowHeight])
+  
+  const handleDragEnd: SortableGridDragEndCallback<BoardButton | null> = (result) => {
+    const flatGrid = result.data
+    const grid = []
+    while (flatGrid.length) grid.push(flatGrid.splice(0, cols))
+    savePage({...page, grid})
+  }
 
   return (
     <View
@@ -55,6 +64,7 @@ export default function Page({
         columnGap={colGap}
         sortEnabled={editMode}
         keyExtractor={item => item?.id ?? uuid()}
+        onDragEnd={handleDragEnd}
       />
     </View>
   )

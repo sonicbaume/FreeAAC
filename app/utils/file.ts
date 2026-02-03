@@ -5,6 +5,7 @@ import { AACTree, getProcessor } from '@willwade/aac-processors/browser';
 import * as DocumentPicker from 'expo-document-picker';
 import { Directory, File, Paths } from 'expo-file-system';
 import { Platform } from "react-native";
+import { BoardTree } from './types';
 import { uuid } from './uuid';
 
 const zipAdapter = async (input: string | Buffer | ArrayBuffer | Uint8Array) => {
@@ -108,7 +109,7 @@ export const selectFile = async (): Promise<{id: string, uri: string}> => {
   return {id, uri}
 }
 
-export const loadBoard = async (uri: string): Promise<AACTree> => {
+export const loadBoard = async (uri: string): Promise<BoardTree> => {
   const boardFile = await loadFile(uri)
   if (!boardFile) throw new Error('Could not load file')
   const ext = getFileExt(uri)
@@ -116,4 +117,10 @@ export const loadBoard = async (uri: string): Promise<AACTree> => {
   const processor = getProcessor(`.${ext}`, options)
   const tree = await processor.loadIntoTree(boardFile)
   return tree
+}
+
+export const saveBoard = async (uri: string, tree: BoardTree) => {
+  const ext = getFileExt(uri)
+  const processor = getProcessor(`.${ext}`)
+  await processor.saveFromTree(tree as unknown as AACTree, uri)
 }

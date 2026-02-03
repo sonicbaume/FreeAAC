@@ -1,4 +1,3 @@
-import type { AACButton } from "@willwade/aac-processors/browser";
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from "expo-router";
 import { ClipboardCheck, Copy, Delete, EllipsisVertical, Fullscreen, Home, Layers, Pencil, Settings, X } from "lucide-react-native";
@@ -7,6 +6,7 @@ import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "
 import { useSpeak } from "../stores/audio";
 import { useEditMode, useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { useButtonView, useClearMessageOnPlay, useLabelLocation, useShowBackspace, useShowShareButton } from "../stores/prefs";
+import { BoardButton } from "../utils/types";
 import TileImage from "./TileImage";
 
 export default function MessageWindow({
@@ -15,7 +15,7 @@ export default function MessageWindow({
   isHome,
 }: {
   navigateHome: () => void;
-  buttons: AACButton[];
+  buttons: BoardButton[];
   isHome: boolean;
 }) {
   const [copied, setCopied] = useState(false)

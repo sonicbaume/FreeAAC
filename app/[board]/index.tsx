@@ -1,4 +1,3 @@
-import type { AACTree } from "@willwade/aac-processors/browser";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
@@ -8,8 +7,9 @@ import Page from "../components/Page";
 import { useBoards, useCurrentPageId, usePagesetActions } from "../stores/boards";
 import { useMessageWindowLocation } from "../stores/prefs";
 import { handleError } from "../utils/error";
-import { loadBoard } from "../utils/file";
+import { loadBoard, saveBoard } from "../utils/file";
 import { getHomePageId } from "../utils/pagesets";
+import { BoardPage, BoardTree } from "../utils/types";
 
 export default function Board() {
   const { board } = useLocalSearchParams()
@@ -18,7 +18,7 @@ export default function Board() {
   const messageWindowLocation = useMessageWindowLocation()
   const currentPageId = useCurrentPageId()
   const { setCurrentPageId } = usePagesetActions()
-  const [tree, setTree] = useState<AACTree>()
+  const [tree, setTree] = useState<BoardTree>()
 
   useEffect(() => {(async () => {
     if (!uri) return
@@ -41,6 +41,22 @@ export default function Board() {
     if (!(currentPageId in tree.pages)) return handleError('Could not find page in tree')
     return tree.pages[currentPageId]
   }, [currentPageId, tree])
+
+  const savePage = (page: BoardPage) => {
+    if (!uri) return handleError('Could not save page - file not defined')
+    if (!tree) return handleError('Could not save page - tree does not exist')
+    if (!currentPageId) return handleError('Could not save page - ID undefined')
+    const {[currentPageId]: _, ...otherPages} = tree.pages
+    const newTree = {
+      ...tree,
+      pages: {
+        ...otherPages,
+        [currentPageId]: page
+      }
+    }
+    saveBoard(uri, newTree)
+    setTree(newTree)
+  }
 
   const homePageId = useMemo(() => {
     try {
@@ -75,7 +91,7 @@ export default function Board() {
           alignItems: "center",
         }}
       >
-        {page && <Page page={page} homePageId={homePageId} />}
+        {page && <Page page={page} savePage={savePage} homePageId={homePageId} />}
         {!page && <ActivityIndicator size="large" />}
       </View>
       {messageWindowLocation === "bottom" && messageWindow}
