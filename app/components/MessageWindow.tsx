@@ -3,7 +3,7 @@ import * as Clipboard from 'expo-clipboard';
 import { useRouter } from "expo-router";
 import { ClipboardCheck, Copy, Delete, EllipsisVertical, Fullscreen, Home, Layers, Settings, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSpeak } from "../stores/audio";
 import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { useButtonView, useClearMessageOnPlay, useLabelLocation, useShowBackspace, useShowShareButton } from "../stores/prefs";
@@ -145,7 +145,7 @@ export default function MessageWindow({
       onRequestClose={() => setShowModal(false)}
       transparent
     >
-      <TouchableOpacity
+      <Pressable
         style={{ flex:1 }}
         onPress={() => setShowModal(false)}
       >
@@ -183,7 +183,7 @@ export default function MessageWindow({
             </Pressable>
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     </Modal>
   </>
 }
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 40,
+    padding: 20,
     backgroundColor: 'lightgrey',
     cursor: 'pointer'
   },
