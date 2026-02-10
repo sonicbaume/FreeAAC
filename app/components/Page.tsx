@@ -114,6 +114,7 @@ export default function Page({
         sortEnabled={editMode}
         keyExtractor={item => item?.id ?? uuid()}
         onDragEnd={handleDragEnd}
+        itemsLayoutTransitionMode="reorder"
       />
     </View>
     <TrueSheet
@@ -134,8 +135,7 @@ const styles = StyleSheet.create({
     minHeight: '50%'
   },
   container: {
-    display: 'flex',
-    flex: 1,
+    height: '100%',
     width: '100%',
     gap: 10,
     borderStyle: 'dashed'
