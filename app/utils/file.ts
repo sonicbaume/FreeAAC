@@ -4,36 +4,79 @@
 import { AACTree, getProcessor } from '@willwade/aac-processors/browser';
 import * as DocumentPicker from 'expo-document-picker';
 import { Directory, File, Paths } from 'expo-file-system';
+import { nanoid } from 'nanoid/non-secure';
 import { Platform } from "react-native";
 import { BoardTree } from './types';
 import { uuid } from './uuid';
 
-const zipAdapter = async (input: string | Buffer | ArrayBuffer | Uint8Array) => {
-  console.log("USING ZIP ADAPTER")
-  if (Platform.OS !== "android" && Platform.OS !== "ios")
-    throw "Cannot use react-native-zip-archive on this platform"
-  const { unarchive } = await import('react-native-unarchive')
-  let inputPath = ""
-  const outDir = new Directory(Paths.cache, uuid())
-  outDir.create()
-  const outDirPath = outDir.uri.substring(7)
-  if (typeof(input) === "string") {
-    inputPath = input
-  } else {
-    const inFile = new File(Paths.cache, `${uuid()}.zip`)
-    inFile.create()
-    inFile.write(new Uint8Array(input))
-    inputPath = inFile.uri.substring(7)
-  }
-  const result = await unarchive(inputPath, outDirPath)
-  return {
-    zip: {
-      listFiles: (): string[] => result.files.map(f => f.relativePath),
-      readFile: async (name: string): Promise<Uint8Array> => {
-        const buffer = await loadFile(Paths.join(outDir, name))
-        return new Uint8Array(buffer)
-      }
+const fileAdapter = {
+  readBinaryFromInput: (input: string | Buffer | ArrayBuffer | Uint8Array): Uint8Array => {
+    console.log("READING USING ADAPTER")
+    if (typeof(input) === "string") {
+      return new File(input).bytesSync()
+    } else if (input instanceof ArrayBuffer) {
+      return new Uint8Array(input)
+    } else {
+      return input
     }
+  },
+  readTextFromInput: (input: string | Buffer | ArrayBuffer | Uint8Array, encoding: BufferEncoding = 'utf-8'): string => {
+    console.log("READING USING ADAPTER")
+    if (typeof input === 'string') {
+      return new File(input).textSync()
+    } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(input)) {
+      return input.toString(encoding);
+    } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(input)) {
+        return input.toString('utf8');
+    } else {
+      return new TextDecoder(encoding).decode(input);
+    }
+  },
+  writeBinaryToPath: (outputPath: string, data: Buffer | Uint8Array): void => {
+    console.log("WRITING USING ADAPTER")
+    new File(outputPath).write(data)
+  },
+  writeTextToPath: (outputPath: string, text: string): void => {
+    console.log("WRITING USING ADAPTER")
+    new File(outputPath).write(text)
+  },
+  pathExists: (path: string): boolean => {
+    return Paths.info(path).exists
+  },
+  isDirectory: (path: string): boolean => {
+    return Paths.info(path).isDirectory ?? false
+  },
+  getFileSize: (path: string): number => {
+    return new File(path).size
+  },
+  mkDir: (path: string, options?: { recursive?: boolean }): void => {
+    new Directory(path).create({
+      intermediates: options?.recursive ?? false
+    })
+  },
+  listDir: (path: string): string[] => {
+    return new Directory(path).list().map(item => item.name)
+  },
+  removePath: (path: string, options?: { recursive?: boolean; force?: boolean }): void => {
+    if (Paths.info(path).isDirectory) {
+      new Directory(path).delete()
+    } else {
+      new File(path).delete()
+    }
+  },
+  mkTempDir: (prefix: string): string => {
+    const tempDir = new Directory(Paths.cache, prefix, nanoid())
+    tempDir.create()
+    return tempDir.name
+  },
+  join: (...pathParts: string[]): string => {
+    return Paths.join(...pathParts)
+  },
+  dirname: (path: string): string => {
+    return Paths.dirname(path)
+  },
+  basename: (path: string, suffix?: string): string => {
+    return Paths.basename(path, suffix)
   }
 }
 
@@ -113,7 +156,7 @@ export const loadBoard = async (uri: string): Promise<BoardTree> => {
   const boardFile = await loadFile(uri)
   if (!boardFile) throw new Error('Could not load file')
   const ext = getFileExt(uri)
-  const options = (Platform.OS === "android" || Platform.OS === "ios") ? { zipAdapter } : undefined
+  const options = (Platform.OS === "android" || Platform.OS === "ios") ? { fileAdapter } : undefined
   const processor = getProcessor(`.${ext}`, options)
   const tree = await processor.loadIntoTree(boardFile)
   return tree
