@@ -1,8 +1,7 @@
+import { AACButton } from "@willwade/aac-processors/browser"
 import { StyleSheet, Text, View } from "react-native"
 import Sortable from "react-native-sortables"
-import { useSpeak } from "../stores/audio"
-import { usePagesetActions } from "../stores/boards"
-import { useButtonView, useGoHomeOnPress, useLabelLocation, usePlayOnPress } from "../stores/prefs"
+import { useButtonView, useLabelLocation } from "../stores/prefs"
 import { BoardButton } from "../utils/types"
 import TileImage from "./TileImage"
 
@@ -15,19 +14,17 @@ const Label = ({ text }: { text: string }) => {
 }
 export default function Tile({
   button,
+  onPress,
   height,
-  homePageId,
+  index,
 }: {
   button: BoardButton;
+  onPress: (button: AACButton, index: number) => void;
   height: number;
-  homePageId?: string;
+  index: number;
 }) {
-  const playOnPress = usePlayOnPress()
   const labelLocation = useLabelLocation()
-  const goHomeOnPress = useGoHomeOnPress()
   const buttonView = useButtonView()
-  const { setCurrentPageId, addMessageButtonId } = usePagesetActions()
-  const speak = useSpeak()
 
   const showText = buttonView === "both" || buttonView === "text"
   const showSymbol = buttonView === "both" || buttonView === "symbol"
@@ -35,21 +32,11 @@ export default function Tile({
   const labelJustify = buttonView === "text" ? "center" :
     labelLocation === "bottom" ? "flex-end" :
     "flex-start"
-  
-  const handlePress = () => {
-    if (button.action?.type === "SPEAK") {
-      if (playOnPress) speak(button.action.message ?? button.message)
-      addMessageButtonId(button.id)
-      if (goHomeOnPress && homePageId) setCurrentPageId(homePageId)
-    } else if (button.action?.type === "NAVIGATE" && button.action.targetPageId) {
-      setCurrentPageId(button.action.targetPageId)
-    }
-  }
 
   return (
     <View style={{ height }}>
       <Sortable.Touchable
-        onTap={handlePress}
+        onTap={() => onPress(button, index)}
         style={{
           ...styles.container,
           ...button.style,

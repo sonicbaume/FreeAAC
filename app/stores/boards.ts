@@ -14,6 +14,7 @@ interface PagesetsState {
   currentPageId: string | undefined;
   messageButtonsIds: string[];
   editMode: boolean;
+  editButtonId: string | undefined;
   actions: {
     setCurrentBoardId: (boardId: string | undefined) => void;
     setCurrentPageId: (pageId: string | undefined) => void;
@@ -23,6 +24,7 @@ interface PagesetsState {
     removeLastMessageButtonId: () => void;
     clearMessageButtonIds: () => void;
     toggleEditMode: () => void;
+    setEditButtonId: (buttonId: string | undefined) => void;
   }
 }
 
@@ -33,6 +35,7 @@ const useStore = create<PagesetsState>()(persist(
     currentPageId: undefined,
     messageButtonsIds: [],
     editMode: false,
+    editButtonId: undefined,
     actions: {
       setCurrentBoardId: (boardId) => set({
         currentBoardId: boardId
@@ -58,6 +61,9 @@ const useStore = create<PagesetsState>()(persist(
       toggleEditMode: () => set({
         editMode: !get().editMode
       }),
+      setEditButtonId: (buttonId: string | undefined) => set({
+        editButtonId: buttonId
+      })
     }
   }),
   {
@@ -75,4 +81,5 @@ export const useCurrentBoardId = () => useStore(s => s.currentBoardId)
 export const useCurrentPageId = () => useStore(s => s.currentPageId)
 export const useMessageButtonsIds = () => useStore(s => s.messageButtonsIds)
 export const useEditMode = () => useStore(s => s.editMode)
+export const useEditButtonId = () => useStore(s => s.editButtonId)
 export const usePagesetActions = () => useStore(s => s.actions)

@@ -14,7 +14,8 @@
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
     "@expo/vector-icons": "^15.0.3",
-    "@lodev09/react-native-true-sheet": "^3.8.2",
+    "@gorhom/bottom-sheet": "^5.2.8",
+    "@lodev09/react-native-true-sheet": "^3.9.0-beta.3",
     "@react-native-community/slider": "5.0.1",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",

@@ -1,3 +1,4 @@
+import { TrueSheetProvider } from "@lodev09/react-native-true-sheet";
 import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
@@ -21,27 +22,29 @@ export default function RootLayout() {
       <meta name="description" content={appDescription} />
     </Head>
     }
-    <GestureHandlerRootView>
-      <Stack screenOptions={{
-        headerBackButtonDisplayMode: "minimal",
-      }}>
-        <Stack.Screen name="index" options={{
-          headerTitle: 'FreeAAC',
-          headerLeft: () => (
-            <View style={styles.headerLeft}>
-              <Image source={assets?.at(0)} style={{ width: 32, height: 32 }} />
-            </View>
-          ),
-          headerRight: () => <View style={styles.headerRight}>
-            <SettingsButton style={{ padding: 6 }} />
-          </View>,
-        }}
-        />
-        <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
-        <Stack.Screen name="templates" options={{ headerTitle: 'Templates' }} />
-        <Stack.Screen name="privacy" options={{ headerTitle: 'Privacy policy' }} />
-      </Stack>
-    </GestureHandlerRootView>
+    <TrueSheetProvider>
+      <GestureHandlerRootView>
+        <Stack screenOptions={{
+          headerBackButtonDisplayMode: "minimal",
+        }}>
+          <Stack.Screen name="index" options={{
+            headerTitle: 'FreeAAC',
+            headerLeft: () => (
+              <View style={styles.headerLeft}>
+                <Image source={assets?.at(0)} style={{ width: 32, height: 32 }} />
+              </View>
+            ),
+            headerRight: () => <View style={styles.headerRight}>
+              <SettingsButton style={{ padding: 6 }} />
+            </View>,
+          }}
+          />
+          <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
+          <Stack.Screen name="templates" options={{ headerTitle: 'Templates' }} />
+          <Stack.Screen name="privacy" options={{ headerTitle: 'Privacy policy' }} />
+        </Stack>
+      </GestureHandlerRootView>
+    </TrueSheetProvider>
     <AudioController />
   </Head.Provider>
 }
