@@ -1,9 +1,8 @@
 import { Image } from "expo-image";
 import { ImageStyle, StyleProp, View } from "react-native";
-import { SvgUri, SvgXml } from "react-native-svg";
+import { SvgXml } from "react-native-svg";
 
 const isSvgDataUri = (uri: string) => uri.startsWith('data:image/svg') && uri.includes(';base64,')
-const isSvgUrl = (uri: string) => uri.split(/[?#]/)[0].toLowerCase().endsWith('.svg')
 
 export default function TileImage ({
   uri,
@@ -19,16 +18,6 @@ export default function TileImage ({
       <View style={style}>
         <SvgXml
           xml={svgXml}
-          width="100%"
-          height="100%"
-        />
-      </View>
-    )
-  } else if (isSvgUrl(uri)) {
-    return (
-      <View style={style}>
-        <SvgUri
-          uri={uri}
           width="100%"
           height="100%"
         />

@@ -46,13 +46,14 @@ export default function Board() {
     if (!uri) return handleError('Could not save page - file not defined')
     if (!tree) return handleError('Could not save page - tree does not exist')
     if (!currentPageId) return handleError('Could not save page - ID undefined')
-    const {[currentPageId]: _, ...otherPages} = tree.pages
+    const newPages = {...tree.pages}
+    newPages[currentPageId] = {
+      ...newPages[currentPageId],
+      ...page
+    }
     const newTree = {
       ...tree,
-      pages: {
-        ...otherPages,
-        [currentPageId]: page
-      }
+      pages: newPages
     }
     saveBoard(uri, newTree)
     setTree(newTree)

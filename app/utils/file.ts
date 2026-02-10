@@ -32,13 +32,13 @@ const fileAdapter = {
       return new TextDecoder(encoding).decode(input);
     }
   },
-  writeBinaryToPath: (outputPath: string, data: Buffer | Uint8Array): void => {
+  writeBinaryToPath: (outputPath: string, data: Uint8Array): void => {
     console.log("WRITING USING ADAPTER")
-    new File(outputPath).write(data)
+    saveFile(outputPath, data, 'document')
   },
   writeTextToPath: (outputPath: string, text: string): void => {
     console.log("WRITING USING ADAPTER")
-    new File(outputPath).write(text)
+    saveFile(outputPath, new TextEncoder().encode(text), 'document')
   },
   pathExists: (path: string): boolean => {
     return Paths.info(path).exists
@@ -82,7 +82,7 @@ const fileAdapter = {
 
 export const saveFile = async (
   fileName: string,
-  data: ArrayBuffer,
+  data: Uint8Array,
   storageType: 'document' | 'cache'
 ): Promise<string> => {
   if (Platform.OS === "android" || Platform.OS === "ios") {
@@ -90,14 +90,14 @@ export const saveFile = async (
     const file = new File(root, fileName)
     file.uri
     file.create()
-    file.write(new Uint8Array(data))
+    file.write(data)
     return file.uri
   } else if (Platform.OS === "web") {
     try {
       const root = await navigator.storage.getDirectory()
       const fileHandle = await root.getFileHandle(fileName, { create: true })
       const writable = await fileHandle.createWritable()
-      await writable.write(data)
+      await writable.write(data as BufferSource)
       await writable.close()
     } catch (e) {
       if (e instanceof Error && e.name === "SecurityError")
@@ -110,27 +110,27 @@ export const saveFile = async (
 }
 
 export const loadFile = async (fileName: string):
-  Promise<ArrayBuffer> =>
+  Promise<Uint8Array> =>
 {
   if (Platform.OS === "android" || Platform.OS === "ios") {
     const file = new File(fileName)
-    return await file.arrayBuffer()
+    return await file.bytes()
   } else if (Platform.OS === "web") {
     const root = await navigator.storage.getDirectory()
     const fileHandle = await root.getFileHandle(fileName)
     const file = await fileHandle.getFile()
-    return await file.arrayBuffer()
+    return await file.bytes()
   } else {
     throw "File load not yet supported on this platform"
   }
 }
 
 const getAssetData = async (asset: DocumentPicker.DocumentPickerAsset):
-  Promise<ArrayBuffer> =>
+  Promise<Uint8Array> =>
 {
   const file = Platform.OS === "web" ? asset.file : new File(asset.uri)
   if (!file) throw new Error("Could not read file")
-  return await file.arrayBuffer()
+  return await file.bytes()
 }
 
 export const getFileExt = (name: string): string => {
@@ -164,6 +164,6 @@ export const loadBoard = async (uri: string): Promise<BoardTree> => {
 
 export const saveBoard = async (uri: string, tree: BoardTree) => {
   const ext = getFileExt(uri)
-  const processor = getProcessor(`.${ext}`)
+  const processor = getProcessor(`.${ext}`, { fileAdapter })
   await processor.saveFromTree(tree as unknown as AACTree, uri)
 }
