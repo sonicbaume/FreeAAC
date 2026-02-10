@@ -88,8 +88,7 @@ export const saveFile = async (
   if (Platform.OS === "android" || Platform.OS === "ios") {
     const root = storageType === 'cache' ? Paths.cache : Paths.document
     const file = new File(root, fileName)
-    file.uri
-    file.create()
+    file.create({ overwrite: true })
     file.write(data)
     return file.uri
   } else if (Platform.OS === "web") {
