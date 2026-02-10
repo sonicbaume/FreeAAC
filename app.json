@@ -50,8 +50,7 @@
       ],
       "expo-localization",
       "expo-asset",
-      "react-native-audio-api",
-      "expo-head"
+      "react-native-audio-api"
     ],
     "experiments": {
       "typedRoutes": true,
