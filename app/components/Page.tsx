@@ -125,6 +125,7 @@ export default function Page({
       <TileEditor
         button={editButton?.button}
         setButton={button => editButton && setEditButton({...editButton, button})}
+        hideSheet={() => editSheet.current?.dismiss()}
       />
     </TrueSheet>
   </>
