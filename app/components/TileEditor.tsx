@@ -14,8 +14,14 @@ export default function TileEditor({
 }) {
   if (!button) return <></>
   return <>
-    <ScrollView nestedScrollEnabled style={{ width: '100%', padding: 30 }}>
-      <View style={styles.labelContainer}>
+    <ScrollView nestedScrollEnabled style={{ width: '100%', padding: 30  }}>
+      <View style={{
+        ...styles.labelContainer,
+        paddingBottom: 20,
+        marginBottom: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: 'grey',
+      }}>
         <TextInput
           value={button.label}
           onChangeText={label => setButton({...button, label})}
@@ -25,12 +31,15 @@ export default function TileEditor({
           <Check size={30} />
         </Pressable>
       </View>
-      <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text>Message</Text>
-        <TextInput value={button.message} />
+      <View style={styles.labelContainer}>
+        <Text style={styles.label}>Message</Text>
+        <TextInput
+          value={button.message}
+          style={styles.input}
+        />
       </View>
       <View style={styles.labelContainer}>
-        <Text style={styles.colorLabel}>Background</Text>
+        <Text style={styles.label}>Background</Text>
         <ColorPicker
           color={button.style?.backgroundColor}
           onChange={(backgroundColor) => setButton({
@@ -42,7 +51,7 @@ export default function TileEditor({
           })} />
       </View>
       <View style={styles.labelContainer}>
-        <Text style={styles.colorLabel}>Border</Text>
+        <Text style={styles.label}>Border</Text>
         <ColorPicker
           color={button.style?.borderColor}
           onChange={(borderColor) => setButton({
@@ -54,7 +63,7 @@ export default function TileEditor({
           })} />
       </View>
       <View style={styles.labelContainer}>
-        <Text style={styles.colorLabel}>Text</Text>
+        <Text style={styles.label}>Text</Text>
         <ColorPicker
           color={button.style?.fontColor}
           onChange={(fontColor) => setButton({
@@ -70,9 +79,6 @@ export default function TileEditor({
 }
 
 const styles = StyleSheet.create({
-  label: {
-    padding: 5,
-  },
   labelContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -80,14 +86,14 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   input: {
-    width: '100%',
+    flex: 1,
     borderWidth: 1,
     borderColor: 'grey',
     padding: 10,
     borderRadius: 5,
     fontSize: 18,
   },
-  colorLabel: {
+  label: {
     fontSize: 16,
     width: '20%',
     textAlign: 'right',
