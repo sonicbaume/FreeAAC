@@ -53,6 +53,18 @@ export default function TileEditor({
             }
           })} />
       </View>
+      <View style={styles.labelContainer}>
+        <Text style={styles.colorLabel}>Text</Text>
+        <ColorPicker
+          color={button.style?.fontColor}
+          onChange={(fontColor) => setButton({
+            ...button,
+            style: {
+              ...button.style,
+              fontColor
+            }
+          })} />
+      </View>
     </ScrollView>
     </>
 }

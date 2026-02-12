@@ -1,13 +1,23 @@
-import { AACButton } from "@willwade/aac-processors/browser"
+import { AACButton, AACStyle } from "@willwade/aac-processors/browser"
 import { StyleSheet, Text, View } from "react-native"
 import Sortable from "react-native-sortables"
 import { useButtonView, useLabelLocation } from "../stores/prefs"
 import { BoardButton } from "../utils/types"
 import TileImage from "./TileImage"
 
-const Label = ({ text }: { text: string }) => {
+const Label = ({
+  text,
+  style,
+}: {
+  text: string;
+  style?: AACStyle;
+}) => {
   return (
-    <Text style={styles.label}>
+    <Text style={{
+      ...styles.label,
+      color: style?.fontColor,
+      fontSize: style?.fontSize,
+    }}>
       {text}
     </Text>
   )
@@ -45,9 +55,9 @@ export default function Tile({
           justifyContent: labelJustify
         }}
       >
-        {showText && labelLocation === "top" && <Label text={button.label} />}
+        {showText && labelLocation === "top" && <Label text={button.label} style={button.style} />}
         {showSymbol && button.image && <TileImage uri={button.image} style={styles.symbol} />}
-        {showText && labelLocation === "bottom" && <Label text={button.label} />}
+        {showText && labelLocation === "bottom" && <Label text={button.label} style={button.style} />}
       </Sortable.Touchable>
     </View>
   )

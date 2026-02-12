@@ -10,6 +10,7 @@ const defaultColors = [
   "#00FFFF",
   "#000000",
   "#FFFFFF",
+  "#FF5733",
 ];
 
 export default function ColorPicker({
