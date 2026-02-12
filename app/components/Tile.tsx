@@ -59,7 +59,8 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: 'hidden',
     borderRadius: 10,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    borderWidth: 2,
   },
   linkOverlay: {
     position: 'absolute',

@@ -1,6 +1,7 @@
 import { Check } from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { BoardButton } from "../utils/types";
+import ColorPicker from "./ColorPicker";
 
 export default function TileEditor({
   button,
@@ -28,6 +29,30 @@ export default function TileEditor({
         <Text>Message</Text>
         <TextInput value={button.message} />
       </View>
+      <View style={styles.labelContainer}>
+        <Text style={styles.colorLabel}>Background</Text>
+        <ColorPicker
+          color={button.style?.backgroundColor}
+          onChange={(backgroundColor) => setButton({
+            ...button,
+            style: {
+              ...button.style,
+              backgroundColor
+            }
+          })} />
+      </View>
+      <View style={styles.labelContainer}>
+        <Text style={styles.colorLabel}>Border</Text>
+        <ColorPicker
+          color={button.style?.borderColor}
+          onChange={(borderColor) => setButton({
+            ...button,
+            style: {
+              ...button.style,
+              borderColor
+            }
+          })} />
+      </View>
     </ScrollView>
     </>
 }
@@ -45,9 +70,14 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: 'grey',
     padding: 10,
     borderRadius: 5,
     fontSize: 18,
+  },
+  colorLabel: {
+    fontSize: 16,
+    width: '20%',
+    textAlign: 'right',
   }
 })
