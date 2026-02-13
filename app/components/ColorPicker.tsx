@@ -1,30 +1,43 @@
 import { Ban } from "lucide-react-native";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 const defaultColors = [
-  "#FF0000",
-  "#00FF00",
-  "#0000FF",
-  "#FFFF00",
-  "#FF00FF",
-  "#00FFFF",
+  "#EB9694",
+  "#FAD0C3",
+  "#FEF3BD",
+  "#C1E1C5",
+  "#BEDADC",
+  "#C4DEF6",
+  "#BED3F3",
+  "#D4C4FB",
+  "#AAAAAA",
+  "#B80000",
+  "#DB3E00",
+  "#FCCB00",
+  "#008B02",
+  "#007B76",
+  "#1273DE",
+  "#004DCF",
+  "#5300EB",
+  "#555555",
   "#000000",
-  "#FFFFFF",
-  "#FF5733",
 ];
 
 export default function ColorPicker({
   color,
   onChange,
+  label,
 }: {
   color: string | undefined;
   onChange: (color: string | undefined) => void;
+  label: string;
 }) {
   const colors = !color || defaultColors.includes(color)
     ? defaultColors
     : [...defaultColors, color]
-  return (
-    <View style={styles.container}>
+  return <View>
+    <Text style={{ fontSize: 16 }}>{label}</Text>
+    <ScrollView nestedScrollEnabled horizontal style={styles.container} contentContainerStyle={{ paddingBottom: 20 }}>
       <Pressable
         style={{
           ...styles.colorButton,
@@ -45,20 +58,21 @@ export default function ColorPicker({
           onPress={() => onChange(colorChoice)}
         />
       ))}
-    </View>
-  );
+    </ScrollView>
+  </View>
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, 
+    display: 'flex',
     flexDirection: "row",
-    flexWrap: "wrap",
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 0,
+    height: 60
   },
   colorButton: {
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 0,
@@ -68,6 +82,6 @@ const styles = StyleSheet.create({
     outlineColor: "white",
     outlineStyle: "solid",
     zIndex: 1,
-    boxShadow: "5px 5px 10px grey",
+    boxShadow: "1px 1px 10px black",
   }
 });

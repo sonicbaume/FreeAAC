@@ -5,8 +5,54 @@ import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { EditTile } from "../[board]";
 import { usePagesetActions } from "../stores/boards";
 import { BoardButton } from "../utils/types";
-import ColorPicker from "./ColorPicker";
 import SymbolPicker, { SymbolSearchBar } from "./SymbolPicker";
+import TileSettings from "./TileSettings";
+
+const tabs = ['settings', 'symbol'] as const
+type Tab = typeof tabs[number]
+
+const TabSelector = ({
+  tab,
+  setTab
+}: {
+  tab: Tab;
+  setTab: (tab: Tab) => void;
+}) => {
+  return (
+    <View style={{ flexDirection: 'row' }}>
+      <Pressable
+        style={{
+          ...styles.tabButton,
+          ...(tab === 'settings' ? styles.tabButtonActive : {}),
+        }}
+        onPress={() => setTab('settings')}
+      >
+        <Text 
+          style={{
+            ...styles.tabButtonText,
+            ...(tab === 'settings' ? styles.tabButtonTextActive : {}),
+          }}
+        >Settings</Text>
+      </Pressable>
+      <Pressable
+        style={{
+          ...styles.tabButton,
+          ...(tab === 'symbol' ? styles.tabButtonActive : {}),
+        }}
+        onPress={() => setTab('symbol')}
+      >
+        <Text 
+          style={{
+            ...styles.tabButtonText,
+            ...(tab === 'symbol' ? styles.tabButtonTextActive : {}),
+          }}
+        >
+          Symbol
+        </Text>
+      </Pressable>
+    </View>
+  )
+}
 
 export default function TileEditor({
   ref,
@@ -25,29 +71,27 @@ export default function TileEditor({
     button: newButton,
     index: tile.index,
   })
-  const [tab, setTab] = useState<'details' | 'symbol'>('details')
+  const [tab, setTab] = useState<Tab>('settings')
   return (
     <TrueSheet
       ref={ref}
-      detents={[0.5, 0.75, 1]}
+      detents={[0.5, 0.75]}
       onWillDismiss={onClose}
       backgroundColor="white"
       scrollable
       footer={tab === "symbol" ? <SymbolSearchBar /> : undefined}
     >
       {button &&
-      <View style={{ }}>
+      <View style={{ flex: 1}}>
         <View style={{
           ...styles.labelContainer,
           padding: 20,
-          borderBottomWidth: 1,
-          borderBottomColor: 'grey',
         }}>
           <TextInput
             value={button?.label}
             onChangeText={label => {
               if (!button) return
-              setButton({...button, label})
+              setButton({...button, label, message: label})
               setSymbolSearchText(label)
             }}
             style={{
@@ -59,69 +103,18 @@ export default function TileEditor({
             <Check size={30} />
           </Pressable>
         </View>
-        <View style={{ flex: 1, flexDirection: 'row' }}>
-          <Pressable style={styles.tabButton} onPress={() => setTab('details')}>
-            <Text style={{ fontSize: 16 }}>Details</Text>
-          </Pressable>
-          <Pressable style={styles.tabButton} onPress={() => setTab('symbol')}>
-            <Text style={{ fontSize: 16 }}>Symbol</Text>
-          </Pressable>
-        </View>
-        {tab === 'details' && <>
-        <View style={styles.labelContainer}>
-          <Text style={styles.label}>Message</Text>
-          <TextInput
-            value={button.message}
-            style={styles.input}
-          />
-        </View>
-        <View style={styles.labelContainer}>
-          <Text style={styles.label}>Background</Text>
-          <ColorPicker
-            color={button.style?.backgroundColor}
-            onChange={(backgroundColor) => setButton({
-              ...button,
-              style: {
-                ...button.style,
-                backgroundColor
-              }
-            })} />
-        </View>
-        <View style={styles.labelContainer}>
-          <Text style={styles.label}>Border</Text>
-          <ColorPicker
-            color={button.style?.borderColor}
-            onChange={(borderColor) => setButton({
-              ...button,
-              style: {
-                ...button.style,
-                borderColor
-              }
-            })} />
-        </View>
-        <View style={{
-          ...styles.labelContainer,
-          marginBottom: 20,
-        }}>
-          <Text style={styles.label}>Text</Text>
-          <ColorPicker
-            color={button.style?.fontColor}
-            onChange={(fontColor) => setButton({
-              ...button,
-              style: {
-                ...button.style,
-                fontColor
-              }
-            })} />
-        </View>
-        </>}
+        <TabSelector tab={tab} setTab={setTab} />
+        {tab === 'settings' &&
+        <TileSettings
+          button={button}
+          setButton={setButton}
+        />}
         {tab === 'symbol' &&
         <SymbolPicker
           label={button.label}
           symbolUrl={button.image}
           onSelect={(image) => setButton({...button, image})}
-        />
-        }
+        />}
       </View>
       }
     </TrueSheet>
@@ -133,7 +126,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 10
   },
   input: {
     flex: 1,
@@ -153,11 +146,24 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    width: '20%',
-    minWidth: 100,
-    textAlign: 'right',
   },
   tabButton: {
-    flex: 1, justifyContent: 'center', alignItems: 'center', height: 40, borderWidth: 2
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    borderBottomColor: 'grey',
+    borderBottomWidth: 1,
+  },
+  tabButtonActive: {
+    borderBottomWidth: 2,
+    borderBottomColor: 'black',
+  },
+  tabButtonText: {
+    fontSize: 16,
+    color: 'grey',
+  },
+  tabButtonTextActive: {
+    color: 'black',
   }
 })

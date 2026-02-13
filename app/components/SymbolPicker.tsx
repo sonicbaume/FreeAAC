@@ -1,15 +1,22 @@
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
 import { Search } from "lucide-react-native";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePagesetActions, useSymbolSearchText } from "../stores/boards";
 import { searchSymbols } from "../utils/symbols";
 
+const searchBarHeight = 50
+const isIPad = Platform.OS === 'ios' && Platform.isPad;
+
 export const SymbolSearchBar = () => {
+  const insets = useSafeAreaInsets();
+  const bottomInset = isIPad ? 0 : insets.bottom;
+  console.log({bottomInset})
   const symbolSearchText = useSymbolSearchText()
   const { setSymbolSearchText } = usePagesetActions()
-  return (
-    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: 10, height: 50, backgroundColor: 'white', borderTopWidth: 1, borderTopColor: 'grey' }}>
+  return <View style={{ paddingBottom: bottomInset, backgroundColor: 'white' }}>
+    <View style={styles.searchBar}>
       <Search size={20} style={styles.inputIcon} />
       <TextInput
         value={symbolSearchText}
@@ -20,12 +27,10 @@ export const SymbolSearchBar = () => {
         }}
       />
     </View>
-  )
+  </View>
 }
 
 export default function SymbolPicker({
-  label,
-  symbolUrl,
   onSelect,
 }: {
   label: string;
@@ -37,57 +42,38 @@ export default function SymbolPicker({
     queryKey: ['symbols', searchText],
     queryFn: () => searchSymbols(searchText),
   })
-  return <View style={{  }}>
-    {/* <Text style={styles.header}>Symbol</Text> */}
-    {/* <Image
-      source={symbolUrl}
-      style={{
-        width: 200,
-        height: 200,
-        marginHorizontal: 'auto'
-      }}
-    /> */}
-    {/* <ScrollView
+  return (
+  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+    {isPending &&
+    <ActivityIndicator style={styles.symbolAlert} size="large" />
+    }
+    {error &&
+    <Text style={styles.symbolAlert}>Error: {String(error)}</Text>
+    }
+    {data && data.length === 0 &&
+    <Text style={styles.symbolAlert}>No symbols found</Text>
+    }
+    {data && data.length > 0 &&
+    <ScrollView
       nestedScrollEnabled
-      style={{ flex: 1, borderWidth: 2, borderColor: 'blue' }}
-      contentContainerStyle={{
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: 10,
-        paddingBottom: 20,
-        borderWidth: 2
-      }}  
-    > */}
-      {isPending && <Text>Loading...</Text>}
-      {error && <Text>Error: {String(error)}</Text>}
-      {data && data.length === 0 && <Text>No symbols found</Text>}
-      {data && data.length > 0 &&
-      <View style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row', gap: 20, padding: 20, justifyContent: 'center' }}>
-        {data.map((url, index) => (
-        <Pressable
-          key={index}
-          onPress={() => onSelect(url)}
-        >
-          <Image
-            source={url}
-            style={styles.symbol}
-            cachePolicy="memory"
-          />
-        </Pressable>
-      ))}
-      </View>
-      }
-    {/* </ScrollView> */}
-    {/* <View style={{ position: 'absolute', bottom: 0, flexDirection: 'row', alignItems: 'center', gap: 10, borderWidth: 2, borderColor: 'red', height: 50 }}>
-      <Search size={20} style={styles.inputIcon} />
-      <TextInput
-        value={searchText}
-        onChangeText={setSearchText}
-        style={styles.input}
-      />
-    </View> */}
-  </View>
+      style={{ marginBottom: searchBarHeight }}
+      contentContainerStyle={styles.symbolContainer}
+    >
+      {data.map((url, index) => (
+      <Pressable
+        key={index}
+        onPress={() => onSelect(url)}
+      >
+        <Image
+          source={url}
+          style={styles.symbol}
+          cachePolicy="memory"
+        />
+      </Pressable>
+    ))}
+    </ScrollView>
+    }
+  </View>)
 }
 
 const styles = StyleSheet.create({
@@ -110,13 +96,25 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
   },
+  symbolAlert: {
+    marginTop: 40,
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    height: searchBarHeight,
+    backgroundColor: 'white',
+    borderTopWidth: 1,
+    borderTopColor: 'grey'
+  },
   symbolContainer: {
-    // display: 'flex',
-    // flexWrap: 'wrap',
-    // gap: 10,
-    // paddingTop: 10,
-    height: 200,
-    borderWidth: 2,
-    borderColor: 'red',
+    display: 'flex',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    gap: 20,
+    padding: 20,
+    justifyContent: 'center'
   }
 })
