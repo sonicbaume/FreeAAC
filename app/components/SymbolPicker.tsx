@@ -31,6 +31,7 @@ export const SymbolSearchBar = () => {
 
 export default function SymbolPicker({
   onSelect,
+  symbolUrl,
 }: {
   label: string;
   symbolUrl: string | undefined;
@@ -43,27 +44,27 @@ export default function SymbolPicker({
   })
   const insets = useSafeAreaInsets()
   const bottomInset = isIPad ? 0 : insets.bottom
+  const symbols = (
+    data && symbolUrl ? [symbolUrl, ...data.filter(url => url !== symbolUrl)]
+    : symbolUrl ? [symbolUrl]
+    : []
+  )
   return (
   <ScrollView
     nestedScrollEnabled
     style={{ marginBottom: bottomInset+ 50 }}
     contentContainerStyle={{ alignItems: 'center' }}
   >
-    {isPending &&
-    <ActivityIndicator style={styles.symbolAlert} size="large" />
-    }
     {error &&
     <Text style={styles.symbolAlert}>Error: {String(error)}</Text>
     }
-    {data && data.length === 0 &&
-    <Text style={styles.symbolAlert}>No symbols found</Text>
-    }
-    {data && data.length > 0 &&
+    {symbols && symbols.length > 0 &&
     <View style={styles.symbolContainer}>
-      {data.map((url, index) => (
+      {symbols.map((url, index) => (
       <Pressable
         key={index}
         onPress={() => onSelect(url)}
+        style={url === symbolUrl ? styles.selectedSymbol : undefined}
       >
         <Image
           source={url}
@@ -73,6 +74,12 @@ export default function SymbolPicker({
       </Pressable>
     ))}
     </View>
+    }
+    {isPending &&
+    <ActivityIndicator style={styles.symbolAlert} size="large" />
+    }
+    {data && data.length === 0 &&
+    <Text style={styles.symbolAlert}>No search results</Text>
     }
   </ScrollView>)
 }
@@ -98,7 +105,7 @@ const styles = StyleSheet.create({
     height: 100,
   },
   symbolAlert: {
-    marginTop: 40,
+    marginTop: 20,
   },
   searchBar: {
     flexDirection: 'row',
@@ -117,5 +124,12 @@ const styles = StyleSheet.create({
     gap: 20,
     padding: 20,
     justifyContent: 'center'
+  },
+  selectedSymbol: {
+    outlineWidth: 2,
+    outlineColor: "white",
+    outlineStyle: "solid",
+    zIndex: 1,
+    boxShadow: "1px 1px 10px black",
   }
 })
