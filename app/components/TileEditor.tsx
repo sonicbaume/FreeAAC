@@ -59,11 +59,13 @@ export default function TileEditor({
   tile,
   setTile,
   onClose,
+  pageNames,
 }: {
   ref: React.RefObject<TrueSheet | null>;
   tile: EditTile | undefined;
   setTile: (tile: EditTile) => void;
   onClose: () => void;
+  pageNames: { id: string, name: string }[];
 }) {
   const { setSymbolSearchText } = usePagesetActions()
   const button = tile?.button
@@ -108,6 +110,7 @@ export default function TileEditor({
         <TileSettings
           button={button}
           setButton={setButton}
+          pageNames={pageNames}
         />}
         {tab === 'symbol' &&
         <SymbolPicker

@@ -25,10 +25,12 @@ export default function Page({
   page,
   savePage,
   homePageId,
+  pageNames,
 }: {
   page: BoardPage;
   savePage: (page: BoardPage) => void;
   homePageId?: string;
+  pageNames: { id: string, name: string }[];
 }) {
   const editSheet = useRef<TrueSheet>(null)
   const [pageHeight, setPageHeight] = useState(0)
@@ -123,6 +125,7 @@ export default function Page({
       tile={editTile}
       setTile={setEditTile}
       onClose={saveEditTile}
+      pageNames={pageNames}
     />
   </>
 }

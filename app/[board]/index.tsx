@@ -79,6 +79,11 @@ export default function Board() {
     return Object.values(tree.pages).map(page => page.buttons).flat() 
   }, [tree])
 
+  const pageNames = useMemo(() => {
+    if (!tree) return []
+    return Object.values(tree.pages).map(({id, name}) => ({ id, name }))
+  }, [tree])
+
   const messageWindow = (
   <MessageWindow
     navigateHome={handleNavigateHome}
@@ -97,7 +102,7 @@ export default function Board() {
           alignItems: "center",
         }}
       >
-        {page && <Page page={page} savePage={savePage} homePageId={homePageId} />}
+        {page && <Page page={page} savePage={savePage} homePageId={homePageId} pageNames={pageNames} />}
         {!page && <ActivityIndicator size="large" />}
       </View>
       {messageWindowLocation === "bottom" && messageWindow}
