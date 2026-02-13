@@ -1,11 +1,11 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Sortable, { SortableGridDragEndCallback, type SortableGridRenderItem } from "react-native-sortables";
+import { EditTile } from "../[board]";
 import { useSpeak } from "../stores/audio";
 import { useEditMode, usePagesetActions } from "../stores/boards";
 import { useGoHomeOnPress, usePlayOnPress } from "../stores/prefs";
-import { handleError } from "../utils/error";
 import { BoardButton, BoardPage } from "../utils/types";
 import { uuid } from "../utils/uuid";
 import Tile from "./Tile";
@@ -32,10 +32,8 @@ export default function Page({
 }) {
   const editSheet = useRef<TrueSheet>(null)
   const [pageHeight, setPageHeight] = useState(0)
-  const [editButton, setEditButton] = useState<{
-    button: BoardButton,
-    index: number
-  }>()
+  const [editTile, setEditTile] = useState<EditTile | undefined>()
+  const editTileRef = useRef<EditTile | undefined>(editTile)
   const editMode = useEditMode()
   const playOnPress = usePlayOnPress()
   const goHomeOnPress = useGoHomeOnPress()
@@ -48,11 +46,11 @@ export default function Page({
 
   const handleLayout = (event: LayoutChangeEvent) => setPageHeight(event.nativeEvent.layout.height)
 
-  const grid = page.grid.flat()
+  const grid = page.grid.flat() as (BoardButton | null)[]
 
   const onButtonPress = (button: BoardButton, index: number) => {
     if (editMode) {
-      setEditButton({ button, index })
+      setEditTile({button, index})
       editSheet.current?.present()
     } else if (button.action?.type === "SPEAK") {
       if (playOnPress) speak(button.action.message ?? button.message)
@@ -80,21 +78,23 @@ export default function Page({
     savePage({...page, grid})
   }
 
-  const saveEdit = useCallback(() => {
-    if (!editButton) return handleError("No button selected")
-    const { row, col } = getGridPosition(editButton.index, rows, cols)
+  useEffect(() => { editTileRef.current = editTile }, [editTile])
+  const saveEditTile = () => {
+    const tile = editTileRef.current
+    if (!tile) return undefined
+    const { row, col } = getGridPosition(tile.index, rows, cols)
     const newGrid = [...page.grid]
-    newGrid[row][col] = editButton.button
+    newGrid[row][col] = tile.button
     savePage({
       ...page,
       buttons: [
-        ...page.buttons.filter(b => b.id !== editButton.button.id),
-        editButton.button
+        ...page.buttons.filter(b => b.id !== tile.button.id),
+        tile.button
       ],
       grid: newGrid
     })
-    setEditButton(undefined)
-  }, [editButton])
+    setEditTile(undefined)
+  }
 
   return <>
     <View
@@ -117,17 +117,12 @@ export default function Page({
         itemsLayoutTransitionMode="reorder"
       />
     </View>
-    <TrueSheet
+    <TileEditor
       ref={editSheet}
-      detents={[0.5, 1]}
-      onWillDismiss={saveEdit}
-    >
-      <TileEditor
-        button={editButton?.button}
-        setButton={button => editButton && setEditButton({...editButton, button})}
-        hideSheet={() => editSheet.current?.dismiss()}
-      />
-    </TrueSheet>
+      tile={editTile}
+      setTile={setEditTile}
+      onClose={saveEditTile}
+    />
   </>
 }
 

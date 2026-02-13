@@ -1,4 +1,5 @@
 import { TrueSheetProvider } from "@lodev09/react-native-true-sheet";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
@@ -15,6 +16,7 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const [assets, error] = useAssets([require('../assets/images/icon-64x64.png')])
+  const queryClient = new QueryClient()
   return <Head.Provider>
     {Platform.OS === "web" &&
     <Head>
@@ -22,29 +24,31 @@ export default function RootLayout() {
       <meta name="description" content={appDescription} />
     </Head>
     }
-    <TrueSheetProvider>
-      <GestureHandlerRootView>
-        <Stack screenOptions={{
-          headerBackButtonDisplayMode: "minimal",
-        }}>
-          <Stack.Screen name="index" options={{
-            headerTitle: 'FreeAAC',
-            headerLeft: () => (
-              <View style={styles.headerLeft}>
-                <Image source={assets?.at(0)} style={{ width: 32, height: 32 }} />
-              </View>
-            ),
-            headerRight: () => <View style={styles.headerRight}>
-              <SettingsButton style={{ padding: 6 }} />
-            </View>,
-          }}
-          />
-          <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
-          <Stack.Screen name="templates" options={{ headerTitle: 'Templates' }} />
-          <Stack.Screen name="privacy" options={{ headerTitle: 'Privacy policy' }} />
-        </Stack>
-      </GestureHandlerRootView>
-    </TrueSheetProvider>
+    <QueryClientProvider client={queryClient}>
+      <TrueSheetProvider>
+        <GestureHandlerRootView>
+          <Stack screenOptions={{
+            headerBackButtonDisplayMode: "minimal",
+          }}>
+            <Stack.Screen name="index" options={{
+              headerTitle: 'FreeAAC',
+              headerLeft: () => (
+                <View style={styles.headerLeft}>
+                  <Image source={assets?.at(0)} style={{ width: 32, height: 32 }} />
+                </View>
+              ),
+              headerRight: () => <View style={styles.headerRight}>
+                <SettingsButton style={{ padding: 6 }} />
+              </View>,
+            }}
+            />
+            <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
+            <Stack.Screen name="templates" options={{ headerTitle: 'Templates' }} />
+            <Stack.Screen name="privacy" options={{ headerTitle: 'Privacy policy' }} />
+          </Stack>
+        </GestureHandlerRootView>
+      </TrueSheetProvider>
+    </QueryClientProvider>
     <AudioController />
   </Head.Provider>
 }
