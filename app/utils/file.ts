@@ -34,11 +34,11 @@ const fileAdapter = {
   },
   writeBinaryToPath: (outputPath: string, data: Uint8Array): void => {
     console.log("WRITING USING ADAPTER")
-    saveFile(outputPath, data, 'document')
+    saveFile(outputPath, data)
   },
   writeTextToPath: (outputPath: string, text: string): void => {
     console.log("WRITING USING ADAPTER")
-    saveFile(outputPath, new TextEncoder().encode(text), 'document')
+    saveFile(outputPath, new TextEncoder().encode(text))
   },
   pathExists: (path: string): boolean => {
     return Paths.info(path).exists
@@ -83,14 +83,14 @@ const fileAdapter = {
 export const saveFile = async (
   fileName: string,
   data: Uint8Array,
-  storageType: 'document' | 'cache'
 ): Promise<string> => {
   if (Platform.OS === "android" || Platform.OS === "ios") {
-    const root = storageType === 'cache' ? Paths.cache : Paths.document
+    const root = Paths.document
     const file = new File(root, fileName)
+    console.log({root, fileName, uri: file.uri})
     file.create({ overwrite: true })
     file.write(data)
-    return file.uri
+    return fileName
   } else if (Platform.OS === "web") {
     try {
       const root = await navigator.storage.getDirectory()
@@ -112,7 +112,8 @@ export const loadFile = async (fileName: string):
   Promise<Uint8Array> =>
 {
   if (Platform.OS === "android" || Platform.OS === "ios") {
-    const file = new File(fileName)
+    const root = Paths.document
+    const file = new File(root, fileName)
     return await file.bytes()
   } else if (Platform.OS === "web") {
     const root = await navigator.storage.getDirectory()
@@ -122,6 +123,22 @@ export const loadFile = async (fileName: string):
   } else {
     throw "File load not yet supported on this platform"
   }
+}
+
+export const downloadFile = async (url: string):
+  Promise<{id: string, fileName: string}> => {
+  const ext = getFileExt(url.split('/').slice(-1)[0])
+  const id = uuid()
+  const fileName = `${id}.${ext}`
+  if (Platform.OS === "web") {
+    const response = await fetch(url)
+    const data = await response.bytes()
+    await saveFile(fileName, data)
+  } else {
+    const destination = new File(Paths.document, fileName)
+    await File.downloadFileAsync(url, destination)
+  }
+  return { id, fileName }
 }
 
 const getAssetData = async (asset: DocumentPicker.DocumentPickerAsset):
@@ -147,7 +164,7 @@ export const selectFile = async (): Promise<{id: string, uri: string}> => {
   const ext = getFileExt(asset.name)
   const id = uuid()
   const fileName = `${id}.${ext}`
-  const uri = await saveFile(fileName, data, 'document')
+  const uri = await saveFile(fileName, data)
   return {id, uri}
 }
 
