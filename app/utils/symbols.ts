@@ -37,7 +37,11 @@ type GlobalSymbolsResponse = {
 
 export const searchSymbols = async (text: string): Promise<string[]> => {
   if (!text) return []
-  const response = await fetch(symbolApiUrls.global + '?query=' + encodeURIComponent(text))
+  const response = await fetch(
+    symbolApiUrls.global +
+    '?query=' + encodeURIComponent(text) +
+    '&limit=50'
+  )
   if (!response.ok) throw new Error('Failed to fetch symbols')
   const data = await response.json() as GlobalSymbolsResponse[]
   return data.map(item => item.picto.image_url)
