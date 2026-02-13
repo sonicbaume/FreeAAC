@@ -1,12 +1,14 @@
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from "expo-router";
-import { ClipboardCheck, Copy, Delete, EllipsisVertical, Fullscreen, Home, Layers, Pencil, Settings, X } from "lucide-react-native";
+import { ClipboardCheck, Copy, Delete, EllipsisVertical, Home, Layers, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSpeak } from "../stores/audio";
 import { useEditMode, useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { useButtonView, useClearMessageOnPlay, useLabelLocation, useShowBackspace, useShowShareButton } from "../stores/prefs";
 import { BoardButton } from "../utils/types";
+import PageOptions from './PageOptions';
 import TileImage from "./TileImage";
 
 export default function MessageWindow({
@@ -18,8 +20,8 @@ export default function MessageWindow({
   buttons: BoardButton[];
   isHome: boolean;
 }) {
+  const optionsSheet = useRef<TrueSheet>(null)
   const [copied, setCopied] = useState(false)
-  const [showModal, setShowModal] = useState(false)
   const scrollView = useRef<ScrollView>(null)
   const messageButtonsIds = useMessageButtonsIds()
   const clearMessageOnPlay = useClearMessageOnPlay()
@@ -30,7 +32,7 @@ export default function MessageWindow({
   const editMode = useEditMode()
   const { removeLastMessageButtonId, clearMessageButtonIds, toggleEditMode } = usePagesetActions()
   const speak = useSpeak()
-  const { replace, push } = useRouter()
+  const { replace } = useRouter()
 
   const showSymbols = buttonView === "both" || buttonView === "symbol"
   const showText = buttonView === "both" || buttonView === "text"
@@ -55,13 +57,6 @@ export default function MessageWindow({
   const handleHomePress = () => {
     if (isHome) replace('/')
     else navigateHome()
-  }
-
-  const requestFullscreen = () => {
-    if (Platform.OS !== "web") return
-    const element = document.documentElement
-    if (element.requestFullscreen) element.requestFullscreen()
-    setShowModal(false)
   }
 
   return <>
@@ -145,75 +140,17 @@ export default function MessageWindow({
         {!editMode &&
         <Pressable
           style={styles.button}
-          onPress={() => setShowModal(true)}
+          onPress={() => optionsSheet.current?.present()}
         >
           <EllipsisVertical size={30} />
         </Pressable>
         }
       </View>
     </View>
-    <Modal
-      visible={showModal}
-      animationType="none"
-      onRequestClose={() => setShowModal(false)}
-      transparent
-    >
-      <Pressable
-        style={{ flex:1, backdropFilter: 'blur(3px)' }}
-        onPress={() => setShowModal(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={{ display: 'flex', flexDirection: 'row' }}>
-            <Pressable
-              style={styles.modalButton}
-              onPress={requestFullscreen}
-            >
-              <Fullscreen size={40} />
-              <Text style={styles.modalButtonText}>Full screen</Text>
-            </Pressable>
-            <Pressable
-              style={styles.modalButton}
-              onPress={() => { setShowModal(false); push('/settings') }}
-            >
-              <Settings size={40} />
-              <Text style={styles.modalButtonText}>Settings</Text>
-            </Pressable>
-          </View>
-          {messageButtons.length > 0 &&
-          <View style={{ display: 'flex', flexDirection: 'row' }}>
-            <Pressable
-              style={styles.modalButton}
-              onPress={() => { clearMessageButtonIds(); setShowModal(false) }}
-            >
-              <X size={40} />
-              <Text style={styles.modalButtonText}>Clear message</Text>
-            </Pressable>
-            <Pressable
-              style={styles.modalButton}
-              onPress={() => { copyMessage(); setShowModal(false) }}
-            >
-              <Copy size={40} />
-              <Text style={styles.modalButtonText}>Copy to clipboard</Text>
-            </Pressable>
-          </View>
-          }
-          {messageButtons.length === 0 &&
-          <View style={{ display: 'flex', flexDirection: 'row' }}>
-            <Pressable
-              style={styles.modalButton}
-              onPress={() => { toggleEditMode(); setShowModal(false) }}
-            >
-              <Pencil size={40} />
-              <Text style={styles.modalButtonText}>Edit board</Text>
-            </Pressable>
-            <View
-              style={styles.modalButton}
-            />
-          </View>
-          }
-        </View>
-      </Pressable>
-    </Modal>
+    <PageOptions
+      ref={optionsSheet}
+      copyMessage={messageButtonsIds.length > 0 ? copyMessage : undefined}
+    />
   </>
 }
 
