@@ -38,7 +38,7 @@ export default function Page({
   const playOnPress = usePlayOnPress()
   const goHomeOnPress = useGoHomeOnPress()
   const speak = useSpeak()
-  const { setCurrentPageId, addMessageButtonId } = usePagesetActions()
+  const { setCurrentPageId, addMessageButtonId, setSymbolSearchText } = usePagesetActions()
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
   const rowHeight = getRowHeight(pageHeight, rows)
@@ -51,6 +51,7 @@ export default function Page({
   const onButtonPress = (button: BoardButton, index: number) => {
     if (editMode) {
       setEditTile({button, index})
+      setSymbolSearchText(button.label)
       editSheet.current?.present()
     } else if (button.action?.type === "SPEAK") {
       if (playOnPress) speak(button.action.message ?? button.message)
