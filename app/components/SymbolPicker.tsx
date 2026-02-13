@@ -10,9 +10,8 @@ const searchBarHeight = 50
 const isIPad = Platform.OS === 'ios' && Platform.isPad;
 
 export const SymbolSearchBar = () => {
-  const insets = useSafeAreaInsets();
-  const bottomInset = isIPad ? 0 : insets.bottom;
-  console.log({bottomInset})
+  const insets = useSafeAreaInsets()
+  const bottomInset = isIPad ? 0 : insets.bottom
   const symbolSearchText = useSymbolSearchText()
   const { setSymbolSearchText } = usePagesetActions()
   return <View style={{ paddingBottom: bottomInset, backgroundColor: 'white' }}>
@@ -42,8 +41,14 @@ export default function SymbolPicker({
     queryKey: ['symbols', searchText],
     queryFn: () => searchSymbols(searchText),
   })
+  const insets = useSafeAreaInsets()
+  const bottomInset = isIPad ? 0 : insets.bottom
   return (
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start' }}>
+  <ScrollView
+    nestedScrollEnabled
+    style={{ marginBottom: bottomInset+ 50 }}
+    contentContainerStyle={{ alignItems: 'center' }}
+  >
     {isPending &&
     <ActivityIndicator style={styles.symbolAlert} size="large" />
     }
@@ -54,11 +59,7 @@ export default function SymbolPicker({
     <Text style={styles.symbolAlert}>No symbols found</Text>
     }
     {data && data.length > 0 &&
-    <ScrollView
-      nestedScrollEnabled
-      style={{ marginBottom: searchBarHeight }}
-      contentContainerStyle={styles.symbolContainer}
-    >
+    <View style={styles.symbolContainer}>
       {data.map((url, index) => (
       <Pressable
         key={index}
@@ -71,9 +72,9 @@ export default function SymbolPicker({
         />
       </Pressable>
     ))}
-    </ScrollView>
+    </View>
     }
-  </View>)
+  </ScrollView>)
 }
 
 const styles = StyleSheet.create({

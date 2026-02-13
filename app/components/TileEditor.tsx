@@ -1,7 +1,7 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
 import { Check } from "lucide-react-native";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { EditTile } from "../[board]";
 import { usePagesetActions } from "../stores/boards";
 import { BoardButton } from "../utils/types";
@@ -77,7 +77,7 @@ export default function TileEditor({
   return (
     <TrueSheet
       ref={ref}
-      detents={[0.5, 0.75]}
+      detents={Platform.OS === "web" ? [0.75] : [0.5, 0.75]}
       onWillDismiss={onClose}
       backgroundColor="white"
       scrollable
