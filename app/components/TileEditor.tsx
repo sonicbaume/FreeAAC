@@ -3,6 +3,7 @@ import { Check } from "lucide-react-native";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { EditTile } from "../[board]";
+import { usePagesetActions } from "../stores/boards";
 import { BoardButton } from "../utils/types";
 import ColorPicker from "./ColorPicker";
 import SymbolPicker, { SymbolSearchBar } from "./SymbolPicker";
@@ -18,6 +19,7 @@ export default function TileEditor({
   setTile: (tile: EditTile) => void;
   onClose: () => void;
 }) {
+  const { setSymbolSearchText } = usePagesetActions()
   const button = tile?.button
   const setButton = (newButton: BoardButton) => tile && setTile({
     button: newButton,
@@ -43,7 +45,11 @@ export default function TileEditor({
         }}>
           <TextInput
             value={button?.label}
-            onChangeText={label => button && setButton({...button, label})}
+            onChangeText={label => {
+              if (!button) return
+              setButton({...button, label})
+              setSymbolSearchText(label)
+            }}
             style={{
               ...styles.input,
               ...styles.inputBorder,
