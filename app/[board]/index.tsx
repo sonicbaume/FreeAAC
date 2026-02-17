@@ -51,6 +51,7 @@ export default function Board() {
     if (!uri) return handleError('Could not save page - file not defined')
     if (!tree) return handleError('Could not save page - tree does not exist')
     if (!currentPageId) return handleError('Could not save page - ID undefined')
+    console.log("Saving page", page)
     const newPages = {...tree.pages}
     newPages[currentPageId] = {
       ...newPages[currentPageId],

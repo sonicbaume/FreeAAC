@@ -55,12 +55,12 @@ export default function Page({
       setEditTile({button, index})
       setSymbolSearchText(button.label)
       editSheet.current?.present()
-    } else if (button.action?.type === "SPEAK") {
-      if (playOnPress) speak(button.action.message ?? button.message)
+    } else if (button.semanticAction?.intent === "SPEAK_TEXT") {
+      if (playOnPress) speak(button.semanticAction.text ?? button.message)
       addMessageButtonId(button.id)
       if (goHomeOnPress && homePageId) setCurrentPageId(homePageId)
-    } else if (button.action?.type === "NAVIGATE" && button.action.targetPageId) {
-      setCurrentPageId(button.action.targetPageId)
+    } else if (button.semanticAction?.intent === "NAVIGATE_TO" && button.semanticAction.targetId) {
+      setCurrentPageId(button.semanticAction.targetId)
     }
   }
 

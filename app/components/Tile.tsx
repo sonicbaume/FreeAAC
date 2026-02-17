@@ -38,7 +38,7 @@ export default function Tile({
 
   const showText = buttonView === "both" || buttonView === "text"
   const showSymbol = buttonView === "both" || buttonView === "symbol"
-  const isLink = button.action?.type === "NAVIGATE"
+  const isLink = button.semanticAction?.targetId !== undefined
   const labelJustify = buttonView === "text" ? "center" :
     labelLocation === "bottom" ? "flex-end" :
     "flex-start"
