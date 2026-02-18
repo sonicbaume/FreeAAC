@@ -91,6 +91,7 @@ export default function Board() {
     navigateHome={handleNavigateHome}
     buttons={buttons}
     isHome={homePageId === page?.id}
+    pageTitle={page?.name}
   />)
   
   return <>

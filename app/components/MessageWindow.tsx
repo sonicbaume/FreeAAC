@@ -15,10 +15,12 @@ export default function MessageWindow({
   navigateHome,
   buttons,
   isHome,
+  pageTitle,
 }: {
   navigateHome: () => void;
   buttons: BoardButton[];
   isHome: boolean;
+  pageTitle?: string;
 }) {
   const optionsSheet = useRef<TrueSheet>(null)
   const [copied, setCopied] = useState(false)
@@ -76,6 +78,7 @@ export default function MessageWindow({
         </Pressable>
       </View>
       }
+      {!editMode &&
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
         <ScrollView
           ref={scrollView}
@@ -128,6 +131,12 @@ export default function MessageWindow({
           </>}
         </View>
       </View>
+      }
+      {editMode &&
+      <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#eee' }}>
+        <Text>{pageTitle}</Text>
+      </View>      
+      }
       <View style={{ padding: 10 }}>
         {editMode &&
         <Pressable
