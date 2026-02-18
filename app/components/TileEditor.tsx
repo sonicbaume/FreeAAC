@@ -101,7 +101,14 @@ export default function TileEditor({
             value={button?.label}
             onChangeText={label => {
               if (!button) return
-              setButton({...button, label, message: label}, image)
+              setButton({
+                ...button,
+                label,
+                message: label,
+                semanticAction: button.semanticAction
+                  ? {...button.semanticAction, text: label}
+                  : undefined}
+              , image)
               setSymbolSearchText(label)
             }}
             style={{

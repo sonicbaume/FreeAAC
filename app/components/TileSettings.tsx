@@ -24,7 +24,13 @@ export default function TileSettings ({
         <Text style={{ fontSize: 16, minWidth: 100, textAlign: 'right' }}>Vocalization</Text>
         <TextInput
           value={button.message}
-          onChangeText={message => setButton({...button, message})}
+          onChangeText={message => setButton({
+            ...button,
+            message,
+            semanticAction: button.semanticAction
+              ? {...button.semanticAction, text: message}
+              : undefined
+          })}
           placeholder={button.label}
           style={styles.input}
         />
