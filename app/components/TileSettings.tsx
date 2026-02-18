@@ -1,5 +1,5 @@
 import { AACSemanticCategory } from "@willwade/aac-processors/browser";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { BoardButton } from "../utils/types";
 import ColorPicker from "./ColorPicker";
@@ -16,7 +16,10 @@ export default function TileSettings ({
   deleteTile: () => void;
 }) {
   return (
-    <View style={{ display: 'flex', gap: 20, padding: 20  }}>
+    <ScrollView
+      nestedScrollEnabled
+      contentContainerStyle={{display: 'flex', gap: 20, padding: 20}}
+    >
       <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
         <Text style={{ fontSize: 16, minWidth: 100, textAlign: 'right' }}>Vocalization</Text>
         <TextInput
@@ -93,7 +96,7 @@ export default function TileSettings ({
       >
         <Text style={styles.deleteButtonText}>Delete</Text>
       </Pressable>
-    </View>
+    </ScrollView>
   )
 }
 
