@@ -1,4 +1,4 @@
-import { AACSemanticCategory } from "@willwade/aac-processors/browser";
+import { AACSemanticCategory, AACSemanticIntent } from "@willwade/aac-processors/browser";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { BoardButton } from "../utils/types";
@@ -43,7 +43,7 @@ export default function TileSettings ({
             ...button,
             semanticAction: {
               category: AACSemanticCategory.NAVIGATION,
-              intent: "NAVIGATE_TO",
+              intent: AACSemanticIntent.NAVIGATE_TO,
               targetId: item.id,
               fallback: {
                   type: 'NAVIGATE',
