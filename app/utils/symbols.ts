@@ -53,8 +53,6 @@ export const searchSymbols = async (text: string): Promise<TileImage[]> => {
       id: nanoid(),
       content_type: getMime(item.picto.native_format),
       data_url: item.picto.image_url,
-      width: 460,
-      height: 460,
       path: item.picto.image_url.split('/').at(-1) ?? '',
       url: item.picto.image_url,
       license: {

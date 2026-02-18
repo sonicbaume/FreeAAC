@@ -1,5 +1,6 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
-import { AACButton, AACSemanticIntent } from "@willwade/aac-processors/browser";
+import { AACSemanticIntent } from "@willwade/aac-processors/browser";
+import { nanoid } from "nanoid/non-secure";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Sortable, { SortableGridDragEndCallback, type SortableGridRenderItem } from "react-native-sortables";
@@ -50,7 +51,7 @@ export default function Page({
 
   const generateNewButton = (): BoardButton => {
     return {
-      id: `${page.id}::${page.buttons.length}`,
+      id: `${page.id}::${nanoid()}`,
       label: '',
       message: '',
       type: "SPEAK",
@@ -116,21 +117,17 @@ export default function Page({
       ? [...otherImages, tile.image]
       : otherImages
     if (tile.button && tile.image) {
-      (tile.button as AACButton & {imageId: string}) = {
+      tile.button = {
         ...tile.button,
         image: tile.image.url,
-        imageId: tile.image.id,
+        parameters: {...tile.button.parameters, image_id: tile.image.id}
       }
     }
     const newGrid = [...page.grid]
     newGrid[row][col] = tile.button ?? null
-    const otherButtons = page.buttons.filter(b => b.id !== tile.button?.id)
-    const newButtons = tile.button
-      ? [...otherButtons, tile.button]
-      : otherButtons
     savePage({
       ...page,
-      buttons: newButtons,
+      buttons: newGrid.flat().filter(b => b !== null),
       grid: newGrid,
       images: newImages
     })
