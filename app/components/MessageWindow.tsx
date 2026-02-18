@@ -36,13 +36,14 @@ export default function MessageWindow({
   const speak = useSpeak()
   const { replace } = useRouter()
 
+  const hasMessage = messageButtonsIds.length > 0
   const showSymbols = buttonView === "both" || buttonView === "symbol"
   const showText = buttonView === "both" || buttonView === "text"
 
   const messageButtons = messageButtonsIds
     .map(id => buttons.find(b => b.id === id))
     .filter(b => b !== undefined)
-  const message =  messageButtons.map(b => b.message).join(' ')
+  const message =  messageButtons.map(b => b.label).join(' ')
 
   const copyMessage = async () => {
     const success = await Clipboard.setStringAsync(message)
@@ -78,7 +79,7 @@ export default function MessageWindow({
         </Pressable>
       </View>
       }
-      {!editMode && messageButtons.length > 0 &&
+      {!editMode && hasMessage &&
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
         <ScrollView
           ref={scrollView}
@@ -86,7 +87,7 @@ export default function MessageWindow({
           onContentSizeChange={() => scrollView.current?.scrollToEnd()}
           onTouchEnd={() => Platform.OS !== "web" && playMessage()}
           onPointerUp={() => Platform.OS === "web" && playMessage()}
-          style={{ cursor: messageButtons.length > 0 ? 'pointer' : undefined }}
+          style={{ cursor: hasMessage ? 'pointer' : undefined }}
         >
           <View style={{ display: 'flex', justifyContent: 'center' }}>
             {showText && labelLocation === "top" && <Text>{message}</Text>}
@@ -105,7 +106,7 @@ export default function MessageWindow({
           </View>
         </ScrollView>
         <View style={{ display: 'flex', flexDirection: 'row', padding: 10 }}>
-          {messageButtonsIds.length > 0 && <>
+          {hasMessage && <>
             {showShareButton &&
             <Pressable
               style={styles.button}
@@ -132,7 +133,7 @@ export default function MessageWindow({
         </View>
       </View>
       }
-      {(editMode || messageButtons.length === 0) &&
+      {(editMode || !hasMessage) &&
       <View style={styles.pageTitleContainer}>
         <Text style={styles.pageTitle}>{pageTitle}</Text>
       </View>      
@@ -158,7 +159,7 @@ export default function MessageWindow({
     </View>
     <PageOptions
       ref={optionsSheet}
-      copyMessage={messageButtonsIds.length > 0 ? copyMessage : undefined}
+      copyMessage={hasMessage ? copyMessage : undefined}
     />
   </>
 }
