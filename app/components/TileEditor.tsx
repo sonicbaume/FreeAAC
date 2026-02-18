@@ -69,11 +69,17 @@ export default function TileEditor({
 }) {
   const { setSymbolSearchText } = usePagesetActions()
   const button = tile?.button
-  const setButton = (newButton: BoardButton) => tile && setTile({
+  const setButton = (newButton: BoardButton | undefined) => tile && setTile({
     button: newButton,
     index: tile.index,
   })
   const [tab, setTab] = useState<Tab>('settings')
+
+  const deleteTile = () => {
+    setButton(undefined)
+    ref.current?.dismiss()
+  }
+
   return (
     <TrueSheet
       ref={ref}
@@ -111,6 +117,7 @@ export default function TileEditor({
           button={button}
           setButton={setButton}
           pageNames={pageNames}
+          deleteTile={deleteTile}
         />}
         {tab === 'symbol' &&
         <SymbolPicker

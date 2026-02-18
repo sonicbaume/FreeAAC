@@ -12,7 +12,7 @@ import { getHomePageId } from "../utils/pagesets";
 import { BoardButton, BoardPage, BoardTree } from "../utils/types";
 
 export type EditTile = {
-  button: BoardButton;
+  button: BoardButton | undefined;
   index: number;
 }
 

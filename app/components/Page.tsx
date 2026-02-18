@@ -87,13 +87,14 @@ export default function Page({
     if (!tile) return undefined
     const { row, col } = getGridPosition(tile.index, rows, cols)
     const newGrid = [...page.grid]
-    newGrid[row][col] = tile.button
+    newGrid[row][col] = tile.button ?? null
+    const otherButtons = page.buttons.filter(b => b.id !== tile.button?.id)
+    const newButtons = tile.button
+      ? [...otherButtons, tile.button]
+      : otherButtons
     savePage({
       ...page,
-      buttons: [
-        ...page.buttons.filter(b => b.id !== tile.button.id),
-        tile.button
-      ],
+      buttons: newButtons,
       grid: newGrid
     })
     setEditTile(undefined)

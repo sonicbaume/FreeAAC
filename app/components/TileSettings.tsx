@@ -1,5 +1,5 @@
 import { AACSemanticCategory } from "@willwade/aac-processors/browser";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { BoardButton } from "../utils/types";
 import ColorPicker from "./ColorPicker";
@@ -7,11 +7,13 @@ import ColorPicker from "./ColorPicker";
 export default function TileSettings ({
   button,
   setButton,
-  pageNames
+  pageNames,
+  deleteTile,
 }: {
   button: BoardButton;
   setButton: (button: BoardButton) => void;
   pageNames: { id: string, name: string }[];
+  deleteTile: () => void;
 }) {
   return (
     <View style={{ display: 'flex', gap: 20, padding: 20  }}>
@@ -85,6 +87,12 @@ export default function TileSettings ({
           }
         })}
       />
+      <Pressable
+        style={styles.deleteButton}
+        onPress={deleteTile}
+      >
+        <Text style={styles.deleteButtonText}>Delete</Text>
+      </Pressable>
     </View>
   )
 }
@@ -103,5 +111,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'grey',
     borderRadius: 5,
+  },
+  deleteButton: {
+    flex: 1,
+    alignItems: 'center',
+    borderColor: 'red',
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 10
+  },
+  deleteButtonText: {
+    color: 'red'
   }
 })
