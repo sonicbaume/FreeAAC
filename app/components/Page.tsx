@@ -1,4 +1,6 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
+import { AACButton } from "@willwade/aac-processors/browser";
+import { nanoid } from "nanoid/non-secure";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Sortable, { SortableGridDragEndCallback, type SortableGridRenderItem } from "react-native-sortables";
@@ -9,6 +11,7 @@ import { useGoHomeOnPress, usePlayOnPress } from "../stores/prefs";
 import { BoardButton, BoardPage } from "../utils/types";
 import { uuid } from "../utils/uuid";
 import Tile from "./Tile";
+import TileAdd from "./TileAdd";
 import TileEditor from "./TileEditor";
 
 const pagePadding = 10
@@ -46,13 +49,29 @@ export default function Page({
   const rowHeight = getRowHeight(pageHeight, rows)
   if (!rows || !cols) return <></>
 
+  const generateNewButton = (): BoardButton => {
+    return {
+      id: `${page.id}::${page.buttons.length}`,
+      label: '',
+      message: '',
+      type: "SPEAK",
+      action: { type: "SPEAK" }
+    }
+  }
+
   const handleLayout = (event: LayoutChangeEvent) => setPageHeight(event.nativeEvent.layout.height)
 
   const grid = page.grid.flat() as (BoardButton | null)[]
 
+  const addButton = (index: number) => {
+    setEditTile({ button: generateNewButton(), image: undefined, index })
+    setSymbolSearchText('')
+    editSheet.current?.present()
+  }
+
   const onButtonPress = (button: BoardButton, index: number) => {
     if (editMode) {
-      setEditTile({button, index})
+      setEditTile({button, image: page.images?.find(i => i.url === button.image), index})
       setSymbolSearchText(button.label)
       editSheet.current?.present()
     } else if (button.semanticAction?.intent === "SPEAK_TEXT") {
@@ -64,15 +83,18 @@ export default function Page({
     }
   }
 
-  const renderButton = useCallback<SortableGridRenderItem<BoardButton | null>>(({item, index}) => item
-    ? <Tile
+  const renderButton = useCallback<SortableGridRenderItem<BoardButton | null>>(({item, index}) => {
+    if (item) return (
+      <Tile
         button={item}
         onPress={onButtonPress}
         height={rowHeight}
         index={index}
       />
-    : <View style={{ height: rowHeight }} />
-  , [rowHeight, onButtonPress])
+    )
+    if (editMode) return <TileAdd height={rowHeight} onPress={() => addButton(index)} />
+    return <View style={{ height: rowHeight }} />
+  }, [rowHeight, onButtonPress, editMode])
   
   const handleDragEnd: SortableGridDragEndCallback<BoardButton | null> = (result) => {
     const flatGrid = result.data
@@ -83,9 +105,21 @@ export default function Page({
 
   useEffect(() => { editTileRef.current = editTile }, [editTile])
   const saveEditTile = () => {
-    const tile = editTileRef.current
-    if (!tile) return undefined
+    const tile = {...editTileRef.current}
+    if (!tile || tile.index === undefined) return undefined
     const { row, col } = getGridPosition(tile.index, rows, cols)
+    const imageId = nanoid()
+    const otherImages = page.images?.filter(i => i.url !== tile.image?.url) ?? []
+    const newImages = tile.image
+      ? [...otherImages, tile.image]
+      : otherImages
+    if (tile.button && tile.image) {
+      (tile.button as AACButton & {imageId: string}) = {
+        ...tile.button,
+        image: tile.image.url,
+        imageId: tile.image.id,
+      }
+    }
     const newGrid = [...page.grid]
     newGrid[row][col] = tile.button ?? null
     const otherButtons = page.buttons.filter(b => b.id !== tile.button?.id)
@@ -95,7 +129,8 @@ export default function Page({
     savePage({
       ...page,
       buttons: newButtons,
-      grid: newGrid
+      grid: newGrid,
+      images: newImages
     })
     setEditTile(undefined)
   }

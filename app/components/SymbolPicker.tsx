@@ -5,6 +5,7 @@ import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, Text, T
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePagesetActions, useSymbolSearchText } from "../stores/boards";
 import { searchSymbols } from "../utils/symbols";
+import { TileImage } from "../utils/types";
 
 const searchBarHeight = 50
 const isIPad = Platform.OS === 'ios' && Platform.isPad;
@@ -31,11 +32,11 @@ export const SymbolSearchBar = () => {
 
 export default function SymbolPicker({
   onSelect,
-  symbolUrl,
+  symbol,
 }: {
   label: string;
-  symbolUrl: string | undefined;
-  onSelect: (url: string) => void;
+  symbol: TileImage | undefined;
+  onSelect: (symbol: TileImage) => void;
 }) {
   const searchText = useSymbolSearchText()
   const { isPending, error, data } = useQuery({
@@ -45,8 +46,9 @@ export default function SymbolPicker({
   const insets = useSafeAreaInsets()
   const bottomInset = isIPad ? 0 : insets.bottom
   const symbols = (
-    data && symbolUrl ? [symbolUrl, ...data.filter(url => url !== symbolUrl)]
-    : symbolUrl ? [symbolUrl]
+    data && symbol ? [symbol, ...data.filter(image => image.url !== symbol.url)]
+    : data ? data
+    : symbol ? [symbol]
     : []
   )
   return (
@@ -60,14 +62,14 @@ export default function SymbolPicker({
     }
     {symbols && symbols.length > 0 &&
     <View style={styles.symbolContainer}>
-      {symbols.map((url, index) => (
+      {symbols.map((s, index) => (
       <Pressable
         key={index}
-        onPress={() => onSelect(url)}
-        style={url === symbolUrl ? styles.selectedSymbol : undefined}
+        onPress={() => onSelect(s)}
+        style={symbol && s.url === symbol.url ? styles.selectedSymbol : undefined}
       >
         <Image
-          source={url}
+          source={s.url}
           style={styles.symbol}
           cachePolicy="memory"
         />

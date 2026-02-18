@@ -16,5 +16,23 @@ type DataOnly<T> = {
   [K in keyof T as T[K] extends Function ? never : K]: T[K]
 };
 export type BoardButton = DataOnly<AACButton>
-export type BoardPage = DataOnly<AACPage>
+export type BoardPage = DataOnly<AACPage> & {
+  images?: TileImage[]
+}
 export type BoardTree = Omit<DataOnly<AACTree>, 'pages'> & { pages: { [key: string]: BoardPage } }
+export type TileImage = {
+  content_type?: string;
+  data_url?: string;
+  height?: number;
+  id: string;
+  license?: {
+    author_name?: string;
+    author_url?: string;
+    copyright_notice_url?: string;
+    type?: string;
+    uneditable?: boolean;
+  }
+  path?: string;
+  url: string;
+  width?: number;
+}

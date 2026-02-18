@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { EditTile } from "../[board]";
 import { usePagesetActions } from "../stores/boards";
-import { BoardButton } from "../utils/types";
+import { BoardButton, TileImage } from "../utils/types";
 import SymbolPicker, { SymbolSearchBar } from "./SymbolPicker";
 import TileSettings from "./TileSettings";
 
@@ -69,14 +69,16 @@ export default function TileEditor({
 }) {
   const { setSymbolSearchText } = usePagesetActions()
   const button = tile?.button
-  const setButton = (newButton: BoardButton | undefined) => tile && setTile({
+  const image = tile?.image
+  const setButton = (newButton: BoardButton | undefined, newImage: TileImage | undefined) => tile && setTile({
     button: newButton,
+    image: newImage,
     index: tile.index,
   })
   const [tab, setTab] = useState<Tab>('settings')
 
   const deleteTile = () => {
-    setButton(undefined)
+    setButton(undefined, undefined)
     ref.current?.dismiss()
   }
 
@@ -99,7 +101,7 @@ export default function TileEditor({
             value={button?.label}
             onChangeText={label => {
               if (!button) return
-              setButton({...button, label, message: label})
+              setButton({...button, label, message: label}, image)
               setSymbolSearchText(label)
             }}
             style={{
@@ -115,15 +117,15 @@ export default function TileEditor({
         {tab === 'settings' &&
         <TileSettings
           button={button}
-          setButton={setButton}
+          setButton={newButton => setButton(newButton, image)}
           pageNames={pageNames}
           deleteTile={deleteTile}
         />}
         {tab === 'symbol' &&
         <SymbolPicker
           label={button.label}
-          symbolUrl={button.image}
-          onSelect={(image) => setButton({...button, image})}
+          symbol={image}
+          onSelect={(image) => setButton({...button}, image)}
         />}
       </View>
       }

@@ -9,10 +9,11 @@ import { useMessageWindowLocation } from "../stores/prefs";
 import { handleError } from "../utils/error";
 import { loadBoard, saveBoard } from "../utils/file";
 import { getHomePageId } from "../utils/pagesets";
-import { BoardButton, BoardPage, BoardTree } from "../utils/types";
+import { BoardButton, BoardPage, BoardTree, TileImage } from "../utils/types";
 
 export type EditTile = {
   button: BoardButton | undefined;
+  image: TileImage | undefined;
   index: number;
 }
 
