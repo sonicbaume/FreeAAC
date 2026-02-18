@@ -1,6 +1,5 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
 import { AACButton } from "@willwade/aac-processors/browser";
-import { nanoid } from "nanoid/non-secure";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Sortable, { SortableGridDragEndCallback, type SortableGridRenderItem } from "react-native-sortables";
@@ -107,8 +106,8 @@ export default function Page({
   const saveEditTile = () => {
     const tile = {...editTileRef.current}
     if (!tile || tile.index === undefined) return undefined
+    if (tile.button && !tile.button.label) return undefined
     const { row, col } = getGridPosition(tile.index, rows, cols)
-    const imageId = nanoid()
     const otherImages = page.images?.filter(i => i.url !== tile.image?.url) ?? []
     const newImages = tile.image
       ? [...otherImages, tile.image]
