@@ -1,5 +1,5 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
-import { AACButton } from "@willwade/aac-processors/browser";
+import { AACButton, AACSemanticIntent } from "@willwade/aac-processors/browser";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Sortable, { SortableGridDragEndCallback, type SortableGridRenderItem } from "react-native-sortables";
@@ -54,7 +54,10 @@ export default function Page({
       label: '',
       message: '',
       type: "SPEAK",
-      action: { type: "SPEAK" }
+      action: { type: "SPEAK" },
+      semanticAction: {
+        intent: AACSemanticIntent.SPEAK_TEXT
+      }
     }
   }
 
@@ -73,11 +76,11 @@ export default function Page({
       setEditTile({button, image: page.images?.find(i => i.url === button.image), index})
       setSymbolSearchText(button.label)
       editSheet.current?.present()
-    } else if (button.semanticAction?.intent === "SPEAK_TEXT") {
+    } else if (button.semanticAction?.intent === AACSemanticIntent.SPEAK_TEXT) {
       if (playOnPress) speak(button.semanticAction.text ?? button.message)
       addMessageButtonId(button.id)
       if (goHomeOnPress && homePageId) setCurrentPageId(homePageId)
-    } else if (button.semanticAction?.intent === "NAVIGATE_TO" && button.semanticAction.targetId) {
+    } else if (button.semanticAction?.intent === AACSemanticIntent.NAVIGATE_TO && button.semanticAction.targetId) {
       setCurrentPageId(button.semanticAction.targetId)
     }
   }
