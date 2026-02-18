@@ -78,7 +78,7 @@ export default function MessageWindow({
         </Pressable>
       </View>
       }
-      {!editMode &&
+      {!editMode && messageButtons.length > 0 &&
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
         <ScrollView
           ref={scrollView}
@@ -132,9 +132,9 @@ export default function MessageWindow({
         </View>
       </View>
       }
-      {editMode &&
-      <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', backgroundColor: '#eee' }}>
-        <Text>{pageTitle}</Text>
+      {(editMode || messageButtons.length === 0) &&
+      <View style={styles.pageTitleContainer}>
+        <Text style={styles.pageTitle}>{pageTitle}</Text>
       </View>      
       }
       <View style={{ padding: 10 }}>
@@ -187,5 +187,17 @@ const styles = StyleSheet.create({
   modalButtonText: {
     fontSize: 20,
     textAlign: 'center'
+  },
+  pageTitle: {
+    fontSize: 28,
+    paddingLeft: 20,
+    color: 'lightgrey',
+  },
+  pageTitleContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#eee'
   }
 })
