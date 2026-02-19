@@ -1,3 +1,4 @@
+import { Image } from "expo-image";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
@@ -37,6 +38,11 @@ export default function Board() {
         const homePageId = getHomePageId(tree)
         setCurrentPageId(homePageId)
       }
+      Image.prefetch(Object.values(tree.pages)
+        .map(page => page.images).flat()
+        .filter(url => url !== undefined)
+        .map(image => image.url)
+      )
     } catch (e) {
       handleError(e)
     }
