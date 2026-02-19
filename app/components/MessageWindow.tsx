@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     paddingLeft: 20,
     color: 'lightgrey',
+    userSelect: 'none',
   },
   pageTitleContainer: {
     flex: 1,
