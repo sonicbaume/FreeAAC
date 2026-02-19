@@ -18,6 +18,19 @@ export type EditTile = {
   index: number;
 }
 
+const prefetchImages = (tree: BoardTree) => {
+  Image.prefetch(Object.values(tree.pages)
+    .map(page => page.images).flat()
+    .filter(image => image !== undefined)
+    .map(image => {
+      if (image.path) return undefined
+      if (image.data_url?.startsWith('http')) return image.data_url
+      return image.url
+    })
+    .filter(image => image !== undefined)
+  )
+}
+
 export default function Board() {
   const { board } = useLocalSearchParams()
   const boards = useBoards()
@@ -38,11 +51,7 @@ export default function Board() {
         const homePageId = getHomePageId(tree)
         setCurrentPageId(homePageId)
       }
-      Image.prefetch(Object.values(tree.pages)
-        .map(page => page.images).flat()
-        .filter(url => url !== undefined)
-        .map(image => image.url)
-      )
+      prefetchImages(tree)
     } catch (e) {
       handleError(e)
     }
