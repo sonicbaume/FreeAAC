@@ -4,6 +4,11 @@ import { Dropdown } from "react-native-element-dropdown";
 import { BoardButton } from "../utils/types";
 import ColorPicker from "./ColorPicker";
 
+type PageName = {
+  id: string | undefined;
+  name: string
+}
+
 export default function TileSettings ({
   button,
   setButton,
@@ -12,9 +17,43 @@ export default function TileSettings ({
 }: {
   button: BoardButton;
   setButton: (button: BoardButton) => void;
-  pageNames: { id: string, name: string }[];
+  pageNames: PageName[];
   deleteTile: () => void;
 }) {
+  const setVocalization = (message: string) => {
+    setButton({
+      ...button,
+      message,
+      semanticAction: button.semanticAction
+        ? {...button.semanticAction, text: message}
+        : undefined
+    })
+  }
+  const setNavigation = (item: PageName) => {
+    if (item.id === undefined) {
+      setButton({
+        ...button,
+        semanticAction: {
+          category: AACSemanticCategory.COMMUNICATION,
+          intent: AACSemanticIntent.SPEAK_TEXT,
+          text: button.message,
+        }
+      })
+    } else {
+      setButton({
+        ...button,
+        semanticAction: {
+          category: AACSemanticCategory.NAVIGATION,
+          intent: AACSemanticIntent.NAVIGATE_TO,
+          targetId: item.id,
+          fallback: {
+              type: 'NAVIGATE',
+              targetPageId: item.id,
+          },
+        }
+      })
+    }
+  }
   return (
     <ScrollView
       nestedScrollEnabled
@@ -24,13 +63,7 @@ export default function TileSettings ({
         <Text style={{ fontSize: 16, minWidth: 100, textAlign: 'right' }}>Vocalization</Text>
         <TextInput
           value={button.message}
-          onChangeText={message => setButton({
-            ...button,
-            message,
-            semanticAction: button.semanticAction
-              ? {...button.semanticAction, text: message}
-              : undefined
-          })}
+          onChangeText={setVocalization}
           placeholder={button.label}
           style={styles.input}
         />
@@ -45,18 +78,7 @@ export default function TileSettings ({
           labelField="name"
           valueField="id"
           value={button.semanticAction?.targetId}
-          onChange={(item) => setButton({
-            ...button,
-            semanticAction: {
-              category: AACSemanticCategory.NAVIGATION,
-              intent: AACSemanticIntent.NAVIGATE_TO,
-              targetId: item.id,
-              fallback: {
-                  type: 'NAVIGATE',
-                  targetPageId: item.id,
-              },
-            }
-          })}
+          onChange={setNavigation}
           style={{
             ...styles.input,
             minWidth: 200,

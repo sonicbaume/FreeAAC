@@ -16,7 +16,7 @@ type DataOnly<T> = {
   [K in keyof T as T[K] extends Function ? never : K]: T[K]
 };
 export type BoardButton = DataOnly<AACButton>
-export type BoardPage = DataOnly<AACPage> & {
+export type BoardPage = Omit<DataOnly<AACPage>, 'images'> & {
   images?: TileImage[]
 }
 export type BoardTree = Omit<DataOnly<AACTree>, 'pages'> & { pages: { [key: string]: BoardPage } }
