@@ -13,6 +13,9 @@ interface PagesetsState {
   currentBoardId: string | undefined;
   currentPageId: string | undefined;
   messageButtonsIds: string[];
+  editMode: boolean;
+  editButtonId: string | undefined;
+  symbolSearchText: string;
   actions: {
     setCurrentBoardId: (boardId: string | undefined) => void;
     setCurrentPageId: (pageId: string | undefined) => void;
@@ -21,6 +24,9 @@ interface PagesetsState {
     addMessageButtonId: (buttonId: string) => void;
     removeLastMessageButtonId: () => void;
     clearMessageButtonIds: () => void;
+    toggleEditMode: () => void;
+    setEditButtonId: (buttonId: string | undefined) => void;
+    setSymbolSearchText: (text: string) => void;
   }
 }
 
@@ -30,6 +36,9 @@ const useStore = create<PagesetsState>()(persist(
     currentBoardId: undefined,
     currentPageId: undefined,
     messageButtonsIds: [],
+    editMode: false,
+    editButtonId: undefined,
+    symbolSearchText: '',
     actions: {
       setCurrentBoardId: (boardId) => set({
         currentBoardId: boardId
@@ -52,6 +61,15 @@ const useStore = create<PagesetsState>()(persist(
       clearMessageButtonIds: () => set({
         messageButtonsIds: []
       }),
+      toggleEditMode: () => set({
+        editMode: !get().editMode
+      }),
+      setEditButtonId: (buttonId: string | undefined) => set({
+        editButtonId: buttonId
+      }),
+      setSymbolSearchText: (text: string) => set({
+        symbolSearchText: text
+      }),
     }
   }),
   {
@@ -68,4 +86,7 @@ export const useBoards = () => useStore(s => s.boards)
 export const useCurrentBoardId = () => useStore(s => s.currentBoardId)
 export const useCurrentPageId = () => useStore(s => s.currentPageId)
 export const useMessageButtonsIds = () => useStore(s => s.messageButtonsIds)
+export const useEditMode = () => useStore(s => s.editMode)
+export const useEditButtonId = () => useStore(s => s.editButtonId)
+export const useSymbolSearchText = () => useStore(s => s.symbolSearchText)
 export const usePagesetActions = () => useStore(s => s.actions)

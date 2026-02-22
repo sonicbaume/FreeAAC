@@ -1,55 +1,52 @@
-import type { AACButton } from "@willwade/aac-processors/browser"
+import { AACButton, AACStyle } from "@willwade/aac-processors/browser"
 import { StyleSheet, Text, View } from "react-native"
 import Sortable from "react-native-sortables"
-import { useSpeak } from "../stores/audio"
-import { usePagesetActions } from "../stores/boards"
-import { useButtonView, useGoHomeOnPress, useLabelLocation, usePlayOnPress } from "../stores/prefs"
+import { useButtonView, useLabelLocation } from "../stores/prefs"
+import { BoardButton } from "../utils/types"
 import TileImage from "./TileImage"
 
-const Label = ({ text }: { text: string }) => {
+const Label = ({
+  text,
+  style,
+}: {
+  text: string;
+  style?: AACStyle;
+}) => {
   return (
-    <Text style={styles.label}>
+    <Text style={{
+      ...styles.label,
+      color: style?.fontColor,
+      fontSize: style?.fontSize,
+    }}>
       {text}
     </Text>
   )
 }
 export default function Tile({
   button,
+  onPress,
   height,
-  homePageId,
+  index,
 }: {
-  button: AACButton;
+  button: BoardButton;
+  onPress: (button: AACButton, index: number) => void;
   height: number;
-  homePageId?: string;
+  index: number;
 }) {
-  const playOnPress = usePlayOnPress()
   const labelLocation = useLabelLocation()
-  const goHomeOnPress = useGoHomeOnPress()
   const buttonView = useButtonView()
-  const { setCurrentPageId, addMessageButtonId } = usePagesetActions()
-  const speak = useSpeak()
 
   const showText = buttonView === "both" || buttonView === "text"
   const showSymbol = buttonView === "both" || buttonView === "symbol"
-  const isLink = button.action?.type === "NAVIGATE"
+  const isLink = button.semanticAction?.targetId !== undefined
   const labelJustify = buttonView === "text" ? "center" :
     labelLocation === "bottom" ? "flex-end" :
     "flex-start"
-  
-  const handlePress = () => {
-    if (button.action?.type === "SPEAK") {
-      if (playOnPress) speak(button.action.message ?? button.message)
-      addMessageButtonId(button.id)
-      if (goHomeOnPress && homePageId) setCurrentPageId(homePageId)
-    } else if (button.action?.type === "NAVIGATE" && button.action.targetPageId) {
-      setCurrentPageId(button.action.targetPageId)
-    }
-  }
 
   return (
     <View style={{ height }}>
       <Sortable.Touchable
-        onTap={handlePress}
+        onTap={() => onPress(button, index)}
         style={{
           ...styles.container,
           ...button.style,
@@ -58,9 +55,9 @@ export default function Tile({
           justifyContent: labelJustify
         }}
       >
-        {showText && labelLocation === "top" && <Label text={button.label} />}
+        {showText && labelLocation === "top" && <Label text={button.label} style={button.style} />}
         {showSymbol && button.image && <TileImage uri={button.image} style={styles.symbol} />}
-        {showText && labelLocation === "bottom" && <Label text={button.label} />}
+        {showText && labelLocation === "bottom" && <Label text={button.label} style={button.style} />}
       </Sortable.Touchable>
     </View>
   )
@@ -72,7 +69,8 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: 'hidden',
     borderRadius: 10,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    borderWidth: 2,
   },
   linkOverlay: {
     position: 'absolute',
@@ -92,5 +90,6 @@ const styles = StyleSheet.create({
   },
   symbol: {
     flex: 1,
+    pointerEvents: 'none'
   },
 })

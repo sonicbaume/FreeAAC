@@ -1,25 +1,29 @@
-import type { AACButton } from "@willwade/aac-processors/browser";
+import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from "expo-router";
-import { ClipboardCheck, Copy, Delete, EllipsisVertical, Fullscreen, Home, Layers, Settings, X } from "lucide-react-native";
+import { ClipboardCheck, Copy, Delete, EllipsisVertical, Home, Layers, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useSpeak } from "../stores/audio";
-import { useMessageButtonsIds, usePagesetActions } from "../stores/boards";
+import { useEditMode, useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { useButtonView, useClearMessageOnPlay, useLabelLocation, useShowBackspace, useShowShareButton } from "../stores/prefs";
+import { BoardButton } from "../utils/types";
+import PageOptions from './PageOptions';
 import TileImage from "./TileImage";
 
 export default function MessageWindow({
   navigateHome,
   buttons,
   isHome,
+  pageTitle,
 }: {
   navigateHome: () => void;
-  buttons: AACButton[];
+  buttons: BoardButton[];
   isHome: boolean;
+  pageTitle?: string;
 }) {
+  const optionsSheet = useRef<TrueSheet>(null)
   const [copied, setCopied] = useState(false)
-  const [showModal, setShowModal] = useState(false)
   const scrollView = useRef<ScrollView>(null)
   const messageButtonsIds = useMessageButtonsIds()
   const clearMessageOnPlay = useClearMessageOnPlay()
@@ -27,17 +31,19 @@ export default function MessageWindow({
   const showBackspace = useShowBackspace()
   const buttonView = useButtonView()
   const labelLocation = useLabelLocation()
-  const { removeLastMessageButtonId, clearMessageButtonIds } = usePagesetActions()
+  const editMode = useEditMode()
+  const { removeLastMessageButtonId, clearMessageButtonIds, toggleEditMode } = usePagesetActions()
   const speak = useSpeak()
-  const { replace, push } = useRouter()
+  const { replace } = useRouter()
 
+  const hasMessage = messageButtonsIds.length > 0
   const showSymbols = buttonView === "both" || buttonView === "symbol"
   const showText = buttonView === "both" || buttonView === "text"
 
   const messageButtons = messageButtonsIds
     .map(id => buttons.find(b => b.id === id))
     .filter(b => b !== undefined)
-  const message =  messageButtons.map(b => b.message).join(' ')
+  const message =  messageButtons.map(b => b.label).join(' ')
 
   const copyMessage = async () => {
     const success = await Clipboard.setStringAsync(message)
@@ -56,19 +62,13 @@ export default function MessageWindow({
     else navigateHome()
   }
 
-  const requestFullscreen = () => {
-    if (Platform.OS !== "web") return
-    const element = document.documentElement
-    if (element.requestFullscreen) element.requestFullscreen()
-    setShowModal(false)
-  }
-
   return <>
     <View style={{
       height: 60,
       flexDirection: "row",
       backgroundColor: 'white',
     }}>
+      {!editMode &&
       <View style={{ padding: 10 }}>
         <Pressable
           style={styles.button}
@@ -78,6 +78,8 @@ export default function MessageWindow({
           {isHome && <Layers size={30} />}
         </Pressable>
       </View>
+      }
+      {!editMode && hasMessage &&
       <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
         <ScrollView
           ref={scrollView}
@@ -85,7 +87,7 @@ export default function MessageWindow({
           onContentSizeChange={() => scrollView.current?.scrollToEnd()}
           onTouchEnd={() => Platform.OS !== "web" && playMessage()}
           onPointerUp={() => Platform.OS === "web" && playMessage()}
-          style={{ cursor: messageButtons.length > 0 ? 'pointer' : undefined }}
+          style={{ cursor: hasMessage ? 'pointer' : undefined }}
         >
           <View style={{ display: 'flex', justifyContent: 'center' }}>
             {showText && labelLocation === "top" && <Text>{message}</Text>}
@@ -104,7 +106,7 @@ export default function MessageWindow({
           </View>
         </ScrollView>
         <View style={{ display: 'flex', flexDirection: 'row', padding: 10 }}>
-          {messageButtonsIds.length > 0 && <>
+          {hasMessage && <>
             {showShareButton &&
             <Pressable
               style={styles.button}
@@ -130,61 +132,35 @@ export default function MessageWindow({
           </>}
         </View>
       </View>
+      }
+      {(editMode || !hasMessage) &&
+      <View style={styles.pageTitleContainer}>
+        <Text style={styles.pageTitle}>{pageTitle}</Text>
+      </View>      
+      }
       <View style={{ padding: 10 }}>
+        {editMode &&
         <Pressable
           style={styles.button}
-          onPress={() => setShowModal(true)}
+          onPress={() => toggleEditMode()}
+        >
+          <X size={30} />
+        </Pressable>
+        }
+        {!editMode &&
+        <Pressable
+          style={styles.button}
+          onPress={() => optionsSheet.current?.present()}
         >
           <EllipsisVertical size={30} />
         </Pressable>
+        }
       </View>
     </View>
-    <Modal
-      visible={showModal}
-      animationType="none"
-      onRequestClose={() => setShowModal(false)}
-      transparent
-    >
-      <Pressable
-        style={{ flex:1, backdropFilter: 'blur(3px)' }}
-        onPress={() => setShowModal(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={{ display: 'flex', flexDirection: 'row' }}>
-            <Pressable
-              style={styles.modalButton}
-              onPress={requestFullscreen}
-            >
-              <Fullscreen size={40} />
-              <Text style={styles.modalButtonText}>Full screen</Text>
-            </Pressable>
-            <Pressable
-              style={styles.modalButton}
-              onPress={() => { setShowModal(false); push('/settings') }}
-            >
-              <Settings size={40} />
-              <Text style={styles.modalButtonText}>Settings</Text>
-            </Pressable>
-          </View>
-          <View style={{ display: 'flex', flexDirection: 'row' }}>
-            <Pressable
-              style={styles.modalButton}
-              onPress={() => { clearMessageButtonIds(); setShowModal(false) }}
-            >
-              <X size={40} />
-              <Text style={styles.modalButtonText}>Clear message</Text>
-            </Pressable>
-            <Pressable
-              style={styles.modalButton}
-              onPress={() => { copyMessage(); setShowModal(false) }}
-            >
-              <Copy size={40} />
-              <Text style={styles.modalButtonText}>Copy to clipboard</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Pressable>
-    </Modal>
+    <PageOptions
+      ref={optionsSheet}
+      copyMessage={hasMessage ? copyMessage : undefined}
+    />
   </>
 }
 
@@ -212,5 +188,18 @@ const styles = StyleSheet.create({
   modalButtonText: {
     fontSize: 20,
     textAlign: 'center'
+  },
+  pageTitle: {
+    fontSize: 28,
+    paddingLeft: 20,
+    color: 'lightgrey',
+    userSelect: 'none',
+  },
+  pageTitleContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#eee'
   }
 })
