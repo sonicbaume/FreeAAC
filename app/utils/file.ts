@@ -1,6 +1,3 @@
-
-
-
 import { AACTree, getProcessor } from '@willwade/aac-processors/browser';
 import * as DocumentPicker from 'expo-document-picker';
 import { Directory, File, Paths } from 'expo-file-system';
@@ -10,20 +7,21 @@ import { BoardTree } from './types';
 import { uuid } from './uuid';
 
 const fileAdapter = {
-  readBinaryFromInput: (input: string | Buffer | ArrayBuffer | Uint8Array): Uint8Array => {
+  readBinaryFromInput: async (input: string | Buffer | ArrayBuffer | Uint8Array): Promise<Uint8Array> => {
     console.log("READING USING ADAPTER")
     if (typeof(input) === "string") {
-      return new File(input).bytesSync()
+      return await loadFile(input)
     } else if (input instanceof ArrayBuffer) {
       return new Uint8Array(input)
     } else {
       return input
     }
   },
-  readTextFromInput: (input: string | Buffer | ArrayBuffer | Uint8Array, encoding: BufferEncoding = 'utf-8'): string => {
+  readTextFromInput: async (input: string | Buffer | ArrayBuffer | Uint8Array, encoding: BufferEncoding = 'utf-8'): Promise<string> => {
     console.log("READING USING ADAPTER")
     if (typeof input === 'string') {
-      return new File(input).textSync()
+      const data = await loadFile(input)
+      return new TextDecoder(encoding).decode(data)
     } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(input)) {
       return input.toString(encoding);
     } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(input)) {
@@ -32,42 +30,97 @@ const fileAdapter = {
       return new TextDecoder(encoding).decode(input);
     }
   },
-  writeBinaryToPath: (outputPath: string, data: Uint8Array): void => {
+  writeBinaryToPath: async (outputPath: string, data: Uint8Array): Promise<void> => {
     console.log("WRITING USING ADAPTER")
-    saveFile(outputPath, data)
+    await saveFile(outputPath, data)
   },
-  writeTextToPath: (outputPath: string, text: string): void => {
+  writeTextToPath: async (outputPath: string, text: string): Promise<void> => {
     console.log("WRITING USING ADAPTER")
-    saveFile(outputPath, new TextEncoder().encode(text))
+    await saveFile(outputPath, new TextEncoder().encode(text))
   },
-  pathExists: (path: string): boolean => {
-    return Paths.info(path).exists
-  },
-  isDirectory: (path: string): boolean => {
-    return Paths.info(path).isDirectory ?? false
-  },
-  getFileSize: (path: string): number => {
-    return new File(path).size
-  },
-  mkDir: (path: string, options?: { recursive?: boolean }): void => {
-    new Directory(path).create({
-      intermediates: options?.recursive ?? false
-    })
-  },
-  listDir: (path: string): string[] => {
-    return new Directory(path).list().map(item => item.name)
-  },
-  removePath: (path: string, options?: { recursive?: boolean; force?: boolean }): void => {
-    if (Paths.info(path).isDirectory) {
-      new Directory(path).delete()
+  pathExists: async (path: string): Promise<boolean> => {
+    if (Platform.OS === "android" || Platform.OS === "ios") {
+      return Paths.info(path).exists
     } else {
-      new File(path).delete()
+      const root = await navigator.storage.getDirectory()
+      try {
+        const fileHandle = await root.getFileHandle(path)
+        return true
+      } catch (e) {
+        if (e instanceof TypeError) {
+          try {
+            const dirHandle = await root.getDirectoryHandle(path)
+            return true
+          } catch (e) {
+            return false
+          }
+        }
+        return false
+      }
     }
   },
-  mkTempDir: (prefix: string): string => {
-    const tempDir = new Directory(Paths.cache, prefix, nanoid())
-    tempDir.create()
-    return tempDir.name
+  isDirectory: async (path: string): Promise<boolean> => {
+    if (Platform.OS === "android" || Platform.OS === "ios") {
+      return Paths.info(path).isDirectory ?? false
+    } else {
+      const root = await navigator.storage.getDirectory()
+      try {
+        const dirHandle = await root.getDirectoryHandle(path)
+        return true
+      } catch (e) {
+        return false
+      }
+    }
+  },
+  getFileSize: async (path: string): Promise<number> => {
+    if (Platform.OS === "android" || Platform.OS === "ios") {
+      return new File(path).size
+    } else {
+      const root = await navigator.storage.getDirectory()
+      const fileHandle = await root.getFileHandle(path)
+      const file = await fileHandle.getFile()
+      return file.size
+    }
+  },
+  mkDir: async (path: string, options?: { recursive?: boolean }): Promise<void> => {
+    if (Platform.OS === "android" || Platform.OS === "ios") {
+      new Directory(path).create({
+        intermediates: options?.recursive ?? false
+      })
+    } else {
+      const root = await navigator.storage.getDirectory()
+      await root.getDirectoryHandle(path, { create: true })
+    }
+  },
+  listDir: async (path: string): Promise<string[]> => {
+    if (Platform.OS === "android" || Platform.OS === "ios") {
+      return new Directory(path).list().map(item => item.name)
+    } else {
+      throw new Error('listDir not available on web')
+    }
+  },
+  removePath: async (path: string, options?: { recursive?: boolean; force?: boolean }): Promise<void> => {
+    if (Platform.OS === "android" || Platform.OS === "ios") {
+      if (Paths.info(path).isDirectory) {
+        new Directory(path).delete()
+      } else {
+        new File(path).delete()
+      }
+    } else {
+      const root = await navigator.storage.getDirectory()
+      await root.removeEntry(path)
+    }
+  },
+  mkTempDir: async (prefix: string): Promise<string> => {
+    if (Platform.OS === "android" || Platform.OS === "ios") {
+      const tempDir = new Directory(Paths.cache, prefix, nanoid())
+      tempDir.create()
+      return tempDir.name
+    } else {
+      const root = await navigator.storage.getDirectory()
+      const tempDir = await root.getDirectoryHandle(nanoid(), { create: true })
+      return tempDir.name
+    }
   },
   join: (...pathParts: string[]): string => {
     return Paths.join(...pathParts)
@@ -172,13 +225,13 @@ export const loadBoard = async (uri: string): Promise<BoardTree> => {
   const boardFile = await loadFile(uri)
   if (!boardFile) throw new Error('Could not load file')
   const ext = getFileExt(uri)
-  const options = (Platform.OS === "android" || Platform.OS === "ios") ? { fileAdapter } : undefined
-  const processor = getProcessor(`.${ext}`, options)
+  const processor = getProcessor(`.${ext}`, { fileAdapter })
   const tree = await processor.loadIntoTree(boardFile)
   return tree
 }
 
 export const saveBoard = async (uri: string, tree: BoardTree) => {
+  console.log(`Saving to ${uri}`)
   const ext = getFileExt(uri)
   const processor = getProcessor(`.${ext}`, { fileAdapter })
   await processor.saveFromTree(tree as unknown as AACTree, uri)
