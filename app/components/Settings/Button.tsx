@@ -7,8 +7,8 @@ export default function SettingsButton() {
   const theme = useTheme()
   return (
     <Link href="/settings" asChild>
-      <Button>
-        <Settings size={ICON_SIZE.lg} color={theme.onSecondary} />
+      <Button variant="ghost">
+        <Settings size={ICON_SIZE.lg} color={theme.onSurface} />
       </Button>
     </Link>
   )

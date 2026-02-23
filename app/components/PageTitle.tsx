@@ -28,6 +28,7 @@ export default function PageTitle({
     titleEdit: {
       color: theme.onSurface,
       borderWidth: 1,
+      borderColor: theme.outline,
       borderRadius: RADIUS.lg,
       minWidth: 0
     },
@@ -37,7 +38,7 @@ export default function PageTitle({
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: theme.surfaceContainer,
-      gap: GAP.lg,
+      gap: GAP.md,
       paddingHorizontal: PADDING.lg,
     },
   })
@@ -60,16 +61,16 @@ export default function PageTitle({
         value={inputValue}
         onChangeText={setInputValue}
       />
-      <Button variant="ghost" onPress={() => setEditText(false)}>
+      <Button variant="outline" onPress={() => setEditText(false)}>
         <X size={ICON_SIZE.lg} color={theme.onSurface} />
       </Button>
-      <Button variant="ghost" onPress={() => {
+      <Button variant="primary" onPress={() => {
           if (!inputValue) return
           onChange(inputValue)
           setEditText(false)
         }}
       >
-        <Check size={ICON_SIZE.lg} color={theme.onSurface} />
+        <Check size={ICON_SIZE.lg} color={theme.onPrimary} />
       </Button>
     </View>
     }

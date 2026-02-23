@@ -1,7 +1,8 @@
-import { FONT_SIZE, FONT_WEIGHT, GAP, PADDING, RADIUS } from '@/app/utils/theme';
+import { Text } from '@/app/components/Styled';
+import { FONT_SIZE, FONT_WEIGHT, GAP, PADDING, RADIUS, useTheme } from '@/app/utils/theme';
 import Slider from '@react-native-community/slider';
 import { JSX } from 'react';
-import { StyleSheet, Switch, Text, View } from "react-native";
+import { StyleSheet, Switch, View } from "react-native";
 import { Dropdown } from 'react-native-element-dropdown';
 
 interface SettingItemBase {
@@ -37,10 +38,66 @@ interface SettingsItemSelect extends SettingItemBase {
 }
 
 export default function SettingsItem(props: SettingsItemToggle | SettingsItemSlider | SettingsItemSelect) {
+  const theme = useTheme()
+  const styles = StyleSheet.create({
+    container: {
+      display: 'flex',
+      flexDirection: 'row',
+      width: '100%',
+      padding: PADDING.xl,
+      justifyContent: 'space-between',
+      gap: GAP.xl,
+    },
+    rightContainer: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: GAP.md
+    },
+    title: {
+      fontSize: FONT_SIZE.md,
+    },
+    description: {
+      fontSize: FONT_SIZE.xs,
+      fontWeight: FONT_WEIGHT.light,
+    },
+    dropdown: {
+      backgroundColor: theme.surfaceBright,
+      borderRadius: RADIUS.md,
+      paddingHorizontal: PADDING.lg,
+      minWidth: 150,
+      minHeight: 30,
+    },
+    dropdownContainer: {
+      backgroundColor: theme.surfaceBright,
+      color: theme.onSurface
+    },
+    dropdownItemText: {
+      fontSize: FONT_SIZE.sm,
+      color: theme.onSurface
+    },
+    dropdownSelectedText: {
+      fontSize: FONT_SIZE.sm,
+      cursor: 'default',
+      color: theme.inverseOnSurface
+    }
+  })
+
   const component =
     props.type === 'toggle' ? (
       <View style={{display: 'flex', alignItems: 'center'}}>
-        <Switch value={props.value} onValueChange={props.setValue} />
+        <Switch
+          value={props.value}
+          onValueChange={props.setValue}
+          thumbColor={theme.secondaryFixed}
+          trackColor={{
+            true: theme.secondary,
+            false: theme.secondaryContainer
+          }}
+          ios_backgroundColor={theme.secondaryContainer}
+          //@ts-ignore
+          activeThumbColor={theme.secondaryFixed}
+        />
         {props.labels && 
         <Text style={{textAlign: 'center', fontSize: 12}}>
           {props.labels.at(Number(props.value))}
@@ -55,21 +112,24 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
           onValueChange={props.setValue}
           minimumValue={props.min}
           maximumValue={props.max}
-          minimumTrackTintColor="#FFFFFF"
-          maximumTrackTintColor="#000000"
+          minimumTrackTintColor={theme.secondaryContainer}
+          maximumTrackTintColor={theme.secondaryContainer}
           step={props.step}
+          thumbTintColor={theme.secondary}
         />
       </View>)
     : props.type === 'select' ? (
       <Dropdown
         style={styles.dropdown}
+        containerStyle={styles.dropdownContainer}
         data={props.items}
         value={props.value}
         onChange={item => props.setValue(item.value)}
         labelField="label"
         valueField="value"
-        selectedTextStyle={{ fontSize: FONT_SIZE.sm, cursor: 'default' }}
-        itemTextStyle={{ fontSize: FONT_SIZE.sm }}
+        selectedTextStyle={styles.dropdownSelectedText}
+        itemTextStyle={styles.dropdownItemText}
+        placeholderStyle={styles.dropdownItemText}
       />
     )
     : null
@@ -92,34 +152,3 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%',
-    padding: PADDING.xl,
-    justifyContent: 'space-between',
-    gap: GAP.xl,
-  },
-  rightContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: GAP.md
-  },
-  title: {
-    fontSize: FONT_SIZE.md,
-  },
-  description: {
-    fontSize: FONT_SIZE.xs,
-    fontWeight: FONT_WEIGHT.light,
-  },
-  dropdown: {
-    backgroundColor: 'white',
-    borderRadius: RADIUS.md,
-    paddingHorizontal: PADDING.lg,
-    minWidth: 150,
-    minHeight: 30,
-  }
-})

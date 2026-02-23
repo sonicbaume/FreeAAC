@@ -56,8 +56,8 @@ export default function RootLayout() {
     </Head>
     }
     <QueryClientProvider client={queryClient}>
-      <TrueSheetProvider>
-        <ThemeContext value={theme}>
+      <ThemeContext value={theme}>
+        <TrueSheetProvider>
           <GestureHandlerRootView>
             <Stack screenOptions={{
               headerBackButtonDisplayMode: "minimal",
@@ -105,8 +105,8 @@ export default function RootLayout() {
               />
             </Stack>
           </GestureHandlerRootView>
-        </ThemeContext>
-      </TrueSheetProvider>
+        </TrueSheetProvider>
+      </ThemeContext>
     </QueryClientProvider>
     <AudioController />
   </Head.Provider>

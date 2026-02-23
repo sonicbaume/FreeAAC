@@ -1,9 +1,10 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
 import { useRouter } from "expo-router";
 import { Copy, Fullscreen, LucideIcon, Pencil, Settings } from "lucide-react-native";
-import { Platform, Pressable, Text } from "react-native";
+import { Platform } from "react-native";
 import { usePagesetActions } from "../stores/boards";
-import { FONT_SIZE, GAP, PADDING, useTheme } from "../utils/theme";
+import { FONT_SIZE, GAP, ICON_SIZE, PADDING, useTheme } from "../utils/theme";
+import { Button, Text } from "./Styled";
 
 const OptionItem = ({
   label,
@@ -14,21 +15,21 @@ const OptionItem = ({
   icon: LucideIcon;
   onPress: () => void;
 }) => {
+  const theme = useTheme()
   const Icon = icon
   return (
-    <Pressable
+    <Button
+      variant="ghost"
       onPress={onPress}
       style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
+        justifyContent: 'flex-start',
         gap: GAP.xl,
         padding: PADDING.xl,
       }}
     >
-      <Icon size={24} />
+      <Icon size={ICON_SIZE.lg} color={theme.onSurface} />
       <Text style={{ fontSize: FONT_SIZE.xl }}>{label}</Text>
-    </Pressable>
+    </Button>
   )
 }
 

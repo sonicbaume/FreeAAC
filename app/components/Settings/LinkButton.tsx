@@ -1,6 +1,7 @@
-import { FONT_SIZE, GAP, ICON_SIZE, PADDING, RADIUS } from '@/app/utils/theme';
+import { FONT_SIZE, GAP, ICON_SIZE, PADDING, RADIUS, useTheme } from '@/app/utils/theme';
 import { Href, Link } from 'expo-router';
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { Button } from '../Styled';
 
 export default function LinkButton ({
   href,
@@ -12,12 +13,13 @@ export default function LinkButton ({
   icon?: any;
 }) {
   const Icon = icon
+  const theme = useTheme()
   return (
-    <Link href={href} style={styles.outsideContainer}>
-      <View style={styles.insideContainer}>
-        {Icon && <Icon size={ICON_SIZE.md} />}
+    <Link href={href} asChild>
+      <Button>
+        {Icon && <Icon size={ICON_SIZE.md} color={theme.onSecondary} />}
         <Text style={styles.text}>{title}</Text>
-      </View>
+      </Button>
     </Link>
   )
 }

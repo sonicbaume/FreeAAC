@@ -8,7 +8,7 @@ import { EditTile } from "../[board]";
 import { useSpeak } from "../stores/audio";
 import { useEditMode, usePagesetActions } from "../stores/boards";
 import { useGoHomeOnPress, usePlayOnPress } from "../stores/prefs";
-import { GAP, PADDING } from "../utils/theme";
+import { GAP, PADDING, useTheme } from "../utils/theme";
 import { BoardButton, BoardPage } from "../utils/types";
 import { uuid } from "../utils/uuid";
 import Tile from "./Tile";
@@ -36,6 +36,7 @@ export default function Page({
   homePageId?: string;
   pageNames: { id: string, name: string }[];
 }) {
+  const theme = useTheme()
   const editSheet = useRef<TrueSheet>(null)
   const [pageHeight, setPageHeight] = useState(0)
   const [editTile, setEditTile] = useState<EditTile | undefined>()
@@ -142,7 +143,9 @@ export default function Page({
     <View
       style={{
         ...styles.container,
+        backgroundColor: theme.surface,
         borderWidth: editMode ? 6 : 0,
+        borderColor: theme.onSurface,
         padding: editMode ? pagePadding - 6 : pagePadding
       }}
       onLayout={handleLayout}

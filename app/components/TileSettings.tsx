@@ -1,8 +1,10 @@
 import { AACSemanticCategory, AACSemanticIntent } from "@willwade/aac-processors/browser";
-import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import { FONT_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme";
 import { BoardButton } from "../utils/types";
 import ColorPicker from "./ColorPicker";
+import { Text } from "./Styled";
 import TileDelete from "./TileDelete";
 
 type PageName = {
@@ -21,6 +23,25 @@ export default function TileSettings ({
   pageNames: PageName[];
   deleteTile: () => void;
 }) {
+  const theme = useTheme()
+  const styles = StyleSheet.create({
+    input: {
+      flex: 1,
+      paddingVertical: PADDING.lg,
+      paddingLeft: PADDING.lg,
+      fontSize: FONT_SIZE.md,
+      borderWidth: 1,
+      borderColor: theme.outline,
+      borderRadius: RADIUS.md,
+      color: theme.onSurface,
+    },
+    dropdown: {
+      borderWidth: 1,
+      borderColor: theme.outline,
+      borderRadius: RADIUS.md,
+    },
+  })
+
   const setVocalization = (message: string) => {
     setButton({
       ...button,
@@ -123,20 +144,3 @@ export default function TileSettings ({
     </ScrollView>
   )
 }
-
-const styles = StyleSheet.create({
-  input: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingLeft: 10,
-    fontSize: 16,
-    borderWidth: 1,
-    borderColor: 'grey',
-    borderRadius: 5,
-  },
-  dropdown: {
-    borderWidth: 1,
-    borderColor: 'grey',
-    borderRadius: 5,
-  },
-})

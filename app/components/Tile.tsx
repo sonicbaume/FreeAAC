@@ -1,8 +1,9 @@
 import { AACButton, AACStyle } from "@willwade/aac-processors/browser"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 import Sortable from "react-native-sortables"
 import { useButtonView, useLabelLocation } from "../stores/prefs"
 import { BoardButton } from "../utils/types"
+import { Text } from "./Styled"
 import TileImage from "./TileImage"
 
 const Label = ({

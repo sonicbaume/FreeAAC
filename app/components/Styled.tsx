@@ -1,5 +1,5 @@
-import { Pressable, PressableProps, StyleProp, StyleSheet, ViewStyle } from "react-native";
-import { PADDING, RADIUS, useTheme } from "../utils/theme";
+import { Pressable, PressableProps, Text as RNText, StyleProp, StyleSheet, TextStyle, ViewStyle } from "react-native";
+import { GAP, PADDING, RADIUS, useTheme } from "../utils/theme";
 
 export const Button = ({
   children,
@@ -8,7 +8,7 @@ export const Button = ({
   ...props
 }: {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
   style?: StyleProp<ViewStyle>;
 } & PressableProps) => {
   const theme = useTheme()
@@ -20,6 +20,7 @@ export const Button = ({
       justifyContent: 'center',
       padding: PADDING.md,
       borderRadius: RADIUS.md,
+      gap: GAP.md
     },
     primary: {
       backgroundColor: theme.primary
@@ -28,10 +29,15 @@ export const Button = ({
       backgroundColor: theme.secondary
     },
     outline: {
-      backgroundColor: theme.surface
+      backgroundColor: theme.surface,
+      borderColor: theme.secondary,
+      borderWidth: 1
     },
     ghost: {
 
+    },
+    destructive: {
+      backgroundColor: theme.error
     }
   })
 
@@ -46,5 +52,25 @@ export const Button = ({
     >
       {children}
     </Pressable>
+  )
+}
+
+export const Text = ({
+  children,
+  style,
+}: {
+  children: React.ReactNode;
+  style?: StyleProp<TextStyle>;
+}) => {
+  const theme = useTheme()
+  return (
+    <RNText
+      style={[
+        { color: theme.onSurface },
+        style,
+      ]}
+    >
+      {children}
+    </RNText>
   )
 }

@@ -1,6 +1,7 @@
 import { Ban } from "lucide-react-native";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { FONT_SIZE, ICON_SIZE, PADDING } from "../utils/theme";
+import { Text } from "./Styled";
 
 const defaultColors = [
   "#EB9694",

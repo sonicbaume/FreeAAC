@@ -10,6 +10,7 @@ import { useMessageWindowLocation } from "../stores/prefs";
 import { handleError } from "../utils/error";
 import { loadBoard, saveBoard } from "../utils/file";
 import { getHomePageId } from "../utils/pagesets";
+import { useTheme } from "../utils/theme";
 import { BoardButton, BoardPage, BoardTree, TileImage } from "../utils/types";
 
 export type EditTile = {
@@ -32,6 +33,7 @@ const prefetchImages = (tree: BoardTree) => {
 }
 
 export default function Board() {
+  const theme = useTheme()
   const { board } = useLocalSearchParams()
   const boards = useBoards()
   const uri = boards.find(b => b.id === board)?.uri
@@ -117,7 +119,7 @@ export default function Board() {
   
   return <>
     <Stack.Screen options={{ headerShown: false }} />
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
       {messageWindowLocation === "top" && messageWindow}
       <View
         style={{

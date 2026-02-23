@@ -6,13 +6,14 @@ import { Link } from 'expo-router';
 import { getAvailableVoicesAsync } from 'expo-speech';
 import { Bug, Info, Lightbulb, Monitor, Shield, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import GithubIcon from './components/Icons/Github';
 import SettingsHeader from "./components/Settings/Header";
 import SettingsItem from "./components/Settings/Item";
 import LinkButton from './components/Settings/LinkButton';
 import PreviewButton from './components/Settings/PreviewButton';
 import TtsStatus from './components/Settings/TtsStatus';
+import { Text } from './components/Styled';
 import { useSpeak } from './stores/audio';
 import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useShowBackspace, useShowShareButton, useSpeechOptions } from "./stores/prefs";
 import { korokoVoices } from './utils/consts';
@@ -244,7 +245,7 @@ export default function Settings() {
             href="https://sonic.bau.me"
             style={{ textAlign: 'center', marginTop: PADDING.xl, color: theme.onSurfaceVariant }}
           >
-            ©️ Sonic Baume LTD 2026
+            © Sonic Baume LTD 2026
           </Link>
           <Text style={{ textAlign: 'center', color: theme.onSurfaceVariant }}>
             Released under AGPL v3

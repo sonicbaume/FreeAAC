@@ -1,12 +1,14 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
 import { Check } from "lucide-react-native";
 import { useState } from "react";
-import { Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Platform, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { EditTile } from "../[board]";
 import { usePagesetActions } from "../stores/boards";
 import { handleError } from "../utils/error";
 import { selectImage } from "../utils/file";
+import { FONT_SIZE, ICON_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme";
 import { BoardButton, TileImage } from "../utils/types";
+import { Text } from "./Styled";
 import SymbolPicker, { SymbolSearchBar } from "./SymbolPicker";
 import TileSettings from "./TileSettings";
 
@@ -20,33 +22,34 @@ const TabSelector = ({
   tab: Tab;
   setTab: (tab: Tab) => void;
 }) => {
+  const theme = useTheme()
   return (
     <View style={{ flexDirection: 'row' }}>
       <Pressable
         style={{
           ...styles.tabButton,
-          ...(tab === 'settings' ? styles.tabButtonActive : {}),
+          borderBottomColor: tab === 'settings' ? theme.onSurface : theme.outline
         }}
         onPress={() => setTab('settings')}
       >
         <Text 
           style={{
             ...styles.tabButtonText,
-            ...(tab === 'settings' ? styles.tabButtonTextActive : {}),
+            color: tab === 'settings' ? theme.onSurface : theme.outline
           }}
         >Settings</Text>
       </Pressable>
       <Pressable
         style={{
           ...styles.tabButton,
-          ...(tab === 'symbol' ? styles.tabButtonActive : {}),
+          borderBottomColor: tab === 'symbol' ? theme.onSurface : theme.outline
         }}
         onPress={() => setTab('symbol')}
       >
         <Text 
           style={{
             ...styles.tabButtonText,
-            ...(tab === 'symbol' ? styles.tabButtonTextActive : {}),
+            color: tab === 'symbol' ? theme.onSurface : theme.outline
           }}
         >
           Symbol
@@ -69,6 +72,7 @@ export default function TileEditor({
   onClose: () => void;
   pageNames: { id: string, name: string }[];
 }) {
+  const theme = useTheme()
   const { setSymbolSearchText } = usePagesetActions()
   const button = tile?.button
   const image = tile?.image
@@ -99,7 +103,7 @@ export default function TileEditor({
       ref={ref}
       detents={Platform.OS === "web" ? [0.75] : [0.5, 0.75]}
       onWillDismiss={onClose}
-      backgroundColor="white"
+      backgroundColor={theme.surfaceContainer}
       scrollable
       footer={tab === "symbol" ? <SymbolSearchBar onUpload={onUpload} /> : undefined}
     >
@@ -107,7 +111,7 @@ export default function TileEditor({
       <View style={{ flex: 1}}>
         <View style={{
           ...styles.labelContainer,
-          padding: 20,
+          padding: PADDING.xl,
         }}>
           <TextInput
             value={button?.label}
@@ -126,10 +130,12 @@ export default function TileEditor({
             style={{
               ...styles.input,
               ...styles.inputBorder,
+              color: theme.onSurface,
+              borderColor: theme.outline
             }}
           />
           <Pressable onPress={() => ref.current?.dismiss()}>
-            <Check size={30} />
+            <Check size={ICON_SIZE.xl} color={theme.onSurface} />
           </Pressable>
         </View>
         <TabSelector tab={tab} setTab={setTab} />
@@ -161,14 +167,13 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    paddingVertical: 10,
-    paddingLeft: 10,
-    fontSize: 18,
+    paddingVertical: PADDING.lg,
+    paddingLeft: PADDING.lg,
+    fontSize: FONT_SIZE.lg,
   },
   inputBorder: {
     borderWidth: 1,
-    borderColor: 'grey',
-    borderRadius: 5,
+    borderRadius: RADIUS.md,
   },
   inputIcon: {
     position: 'absolute',
