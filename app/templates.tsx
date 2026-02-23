@@ -6,7 +6,7 @@ import BoardCard from "./components/BoardCard";
 import { usePagesetActions } from "./stores/boards";
 import { BoardTemplate, templates } from "./utils/consts";
 import { handleError } from "./utils/error";
-import { downloadFile } from "./utils/file";
+import { downloadFile } from "./utils/io";
 
 export default function Templates () {
   const insets = useSafeAreaInsets()
