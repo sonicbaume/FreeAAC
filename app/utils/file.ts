@@ -3,7 +3,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { Directory, File, Paths } from 'expo-file-system';
 import { nanoid } from 'nanoid/non-secure';
 import { Platform } from "react-native";
-import { BoardTree } from './types';
+import { BoardTree, TileImage } from './types';
 import { uuid } from './uuid';
 
 const fileAdapter = {
@@ -219,6 +219,24 @@ export const selectFile = async (): Promise<{id: string, uri: string}> => {
   const fileName = `${id}.${ext}`
   const uri = await saveFile(fileName, data)
   return {id, uri}
+}
+
+export const selectImage = async (): Promise<TileImage> => {
+  const result = await DocumentPicker.getDocumentAsync({
+    type: 'image/*'
+  })
+  const file = result.assets?.at(0)
+  if (!file) throw new Error('Could not read file')
+  if (!file.mimeType?.startsWith('image/')) throw new Error('File must be an image')
+  //TODO support android and iOS
+  if (!file.base64) throw new Error('Could not read file data')
+  return {
+    content_type: file.mimeType,
+    data_url: file.base64,
+    id: nanoid(),
+    path: file.name,
+    url: file.base64,
+  }
 }
 
 export const loadBoard = async (uri: string): Promise<BoardTree> => {

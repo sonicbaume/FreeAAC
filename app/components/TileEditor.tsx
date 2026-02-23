@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Platform, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { EditTile } from "../[board]";
 import { usePagesetActions } from "../stores/boards";
+import { handleError } from "../utils/error";
+import { selectImage } from "../utils/file";
 import { BoardButton, TileImage } from "../utils/types";
 import SymbolPicker, { SymbolSearchBar } from "./SymbolPicker";
 import TileSettings from "./TileSettings";
@@ -82,6 +84,16 @@ export default function TileEditor({
     ref.current?.dismiss()
   }
 
+  const onUpload = async () => {
+    if (!button) return
+    try {
+      const image = await selectImage()
+      setButton(button, image)
+    } catch (e) {
+      handleError(e)
+    }
+  }
+
   return (
     <TrueSheet
       ref={ref}
@@ -89,7 +101,7 @@ export default function TileEditor({
       onWillDismiss={onClose}
       backgroundColor="white"
       scrollable
-      footer={tab === "symbol" ? <SymbolSearchBar /> : undefined}
+      footer={tab === "symbol" ? <SymbolSearchBar onUpload={onUpload} /> : undefined}
     >
       {button &&
       <View style={{ flex: 1}}>
