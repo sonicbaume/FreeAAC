@@ -40,7 +40,7 @@ const fileAdapter = {
   },
   pathExists: async (path: string): Promise<boolean> => {
     if (Platform.OS === "android" || Platform.OS === "ios") {
-      return Paths.info(path).exists
+      return Paths.info(Paths.join(Paths.document, path)).exists
     } else {
       const root = await navigator.storage.getDirectory()
       try {
@@ -61,7 +61,7 @@ const fileAdapter = {
   },
   isDirectory: async (path: string): Promise<boolean> => {
     if (Platform.OS === "android" || Platform.OS === "ios") {
-      return Paths.info(path).isDirectory ?? false
+      return Paths.info(Paths.join(Paths.document, path)).isDirectory ?? false
     } else {
       const root = await navigator.storage.getDirectory()
       try {
@@ -101,10 +101,11 @@ const fileAdapter = {
   },
   removePath: async (path: string, options?: { recursive?: boolean; force?: boolean }): Promise<void> => {
     if (Platform.OS === "android" || Platform.OS === "ios") {
-      if (Paths.info(path).isDirectory) {
-        new Directory(path).delete()
+      const resolvedPath = Paths.join(Paths.document, path)
+      if (Paths.info(resolvedPath).isDirectory) {
+        new Directory(resolvedPath).delete()
       } else {
-        new File(path).delete()
+        new File(resolvedPath).delete()
       }
     } else {
       const root = await navigator.storage.getDirectory()
@@ -228,14 +229,16 @@ export const selectImage = async (): Promise<TileImage> => {
   const file = result.assets?.at(0)
   if (!file) throw new Error('Could not read file')
   if (!file.mimeType?.startsWith('image/')) throw new Error('File must be an image')
-  //TODO support android and iOS
-  if (!file.base64) throw new Error('Could not read file data')
+  const data = Platform.OS === "web"
+    ? file.base64
+    : `data:${file.mimeType};base64,` + await new File(file.uri).base64()
+  if (!data) throw new Error('Could not read file data')
   return {
     content_type: file.mimeType,
-    data_url: file.base64,
+    data_url: data,
     id: nanoid(),
     path: file.name,
-    url: file.base64,
+    url: data,
   }
 }
 
