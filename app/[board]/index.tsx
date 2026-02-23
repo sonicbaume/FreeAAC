@@ -68,14 +68,19 @@ export default function Board() {
     if (!tree) return handleError('Could not save page - tree does not exist')
     if (!currentPageId) return handleError('Could not save page - ID undefined')
     console.log("Saving page", page)
-    const newPages = {...tree.pages}
-    newPages[currentPageId] = {
-      ...newPages[currentPageId],
+    const pages = {...tree.pages}
+    pages[currentPageId] = {
+      ...pages[currentPageId],
       ...page
+    }
+    const metadata = {...tree.metadata}
+    if (currentPageId === metadata.defaultHomePageId) {
+      metadata.name = page.name
     }
     const newTree = {
       ...tree,
-      pages: newPages
+      metadata,
+      pages
     }
     saveBoard(uri, newTree)
     setTree(newTree)
@@ -107,6 +112,7 @@ export default function Board() {
     buttons={buttons}
     isHome={homePageId === page?.id}
     pageTitle={page?.name}
+    setPageTitle={(name) => page && savePage({...page, name})}
   />)
   
   return <>

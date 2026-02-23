@@ -17,11 +17,13 @@ export default function MessageWindow({
   buttons,
   isHome,
   pageTitle,
+  setPageTitle,
 }: {
   navigateHome: () => void;
   buttons: BoardButton[];
   isHome: boolean;
   pageTitle?: string;
+  setPageTitle: (title: string) => void;
 }) {
   const optionsSheet = useRef<TrueSheet>(null)
   const [copied, setCopied] = useState(false)
@@ -66,6 +68,7 @@ export default function MessageWindow({
   return <>
     <View style={{
       height: 60,
+      display: 'flex',
       flexDirection: "row",
       backgroundColor: 'white',
     }}>
@@ -135,7 +138,7 @@ export default function MessageWindow({
       </View>
       }
       {(editMode || !hasMessage) &&
-      <PageTitle title={pageTitle} />
+      <PageTitle title={pageTitle} onChange={setPageTitle} />
       }
       <View style={{ padding: 10 }}>
         {editMode &&
