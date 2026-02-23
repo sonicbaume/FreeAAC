@@ -3,7 +3,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { Directory, File, Paths } from 'expo-file-system';
 import { nanoid } from 'nanoid/non-secure';
 import { Platform } from "react-native";
-import { BoardTree } from './types';
+import { BoardTree, TileImage } from './types';
 import { uuid } from './uuid';
 
 const fileAdapter = {
@@ -40,7 +40,7 @@ const fileAdapter = {
   },
   pathExists: async (path: string): Promise<boolean> => {
     if (Platform.OS === "android" || Platform.OS === "ios") {
-      return Paths.info(path).exists
+      return Paths.info(Paths.join(Paths.document, path)).exists
     } else {
       const root = await navigator.storage.getDirectory()
       try {
@@ -61,7 +61,7 @@ const fileAdapter = {
   },
   isDirectory: async (path: string): Promise<boolean> => {
     if (Platform.OS === "android" || Platform.OS === "ios") {
-      return Paths.info(path).isDirectory ?? false
+      return Paths.info(Paths.join(Paths.document, path)).isDirectory ?? false
     } else {
       const root = await navigator.storage.getDirectory()
       try {
@@ -101,10 +101,11 @@ const fileAdapter = {
   },
   removePath: async (path: string, options?: { recursive?: boolean; force?: boolean }): Promise<void> => {
     if (Platform.OS === "android" || Platform.OS === "ios") {
-      if (Paths.info(path).isDirectory) {
-        new Directory(path).delete()
+      const resolvedPath = Paths.join(Paths.document, path)
+      if (Paths.info(resolvedPath).isDirectory) {
+        new Directory(resolvedPath).delete()
       } else {
-        new File(path).delete()
+        new File(resolvedPath).delete()
       }
     } else {
       const root = await navigator.storage.getDirectory()
@@ -219,6 +220,26 @@ export const selectFile = async (): Promise<{id: string, uri: string}> => {
   const fileName = `${id}.${ext}`
   const uri = await saveFile(fileName, data)
   return {id, uri}
+}
+
+export const selectImage = async (): Promise<TileImage> => {
+  const result = await DocumentPicker.getDocumentAsync({
+    type: 'image/*'
+  })
+  const file = result.assets?.at(0)
+  if (!file) throw new Error('Could not read file')
+  if (!file.mimeType?.startsWith('image/')) throw new Error('File must be an image')
+  const data = Platform.OS === "web"
+    ? file.base64
+    : `data:${file.mimeType};base64,` + await new File(file.uri).base64()
+  if (!data) throw new Error('Could not read file data')
+  return {
+    content_type: file.mimeType,
+    data_url: data,
+    id: nanoid(),
+    path: file.name,
+    url: data,
+  }
 }
 
 export const loadBoard = async (uri: string): Promise<BoardTree> => {
