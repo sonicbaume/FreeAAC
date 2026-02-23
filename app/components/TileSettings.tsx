@@ -1,8 +1,9 @@
 import { AACSemanticCategory, AACSemanticIntent } from "@willwade/aac-processors/browser";
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { BoardButton } from "../utils/types";
 import ColorPicker from "./ColorPicker";
+import TileDelete from "./TileDelete";
 
 type PageName = {
   id: string | undefined;
@@ -118,12 +119,7 @@ export default function TileSettings ({
           }
         })}
       />
-      <Pressable
-        style={styles.deleteButton}
-        onPress={deleteTile}
-      >
-        <Text style={styles.deleteButtonText}>Delete</Text>
-      </Pressable>
+      <TileDelete onPress={deleteTile} />
     </ScrollView>
   )
 }
@@ -143,15 +139,4 @@ const styles = StyleSheet.create({
     borderColor: 'grey',
     borderRadius: 5,
   },
-  deleteButton: {
-    flex: 1,
-    alignItems: 'center',
-    borderColor: 'red',
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 10
-  },
-  deleteButtonText: {
-    color: 'red'
-  }
 })
