@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { Copy, Fullscreen, LucideIcon, Pencil, Settings } from "lucide-react-native";
 import { Platform, Pressable, Text } from "react-native";
 import { usePagesetActions } from "../stores/boards";
+import { FONT_SIZE, GAP, PADDING, useTheme } from "../utils/theme";
 
 const OptionItem = ({
   label,
@@ -21,12 +22,12 @@ const OptionItem = ({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 16,
-        padding: 20,
+        gap: GAP.xl,
+        padding: PADDING.xl,
       }}
     >
       <Icon size={24} />
-      <Text style={{ fontSize: 20 }}>{label}</Text>
+      <Text style={{ fontSize: FONT_SIZE.xl }}>{label}</Text>
     </Pressable>
   )
 }
@@ -38,6 +39,7 @@ export default function PageOptions({
   ref: React.RefObject<TrueSheet | null>;
   copyMessage?: () => void;
 }) {
+  const theme = useTheme()
   const { push } = useRouter()
   const { toggleEditMode } = usePagesetActions()
 
@@ -52,8 +54,8 @@ export default function PageOptions({
     <TrueSheet
       ref={ref}
       detents={['auto']}
-      backgroundColor="white"
-      style={{ padding: 16 }}
+      backgroundColor={theme.surfaceContainer}
+      style={{ padding: PADDING.xl }}
     >
       {copyMessage &&
       <OptionItem

@@ -1,5 +1,6 @@
 import { Ban } from "lucide-react-native";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { FONT_SIZE, ICON_SIZE, PADDING } from "../utils/theme";
 
 const defaultColors = [
   "#EB9694",
@@ -36,8 +37,12 @@ export default function ColorPicker({
     ? defaultColors
     : [...defaultColors, color]
   return <View>
-    <Text style={{ fontSize: 16 }}>{label}</Text>
-    <ScrollView nestedScrollEnabled horizontal style={styles.container} contentContainerStyle={{ paddingBottom: 20 }}>
+    <Text style={{ fontSize: FONT_SIZE.md }}>{label}</Text>
+    <ScrollView
+      nestedScrollEnabled horizontal
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: PADDING.xl }}
+    >
       <Pressable
         style={{
           ...styles.colorButton,
@@ -45,7 +50,7 @@ export default function ColorPicker({
         }}
         onPress={() => onChange(undefined)}
       >
-        <Ban size={30} color="grey" />
+        <Ban size={ICON_SIZE.xl} color="grey" />
       </Pressable>
       {colors.map((colorChoice) => (
         <Pressable
@@ -66,13 +71,13 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     flexDirection: "row",
-    paddingVertical: 10,
+    paddingVertical: PADDING.lg,
     paddingHorizontal: 0,
     height: 60
   },
   colorButton: {
-    width: 40,
-    height: 40,
+    width: ICON_SIZE.xl,
+    height: ICON_SIZE.xl,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 0,

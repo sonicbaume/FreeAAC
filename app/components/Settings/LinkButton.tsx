@@ -1,3 +1,4 @@
+import { FONT_SIZE, GAP, ICON_SIZE, PADDING, RADIUS } from '@/app/utils/theme';
 import { Href, Link } from 'expo-router';
 import { StyleSheet, Text, View } from "react-native";
 
@@ -14,7 +15,7 @@ export default function LinkButton ({
   return (
     <Link href={href} style={styles.outsideContainer}>
       <View style={styles.insideContainer}>
-        {Icon && <Icon size={18} />}
+        {Icon && <Icon size={ICON_SIZE.md} />}
         <Text style={styles.text}>{title}</Text>
       </View>
     </Link>
@@ -23,9 +24,9 @@ export default function LinkButton ({
 
 const styles = StyleSheet.create({
   outsideContainer: {
-    padding: 6,
+    padding: PADDING.md,
     boxShadow: 'lightgrey 2px 2px 5px',
-    borderRadius: 12,
+    borderRadius: RADIUS.lg,
     cursor: 'pointer',
     backgroundColor: "white"
   },
@@ -33,11 +34,11 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    gap: 8,
+    gap: GAP.md,
     alignItems: 'center',
     justifyContent: 'center'
   },
   text: {
-    fontSize: 16
+    fontSize: FONT_SIZE.md
   }
 })

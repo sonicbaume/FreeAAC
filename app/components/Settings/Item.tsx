@@ -1,3 +1,4 @@
+import { FONT_SIZE, FONT_WEIGHT, GAP, PADDING, RADIUS } from '@/app/utils/theme';
 import Slider from '@react-native-community/slider';
 import { JSX } from 'react';
 import { StyleSheet, Switch, Text, View } from "react-native";
@@ -46,7 +47,7 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
         </Text>}
       </View>)
     : props.type === 'slider' ? (
-      <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
+      <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: GAP.lg}}>
         <Text>{props.value.toFixed(1)}</Text>
         <Slider
           style={{width: 100, height: 40}}
@@ -67,8 +68,8 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
         onChange={item => props.setValue(item.value)}
         labelField="label"
         valueField="value"
-        selectedTextStyle={{ fontSize: 14, cursor: 'default' }}
-        itemTextStyle={{ fontSize: 14 }}
+        selectedTextStyle={{ fontSize: FONT_SIZE.sm, cursor: 'default' }}
+        itemTextStyle={{ fontSize: FONT_SIZE.sm }}
       />
     )
     : null
@@ -80,7 +81,9 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
         flexShrink: 1,
       }}>
         <Text style={styles.title}>{props.title}</Text>
-        {props.description && <Text style={styles.description}>{props.description}</Text>}
+        {props.description &&
+        <Text style={styles.description}>{props.description}</Text>
+        }
       </View>
       <View style={styles.rightContainer}>
         {component}
@@ -95,27 +98,27 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    padding: 15,
+    padding: PADDING.xl,
     justifyContent: 'space-between',
-    gap: 20
+    gap: GAP.xl,
   },
   rightContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6
+    gap: GAP.md
   },
   title: {
-    fontSize: 16,
+    fontSize: FONT_SIZE.md,
   },
   description: {
-    fontSize: 12,
-    fontWeight: 'light',
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.light,
   },
   dropdown: {
     backgroundColor: 'white',
-    borderRadius: 6,
-    paddingHorizontal: 10,
+    borderRadius: RADIUS.md,
+    paddingHorizontal: PADDING.lg,
     minWidth: 150,
     minHeight: 30,
   }

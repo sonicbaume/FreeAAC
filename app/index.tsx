@@ -1,17 +1,35 @@
 
 import { useRouter } from "expo-router";
 import { useTransition } from "react";
-import { ActivityIndicator, Button, FlatList, Text, View } from "react-native";
+import { ActivityIndicator, Button, FlatList, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useBoards, usePagesetActions } from "./stores/boards";
 import { handleError } from "./utils/error";
 import { loadBoard, selectFile } from "./utils/file";
+import { FONT_SIZE, GAP, PADDING, useTheme } from "./utils/theme";
 export default function Index() {
+  const theme = useTheme()
   const insets = useSafeAreaInsets()
   const router = useRouter()
   const boards = useBoards()
   const { addBoard } = usePagesetActions()
   const [loading, startLoading] = useTransition()
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      backgroundColor: theme.background,
+    },
+    boardList: {
+      width: 400,
+      maxWidth: '100%',
+      padding: PADDING.xl,
+      gap: GAP.xl,
+      backgroundColor: theme.surface,
+    }
+  })
 
   const openFile = async () => {
     try {
@@ -31,10 +49,10 @@ export default function Index() {
   }
 
   return <>
-    <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', paddingBottom: insets.bottom }}>
-      <View style={{ width: 400, maxWidth: '100%', padding: 20, gap: 20 }}>
+    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+      <View style={styles.boardList}>
         {boards.length > 0 && <>
-        <Text style={{ fontSize: 18 }}>My boards</Text>
+        <Text style={{ fontSize: FONT_SIZE.lg }}>My boards</Text>
         <FlatList
           data={boards}
           keyExtractor={item => item.id}
@@ -42,7 +60,10 @@ export default function Index() {
             <Button
               title={item.name}
               onPress={() => {
-                router.push({ pathname: '/[board]', params: { board: item.id } })
+                router.push({
+                  pathname: '/[board]',
+                  params: { board: item.id }
+                })
               }}
             />
           )}

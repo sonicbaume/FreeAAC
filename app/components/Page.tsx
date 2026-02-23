@@ -8,15 +8,16 @@ import { EditTile } from "../[board]";
 import { useSpeak } from "../stores/audio";
 import { useEditMode, usePagesetActions } from "../stores/boards";
 import { useGoHomeOnPress, usePlayOnPress } from "../stores/prefs";
+import { GAP, PADDING } from "../utils/theme";
 import { BoardButton, BoardPage } from "../utils/types";
 import { uuid } from "../utils/uuid";
 import Tile from "./Tile";
 import TileAdd from "./TileAdd";
 import TileEditor from "./TileEditor";
 
-const pagePadding = 10
-const rowGap = 10
-const colGap = 10
+const pagePadding = PADDING.lg
+const rowGap = GAP.lg
+const colGap = GAP.lg
 const getRowHeight = (pageHeight: number, rows: number) => (pageHeight - pagePadding*2 - (rowGap * (rows-1))) / rows
 const getGridPosition = (index: number, rows: number, cols: number) => {
   const row = Math.floor(index / cols)
@@ -175,13 +176,13 @@ const styles = StyleSheet.create({
   container: {
     height: '100%',
     width: '100%',
-    gap: 10,
+    gap: GAP.lg,
     borderStyle: 'dashed'
   },
   row: {
     display: 'flex',
     flex: 1,
     flexDirection: 'row',
-    gap: 10
+    gap: GAP.lg
   }
 })

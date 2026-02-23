@@ -1,9 +1,35 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { FONT_SIZE, FONT_WEIGHT, GAP, MAX_WIDTH, PADDING, useTheme } from "./utils/theme";
 
 export default function Privacy () {
+  const theme = useTheme()
+  const styles = StyleSheet.create({
+    container: {
+      alignItems: 'center',
+      paddingVertical: PADDING.xl,
+      gap: GAP.xl,
+      backgroundColor: theme.background,
+    },
+    contentContainer: {
+      maxWidth: MAX_WIDTH,
+      paddingHorizontal: PADDING.xl,
+      paddingBottom: 200,
+      backgroundColor: theme.surface,
+    },
+    body: {
+      fontSize: FONT_SIZE.md,
+      lineHeight: GAP.xl,
+      marginBottom: PADDING.xl,
+    },
+    header: {
+      fontSize: FONT_SIZE.md,
+      fontWeight: FONT_WEIGHT.bold,
+      marginBottom: PADDING.lg,
+    }
+  })
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={{maxWidth: 600, paddingHorizontal: 24, paddingBottom: 200 }}>
+      <View style={styles.contentContainer}>
 <Text style={styles.body}>Last Updated: 29th January 2026</Text>
 <Text style={styles.body}>This Privacy Policy describes how Sonic Baume Ltd ("we," "us," or "our") handles information in the mobile application FreeAAC (the "App").</Text>
 <Text style={styles.header}>Data collection</Text>
@@ -55,21 +81,3 @@ If you have any questions, concerns, or requests regarding this policy, please c
     </ScrollView>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    paddingVertical: 20,
-    gap: 20
-  },
-  body: {
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 24
-  },
-  header: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12
-  }
-})

@@ -7,6 +7,7 @@ import { usePagesetActions } from "./stores/boards";
 import { BoardTemplate, templates } from "./utils/consts";
 import { handleError } from "./utils/error";
 import { downloadFile } from "./utils/io";
+import { GAP, PADDING } from "./utils/theme";
 
 export default function Templates () {
   const insets = useSafeAreaInsets()
@@ -44,7 +45,7 @@ export default function Templates () {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    paddingVertical: 20,
-    gap: 20
+    paddingVertical: PADDING.xl,
+    gap: GAP.xl,
   }
 })

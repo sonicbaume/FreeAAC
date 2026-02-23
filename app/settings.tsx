@@ -17,6 +17,7 @@ import { useSpeak } from './stores/audio';
 import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useShowBackspace, useShowShareButton, useSpeechOptions } from "./stores/prefs";
 import { korokoVoices } from './utils/consts';
 import { handleError } from './utils/error';
+import { FONT_SIZE, GAP, ICON_SIZE, MAX_WIDTH, PADDING, useTheme } from './utils/theme';
 
 const tagToCode = (langTag: string) => langTag.split(/[-_]+/)[0]
 const harmoniseTag = (langTag: string) => langTag.replace('_','-')
@@ -44,6 +45,7 @@ const speechEngineLabels: Record<SpeechEngine, string> = {
 }
 
 export default function Settings() {
+  const theme = useTheme()
   const [assets, error] = useAssets([require('../assets/images/icon-64x64.png')])
   const appVersion = Application.nativeApplicationVersion
   const playOnPress = usePlayOnPress()
@@ -70,6 +72,16 @@ export default function Settings() {
   const [voices, setVoices] = useState<{value: string, label: string, langTag: string}[]>([])
   const speak = useSpeak()
 
+  const styles = StyleSheet.create({
+    container: {
+      width: MAX_WIDTH,
+      maxWidth: '100%',
+      padding: PADDING.xl,
+      marginHorizontal: 'auto',
+      backgroundColor: theme.surface,
+    }
+  })
+
   const introduceVoice = (voice: string | undefined) => {
     const voiceObject = voices.find(v => v.value === voice)
     const name = voiceObject?.label.replace(/\(.*\)/, '')
@@ -90,7 +102,7 @@ export default function Settings() {
   })()}, [locales, speechOptions.engine])
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: theme.background }}>
       <View style={{...styles.container, paddingBottom: 200}}>
         <SettingsHeader title="Speech" icon={Speech} />
         <SettingsItem
@@ -200,11 +212,11 @@ export default function Settings() {
           setValue={toggleShowShareButton}
         />
         <SettingsHeader title="About" icon={Info} />
-        <View style={{ padding: 15, display: 'flex', gap: 12 }}>
-          <View style={{ display: 'flex', flexDirection: 'row', gap: 12 }}>
-            <Image source={assets?.at(0)} style={{ width: 64, height: 64 }} />
+        <View style={{ padding: PADDING.lg, display: 'flex', gap: GAP.lg }}>
+          <View style={{ display: 'flex', flexDirection: 'row', gap: GAP.lg }}>
+            <Image source={assets?.at(0)} style={{ width: ICON_SIZE.xxl, height: ICON_SIZE.xxl }} />
             <View>
-              <Text style={{ fontSize: 24, marginBottom: 4 }}>FreeAAC</Text>
+              <Text style={{ fontSize: FONT_SIZE.xxl, marginBottom: PADDING.sm }}>FreeAAC</Text>
               {appVersion && <Text>Version {appVersion}</Text>}
             </View>
           </View>
@@ -228,19 +240,17 @@ export default function Settings() {
             title="Privacy policy"
             icon={Shield}
           />
-          <Link href="https://sonic.bau.me" style={{ textAlign: 'center', marginTop: 24, color: "grey" }}>©️ Sonic Baume LTD 2026</Link>
-          <Text style={{ textAlign: 'center', color: "grey" }}>Released under AGPL v3</Text>
+          <Link
+            href="https://sonic.bau.me"
+            style={{ textAlign: 'center', marginTop: PADDING.xl, color: theme.onSurfaceVariant }}
+          >
+            ©️ Sonic Baume LTD 2026
+          </Link>
+          <Text style={{ textAlign: 'center', color: theme.onSurfaceVariant }}>
+            Released under AGPL v3
+          </Text>
         </View>
       </View>
     </ScrollView>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: 600,
-    maxWidth: '100%',
-    padding: 20,
-    marginHorizontal: 'auto'
-  }
-})

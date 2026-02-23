@@ -1,3 +1,4 @@
+import { FONT_SIZE, GAP, ICON_SIZE, PADDING } from "@/app/utils/theme";
 import { LucideIcon } from "lucide-react-native";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -11,8 +12,8 @@ export default function SettingsHeader({
   const Icon = icon
   return (
     <View style={styles.container}>
-      <Icon size={20} />
-      <Text style={{ fontSize: 16 }}>{title}</Text>
+      <Icon size={ICON_SIZE.lg} />
+      <Text style={{ fontSize: FONT_SIZE.md }}>{title}</Text>
     </View>
   )
 }
@@ -22,8 +23,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    marginTop: 20,
-    marginBottom: 10,
+    gap: GAP.lg,
+    marginTop: PADDING.xl,
+    marginBottom: PADDING.lg,
   }
 })

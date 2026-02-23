@@ -4,11 +4,12 @@ import { useAssets } from "expo-asset";
 import { Image } from "expo-image";
 import { Stack } from "expo-router";
 import Head from "expo-router/head";
-import { Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, useColorScheme, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AudioController from "./components/AudioController";
 import SettingsButton from "./components/Settings/Button";
 import { appDescription, appName } from "./utils/consts";
+import { ICON_SIZE, ThemeContext, themes } from "./utils/theme";
 
 export const unstable_settings = {
   initialRouteName: 'index',
@@ -17,6 +18,36 @@ export const unstable_settings = {
 export default function RootLayout() {
   const [assets, error] = useAssets([require('../assets/images/icon-64x64.png')])
   const queryClient = new QueryClient()
+  const themeId = useColorScheme() ?? 'light'
+  const theme = themes[themeId]
+
+  const styles = StyleSheet.create({
+    header: {
+      backgroundColor: theme.surfaceContainer,
+    },
+    headerTitle: {
+      color: theme.onSurface,
+    },
+    headerLeft: {
+      backgroundColor: theme.surfaceContainer,
+      ...Platform.select({
+        web: {
+          marginLeft: 16,
+          marginRight: 12
+        },
+        android: {
+          marginRight: 12
+        }
+      })
+    },
+    headerRight: {
+      ...Platform.select({
+      web: {
+        marginRight: 16
+      }
+    })}
+  })
+
   return <Head.Provider>
     {Platform.OS === "web" &&
     <Head>
@@ -26,49 +57,57 @@ export default function RootLayout() {
     }
     <QueryClientProvider client={queryClient}>
       <TrueSheetProvider>
-        <GestureHandlerRootView>
-          <Stack screenOptions={{
-            headerBackButtonDisplayMode: "minimal",
-          }}>
-            <Stack.Screen name="index" options={{
-              headerTitle: 'FreeAAC',
-              headerLeft: () => (
-                <View style={styles.headerLeft}>
-                  <Image source={assets?.at(0)} style={{ width: 32, height: 32 }} />
-                </View>
-              ),
-              headerRight: () => <View style={styles.headerRight}>
-                <SettingsButton style={{ padding: 6 }} />
-              </View>,
-            }}
-            />
-            <Stack.Screen name="settings" options={{ headerTitle: 'Settings' }} />
-            <Stack.Screen name="templates" options={{ headerTitle: 'Templates' }} />
-            <Stack.Screen name="privacy" options={{ headerTitle: 'Privacy policy' }} />
-          </Stack>
-        </GestureHandlerRootView>
+        <ThemeContext value={theme}>
+          <GestureHandlerRootView>
+            <Stack screenOptions={{
+              headerBackButtonDisplayMode: "minimal",
+            }}>
+              <Stack.Screen name="index" options={{
+                headerStyle: styles.header,
+                headerTitleStyle: styles.headerTitle,
+                headerTitle: 'FreeAAC',
+                headerLeft: () => (
+                  <View style={styles.headerLeft}>
+                    <Image
+                      source={assets?.at(0)}
+                      style={{ width: ICON_SIZE.xl, height: ICON_SIZE.xl }}
+                    />
+                  </View>
+                ),
+                headerRight: () => <View style={styles.headerRight}>
+                  <SettingsButton />
+                </View>,
+              }}
+              />
+              <Stack.Screen
+                name="settings"
+                options={{
+                  headerTitle: 'Settings',
+                  headerStyle: styles.header,
+                  headerTintColor: theme.onSurface
+                }}
+              />
+              <Stack.Screen
+                name="templates"
+                options={{
+                  headerTitle: 'Templates',
+                  headerStyle: styles.header,
+                  headerTintColor: theme.onSurface
+                }}
+              />
+              <Stack.Screen
+                name="privacy"
+                options={{
+                  headerTitle: 'Privacy policy',
+                  headerStyle: styles.header,
+                  headerTintColor: theme.onSurface
+                }}
+              />
+            </Stack>
+          </GestureHandlerRootView>
+        </ThemeContext>
       </TrueSheetProvider>
     </QueryClientProvider>
     <AudioController />
   </Head.Provider>
 }
-
-const styles = StyleSheet.create(
-  Platform.OS === "web" ? {
-    headerLeft: {
-      marginLeft: 16,
-      marginRight: 12
-    },
-    headerRight: {
-      marginRight: 16
-    }
-  } :
-  Platform.OS === "android" ? {
-    headerLeft: {
-      marginRight: 12
-    },
-  } :
-  Platform.OS === "ios" ? {
-
-  } : {}
-)
