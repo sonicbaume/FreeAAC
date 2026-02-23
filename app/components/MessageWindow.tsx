@@ -9,6 +9,7 @@ import { useEditMode, useMessageButtonsIds, usePagesetActions } from "../stores/
 import { useButtonView, useClearMessageOnPlay, useLabelLocation, useShowBackspace, useShowShareButton } from "../stores/prefs";
 import { BoardButton } from "../utils/types";
 import PageOptions from './PageOptions';
+import PageTitle from './PageTitle';
 import TileImage from "./TileImage";
 
 export default function MessageWindow({
@@ -134,9 +135,7 @@ export default function MessageWindow({
       </View>
       }
       {(editMode || !hasMessage) &&
-      <View style={styles.pageTitleContainer}>
-        <Text style={styles.pageTitle}>{pageTitle}</Text>
-      </View>      
+      <PageTitle title={pageTitle} />
       }
       <View style={{ padding: 10 }}>
         {editMode &&
@@ -189,17 +188,4 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center'
   },
-  pageTitle: {
-    fontSize: 28,
-    paddingLeft: 20,
-    color: 'lightgrey',
-    userSelect: 'none',
-  },
-  pageTitleContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#eee'
-  }
 })
