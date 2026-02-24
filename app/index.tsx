@@ -1,10 +1,11 @@
 
 import { useRouter } from "expo-router";
 import { useTransition } from "react";
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import BoardList from "./components/BoardList";
 import { Button, Text } from "./components/Styled";
-import { useBoards, usePagesetActions } from "./stores/boards";
+import { usePagesetActions } from "./stores/boards";
 import { handleError } from "./utils/error";
 import { loadBoard, selectFile } from "./utils/file";
 import { FONT_SIZE, GAP, PADDING, useTheme } from "./utils/theme";
@@ -13,7 +14,6 @@ export default function Index() {
   const theme = useTheme()
   const insets = useSafeAreaInsets()
   const router = useRouter()
-  const boards = useBoards()
   const { addBoard } = usePagesetActions()
   const [loading, startLoading] = useTransition()
 
@@ -53,26 +53,8 @@ export default function Index() {
   return <>
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <View style={styles.boardList}>
-        {boards.length > 0 && <>
         <Text style={{ fontSize: FONT_SIZE.lg }}>My boards</Text>
-        <FlatList
-          contentContainerStyle={{ gap: GAP.xs}}
-          data={boards}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => (
-            <Button
-              onPress={() => {
-                router.push({
-                  pathname: '/[board]',
-                  params: { board: item.id }
-                })
-              }}
-            >
-              <Text style={{ color: theme.onSecondary }}>{item.name}</Text>
-            </Button>
-          )}
-        />
-        </>}
+        <BoardList />
         {loading && <ActivityIndicator size="large" color={theme.onSurface} />}
         {!loading && <>
           <Button variant="primary" onPress={() => router.push("/templates")}>
