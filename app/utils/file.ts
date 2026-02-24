@@ -52,12 +52,12 @@ export const getFileExt = (name: string): string => {
   return ext ? `${ext.toLowerCase()}` : ''
 }
 
-export const selectFile = async (): Promise<{id: string, uri: string}> => {
+export const selectFile = async (): Promise<{id: string, uri: string} | undefined> => {
   const result = await DocumentPicker.getDocumentAsync({
     copyToCacheDirectory: true
   })
   const asset = result.assets?.at(0)
-  if (!asset) throw new Error("No file selected")
+  if (!asset) return undefined
   const data = await getAssetData(asset)
   const ext = getFileExt(asset.name)
   const id = uuid()

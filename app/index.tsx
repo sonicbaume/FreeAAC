@@ -36,15 +36,16 @@ export default function Index() {
 
   const openFile = async () => {
     try {
-      const {id, uri} = await selectFile()
+      const file = await selectFile()
+      if (!file) return
       startLoading(async () => {
-        const tree = await loadBoard(uri)
+        const tree = await loadBoard(file.uri)
         addBoard({
-          id,
-          uri,
+          id: file.id,
+          uri: file.uri,
           name: tree.metadata.name || 'Untitled board',
         })
-        router.push({ pathname: '/[board]', params: { board: id } })
+        router.push({ pathname: '/[board]', params: { board: file.id } })
       })
     } catch (e) {
       handleError(e)
