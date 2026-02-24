@@ -22,6 +22,7 @@ export type BoardPage = Omit<DataOnly<AACPage>, 'images'> & {
 export type BoardTree = Omit<DataOnly<AACTree>, 'pages'> & { pages: { [key: string]: BoardPage } }
 export type TileImage = {
   content_type?: string;
+  data?: string;
   data_url?: string;
   height?: number;
   id: string;

@@ -2,7 +2,7 @@ import { Check, X } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import { useEditMode } from "../stores/boards";
-import { FONT_SIZE, GAP, ICON_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme";
+import { FONT_SIZE, ICON_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme";
 import { Button, Text } from "./Styled";
 
 export default function PageTitle({
@@ -18,50 +18,36 @@ export default function PageTitle({
   const editMode = useEditMode()
   useEffect(() => setInputValue(title), [title])
 
-  const styles = StyleSheet.create({
-    title: {
-      fontSize: FONT_SIZE.xl,
-      padding: PADDING.lg,
-      color: theme.onSurface,
-      userSelect: 'none',
-    },
-    titleEdit: {
-      color: theme.onSurface,
-      borderWidth: 1,
-      borderColor: theme.outline,
-      borderRadius: RADIUS.lg,
-      minWidth: 0
-    },
-    container: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: theme.surfaceContainer,
-      gap: GAP.md,
-      paddingHorizontal: PADDING.lg,
-    },
-  })
-
   return <>
     {!editMode &&
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+    <View style={{
+      ...styles.container,
+      backgroundColor: theme.surfaceContainer,
+    }}>
+      <Text style={styles.title} numberOfLines={1}>{title}</Text>
     </View>
     }
     {editMode && !editText &&
-    <Pressable style={styles.container} onPress={() => setEditText(true)}>
-      <Text style={styles.title}>{title}</Text>
+    <Pressable
+      style={{...styles.container, backgroundColor: theme.surfaceContainer}}
+      onPress={() => setEditText(true)}
+    >
+      <Text style={styles.title} numberOfLines={1}>{title}</Text>
     </Pressable>
     }
     {editMode && editText &&
-    <View style={styles.container}>
+    <View style={{...styles.container, backgroundColor: theme.surfaceContainer}}>
       <TextInput
-        style={[styles.title, styles.titleEdit]}
+        style={{
+          ...styles.title,
+          ...styles.titleEdit,
+          color: theme.onSurface,
+          borderColor: theme.outline
+        }}
         value={inputValue}
         onChangeText={setInputValue}
       />
-      <Button variant="outline" onPress={() => setEditText(false)}>
+      <Button variant="ghost" onPress={() => setEditText(false)}>
         <X size={ICON_SIZE.lg} color={theme.onSurface} />
       </Button>
       <Button variant="primary" onPress={() => {
@@ -76,3 +62,24 @@ export default function PageTitle({
     }
   </>
 }
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: FONT_SIZE.xl,
+    padding: PADDING.lg,
+    userSelect: 'none',
+    textOverflow: 'ellipsis',
+  },
+  titleEdit: {
+    borderWidth: 1,
+    borderRadius: RADIUS.lg,
+    minWidth: 0
+  },
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: PADDING.lg,
+  },
+})
