@@ -3,7 +3,7 @@ import { useRouter } from "expo-router";
 import { Copy, Fullscreen, Pencil, Settings } from "lucide-react-native";
 import { Platform } from "react-native";
 import { usePagesetActions } from "../stores/boards";
-import { PADDING, useTheme } from "../utils/theme";
+import { ICON_SIZE, PADDING, useTheme } from "../utils/theme";
 import SheetItem from "./SheetItem";
 
 export default function PageOptions({
@@ -34,25 +34,25 @@ export default function PageOptions({
       {copyMessage &&
       <SheetItem
         label="Copy to clipboard"
-        icon={Copy}
+        icon={<Copy size={ICON_SIZE.lg} color={theme.onSurface} />}
         onPress={() => { copyMessage(); ref.current?.dismiss() }}
       />
       }
       <SheetItem
         label="Settings"
-        icon={Settings}
+        icon={<Settings size={ICON_SIZE.lg} color={theme.onSurface} />}
         onPress={() => { ref.current?.dismiss(); push('/settings') }}
       />
       {Platform.OS === "web" &&
       <SheetItem
         label="Full screen"
-        icon={Fullscreen}
+        icon={<Fullscreen size={ICON_SIZE.lg} color={theme.onSurface} />}
         onPress={requestFullscreen}
       />
       }
       <SheetItem
         label="Edit board"
-        icon={Pencil}
+        icon={<Pencil size={ICON_SIZE.lg} color={theme.onSurface} />}
         onPress={() => { toggleEditMode(); ref.current?.dismiss() }}
       />
     </TrueSheet>

@@ -1,6 +1,6 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
 import { ChevronsUpDown } from "lucide-react-native";
-import { useRef } from "react";
+import { ReactNode, useRef } from "react";
 import { Pressable, ScrollView, StyleSheet } from "react-native";
 import { GAP, ICON_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme";
 import SheetItem from "./SheetItem";
@@ -9,6 +9,8 @@ import { Text } from "./Styled";
 type Item = {
   value: string | undefined;
   label: string;
+  icon?: ReactNode;
+  iconColor?: string;
 };
 
 export default function SheetPicker({
@@ -23,6 +25,7 @@ export default function SheetPicker({
   const theme = useTheme()
   const ref = useRef<TrueSheet>(null)
   const shouldScroll = items.length > 10
+  const item = items.find(i => i.value === value)
   return <>
     <Pressable
       style={{
@@ -31,8 +34,9 @@ export default function SheetPicker({
       }}
       onPress={() => ref.current?.present()}
     >
-      <Text style={{ color: theme.onSurface }}>
-        {items.find(i => i.value === value)?.label ?? ''}
+      {item?.icon}
+      <Text style={{ color: item?.value ? theme.onSurface : theme.outline }}>
+        {item?.label ?? '(none)'}
       </Text>
       <ChevronsUpDown size={ICON_SIZE.md} color={theme.onSurface} />
     </Pressable>
@@ -47,6 +51,7 @@ export default function SheetPicker({
       {items.map(item =>
         <SheetItem
           label={item.label}
+          icon={item.icon}
           onPress={() => {
             onChange(item)
             ref.current?.dismiss()

@@ -88,39 +88,45 @@ export default function TileSettings ({
           onChange={setNavigation}
         />
       </View>
-      <ColorPicker
-      label="Background"
-        color={button.style?.backgroundColor}
-        onChange={(backgroundColor) => setButton({
-          ...button,
-          style: {
-            ...button.style,
-            backgroundColor
-          }
-        })}
-      />
-      <ColorPicker
-        label="Border"
-        color={button.style?.borderColor}
-        onChange={(borderColor) => setButton({
-          ...button,
-          style: {
-            ...button.style,
-            borderColor
-          }
-        })}
-      />
-      <ColorPicker
-        label="Text"
-        color={button.style?.fontColor}
-        onChange={(fontColor) => setButton({
-          ...button,
-          style: {
-            ...button.style,
-            fontColor
-          }
-        })}
-      />
+      <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+        <Text style={{ fontSize: 16, minWidth: 100, textAlign: 'right' }}>Background</Text>
+        <ColorPicker
+          color={button.style?.backgroundColor}
+          onChange={(backgroundColor) => setButton({
+            ...button,
+            style: {
+              ...button.style,
+              backgroundColor
+            }
+          })}
+        />
+      </View>
+      <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+        <Text style={{ fontSize: 16, minWidth: 100, textAlign: 'right' }}>Border</Text>
+        <ColorPicker
+          color={button.style?.borderColor}
+          onChange={(borderColor) => setButton({
+            ...button,
+            style: {
+              ...button.style,
+              borderColor
+            }
+          })}
+        />
+      </View>
+      <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+        <Text style={{ fontSize: 16, minWidth: 100, textAlign: 'right' }}>Text</Text>
+        <ColorPicker
+          color={button.style?.fontColor}
+          onChange={(fontColor) => setButton({
+            ...button,
+            style: {
+              ...button.style,
+              fontColor
+            }
+          })}
+        />
+      </View>
       <TileDelete onPress={deleteTile} />
     </ScrollView>
   )

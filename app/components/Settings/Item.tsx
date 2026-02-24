@@ -79,7 +79,7 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
         items={props.items}
         value={props.value}
         onChange={item => props.setValue(item.value)}
-        />
+      />
     )
     : null
 

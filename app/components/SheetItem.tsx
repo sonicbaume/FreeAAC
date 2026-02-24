@@ -1,5 +1,5 @@
-import { LucideIcon } from "lucide-react-native";
-import { FONT_SIZE, GAP, ICON_SIZE, PADDING, useTheme } from "../utils/theme";
+import { ReactNode } from "react";
+import { FONT_SIZE, GAP, PADDING, useTheme } from "../utils/theme";
 import { Button, Text } from "./Styled";
 
 export default function SheetItem ({
@@ -8,11 +8,10 @@ export default function SheetItem ({
   onPress,
 }: {
   label: string;
-  icon?: LucideIcon;
+  icon?: ReactNode;
   onPress: () => void;
 }) {
   const theme = useTheme()
-  const Icon = icon
   return (
     <Button
       variant="ghost"
@@ -23,8 +22,13 @@ export default function SheetItem ({
         padding: PADDING.xl,
       }}
     >
-      {Icon && <Icon size={ICON_SIZE.lg} color={theme.onSurface} />}
-      <Text style={{ fontSize: FONT_SIZE.xl }}>{label}</Text>
+      {icon}
+      <Text
+        style={{
+          fontSize: FONT_SIZE.xl,
+          color: theme.onSurface
+        }}
+      >{label}</Text>
     </Button>
   )
 }
