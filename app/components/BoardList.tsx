@@ -15,6 +15,7 @@ export default function BoardList() {
   const router = useRouter()
   const [selectedBoardId, setSelectedBoardId] = useState<string>()
   return <>
+    {boards.length > 0 &&
     <FlatList
       contentContainerStyle={{ gap: GAP.xs}}
       data={boards}
@@ -45,6 +46,10 @@ export default function BoardList() {
         </View>
       )}
     />
+    }
+    {boards.length === 0 &&
+    <Text style={{ textAlign: 'center' }}>No boards found</Text>
+    }
     <BoardOptions ref={sheetRef} boardId={selectedBoardId} />
   </>
 }
