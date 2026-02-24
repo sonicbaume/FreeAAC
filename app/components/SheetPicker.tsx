@@ -48,8 +48,9 @@ export default function SheetPicker({
       scrollable={shouldScroll}
     >
       <ScrollView nestedScrollEnabled>
-      {items.map(item =>
+      {items.map((item, i) =>
         <SheetItem
+          key={i}
           label={item.label}
           icon={item.icon}
           onPress={() => {
