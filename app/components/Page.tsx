@@ -8,20 +8,34 @@ import { EditTile } from "../[board]";
 import { useSpeak } from "../stores/audio";
 import { useEditMode, usePagesetActions } from "../stores/boards";
 import { useGoHomeOnPress, usePlayOnPress } from "../stores/prefs";
+import { GAP, PADDING, useTheme } from "../utils/theme";
 import { BoardButton, BoardPage } from "../utils/types";
 import { uuid } from "../utils/uuid";
 import Tile from "./Tile";
 import TileAdd from "./TileAdd";
 import TileEditor from "./TileEditor";
 
-const pagePadding = 10
-const rowGap = 10
-const colGap = 10
+const pagePadding = PADDING.lg
+const rowGap = GAP.lg
+const colGap = GAP.lg
 const getRowHeight = (pageHeight: number, rows: number) => (pageHeight - pagePadding*2 - (rowGap * (rows-1))) / rows
 const getGridPosition = (index: number, rows: number, cols: number) => {
   const row = Math.floor(index / cols)
   const col = index - row*cols
   return { row, col }
+}
+
+const generateNewButton = (pageId: string): BoardButton => {
+  return {
+    id: `${pageId}::${nanoid()}`,
+    label: '',
+    message: '',
+    type: "SPEAK",
+    action: { type: "SPEAK" },
+    semanticAction: {
+      intent: AACSemanticIntent.SPEAK_TEXT
+    }
+  }
 }
 
 export default function Page({
@@ -33,8 +47,9 @@ export default function Page({
   page: BoardPage;
   savePage: (page: BoardPage) => void;
   homePageId?: string;
-  pageNames: { id: string, name: string }[];
+  pageNames: { value: string, label: string }[];
 }) {
+  const theme = useTheme()
   const editSheet = useRef<TrueSheet>(null)
   const [pageHeight, setPageHeight] = useState(0)
   const [editTile, setEditTile] = useState<EditTile | undefined>()
@@ -50,25 +65,13 @@ export default function Page({
   const rowHeight = getRowHeight(pageHeight, rows)
   if (!rows || !cols) return <></>
 
-  const generateNewButton = (): BoardButton => {
-    return {
-      id: `${page.id}::${nanoid()}`,
-      label: '',
-      message: '',
-      type: "SPEAK",
-      action: { type: "SPEAK" },
-      semanticAction: {
-        intent: AACSemanticIntent.SPEAK_TEXT
-      }
-    }
-  }
-
-  const handleLayout = (event: LayoutChangeEvent) => setPageHeight(event.nativeEvent.layout.height)
+  const handleLayout = (event: LayoutChangeEvent) =>
+    setPageHeight(event.nativeEvent.layout.height)
 
   const grid = page.grid.flat() as (BoardButton | null)[]
 
   const addButton = (index: number) => {
-    setEditTile({ button: generateNewButton(), image: undefined, index })
+    setEditTile({ button: generateNewButton(page.id), image: undefined, index })
     setSymbolSearchText('')
     editSheet.current?.present()
   }
@@ -139,11 +142,15 @@ export default function Page({
 
   return <>
     <View
-      style={{
-        ...styles.container,
-        borderWidth: editMode ? 6 : 0,
-        padding: editMode ? pagePadding - 6 : pagePadding
-      }}
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.surface,
+          borderWidth: editMode ? 6 : 0,
+          borderColor: theme.outline,
+          padding: editMode ? pagePadding - 6 : pagePadding
+        }
+      ]}
       onLayout={handleLayout}
     >
       <Sortable.Grid
@@ -169,19 +176,10 @@ export default function Page({
 }
 
 const styles = StyleSheet.create({
-  sheet: {
-    minHeight: '50%'
-  },
   container: {
     height: '100%',
     width: '100%',
-    gap: 10,
+    gap: GAP.lg,
     borderStyle: 'dashed'
   },
-  row: {
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'row',
-    gap: 10
-  }
 })

@@ -1,8 +1,10 @@
 import { AACButton, AACStyle } from "@willwade/aac-processors/browser"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 import Sortable from "react-native-sortables"
 import { useButtonView, useLabelLocation } from "../stores/prefs"
+import { PADDING, RADIUS } from "../utils/theme"
 import { BoardButton } from "../utils/types"
+import { Text } from "./Styled"
 import TileImage from "./TileImage"
 
 const Label = ({
@@ -68,23 +70,12 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     overflow: 'hidden',
-    borderRadius: 10,
+    borderRadius: RADIUS.lg,
     cursor: 'pointer',
     borderWidth: 2,
   },
-  linkOverlay: {
-    position: 'absolute',
-    top: -20,
-    right: -20,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgb(242, 242, 242)',
-    shadowColor: 'black',
-    boxShadow: '#999 -1px 1px 5px'
-  },
   label: {
-    paddingVertical: 5,
+    paddingVertical: PADDING.sm,
     textAlign: 'center',
     flexShrink: 1
   },

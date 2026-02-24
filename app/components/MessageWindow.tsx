@@ -1,15 +1,17 @@
 import { TrueSheet } from '@lodev09/react-native-true-sheet';
 import * as Clipboard from 'expo-clipboard';
 import { useRouter } from "expo-router";
-import { ClipboardCheck, Copy, Delete, EllipsisVertical, Home, Layers, X } from "lucide-react-native";
+import { Copy, CopyCheck, Delete, EllipsisVertical, Home, Layers, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { Platform, ScrollView, View } from "react-native";
 import { useSpeak } from "../stores/audio";
 import { useEditMode, useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { useButtonView, useClearMessageOnPlay, useLabelLocation, useShowBackspace, useShowShareButton } from "../stores/prefs";
+import { HEADER_HEIGHT, ICON_SIZE, PADDING, useTheme } from '../utils/theme';
 import { BoardButton } from "../utils/types";
 import PageOptions from './PageOptions';
 import PageTitle from './PageTitle';
+import { Button, Text } from './Styled';
 import TileImage from "./TileImage";
 
 export default function MessageWindow({
@@ -25,6 +27,7 @@ export default function MessageWindow({
   pageTitle?: string;
   setPageTitle: (title: string) => void;
 }) {
+  const theme = useTheme()
   const optionsSheet = useRef<TrueSheet>(null)
   const [copied, setCopied] = useState(false)
   const scrollView = useRef<ScrollView>(null)
@@ -67,24 +70,21 @@ export default function MessageWindow({
 
   return <>
     <View style={{
-      height: 60,
+      height: HEADER_HEIGHT,
       display: 'flex',
       flexDirection: "row",
-      backgroundColor: 'white',
+      backgroundColor: theme.surfaceContainer,
     }}>
       {!editMode &&
-      <View style={{ padding: 10 }}>
-        <Pressable
-          style={styles.button}
-          onPress={handleHomePress}
-        >
-          {!isHome && <Home size={30} />}
-          {isHome && <Layers size={30} />}
-        </Pressable>
+      <View style={{ padding: PADDING.lg }}>
+        <Button variant="ghost" onPress={handleHomePress}>
+          {!isHome && <Home size={ICON_SIZE.xl} color={theme.onSurface} />}
+          {isHome && <Layers size={ICON_SIZE.xl} color={theme.onSurface} />}
+        </Button>
       </View>
       }
       {!editMode && hasMessage &&
-      <View style={{ flex: 1, flexDirection: 'row', backgroundColor: '#eee' }}>
+      <View style={{ flex: 1, flexDirection: 'row', backgroundColor: theme.surface }}>
         <ScrollView
           ref={scrollView}
           horizontal={true}
@@ -101,7 +101,7 @@ export default function MessageWindow({
               <TileImage
                 key={i}
                 uri={button.image}
-                style={{ width: 40, height: 40 }}
+                style={{ width: ICON_SIZE.xl, height: ICON_SIZE.xl }}
               />
             ))}
             </View>
@@ -109,30 +109,23 @@ export default function MessageWindow({
             {showText && labelLocation === "bottom" && <Text>{message}</Text>}
           </View>
         </ScrollView>
-        <View style={{ display: 'flex', flexDirection: 'row', padding: 10 }}>
+        <View style={{ display: 'flex', flexDirection: 'row', padding: PADDING.lg }}>
           {hasMessage && <>
             {showShareButton &&
-            <Pressable
-              style={styles.button}
-              onPress={copyMessage}
-            >
-              {copied ? <ClipboardCheck size={30} color="green" /> : <Copy size={30} />}
-            </Pressable>
+            <Button variant="ghost" onPress={copyMessage}>
+              {copied
+                ? <CopyCheck size={ICON_SIZE.xl} color={theme.onSurface} />
+                : <Copy size={ICON_SIZE.xl} color={theme.onSurface} />}
+            </Button>
             }
             {showBackspace &&
-            <Pressable
-              style={styles.button}
-              onPress={removeLastMessageButtonId}
-            >
-              <Delete size={30} />
-            </Pressable>
+            <Button variant="ghost" onPress={removeLastMessageButtonId}>
+              <Delete size={ICON_SIZE.xl} color={theme.onSurface} />
+            </Button>
             }
-            <Pressable
-              style={styles.button}
-              onPress={clearMessageButtonIds}
-            >
-              <X size={30} />
-            </Pressable>
+            <Button variant="ghost" onPress={clearMessageButtonIds}>
+              <X size={ICON_SIZE.xl} color={theme.onSurface} />
+            </Button>
           </>}
         </View>
       </View>
@@ -140,22 +133,17 @@ export default function MessageWindow({
       {(editMode || !hasMessage) &&
       <PageTitle title={pageTitle} onChange={setPageTitle} />
       }
-      <View style={{ padding: 10 }}>
+      <View style={{ padding: PADDING.lg }}>
         {editMode &&
-        <Pressable
-          style={styles.button}
-          onPress={() => toggleEditMode()}
-        >
-          <X size={30} />
-        </Pressable>
+        <Button variant="ghost" onPress={() => toggleEditMode()}>
+          <X size={ICON_SIZE.xl} color={theme.onSurface} />
+        </Button>
         }
         {!editMode &&
-        <Pressable
-          style={styles.button}
-          onPress={() => optionsSheet.current?.present()}
+        <Button variant="ghost" onPress={() => optionsSheet.current?.present()}
         >
-          <EllipsisVertical size={30} />
-        </Pressable>
+          <EllipsisVertical size={ICON_SIZE.xl} color={theme.onSurface} />
+        </Button>
         }
       </View>
     </View>
@@ -165,30 +153,3 @@ export default function MessageWindow({
     />
   </>
 }
-
-const styles = StyleSheet.create({
-  button: {
-    padding: 5
-  },
-  modalContainer: {
-    width: '80%',
-    maxWidth: 600,
-    backgroundColor: 'white',
-    margin: 'auto',
-    overflow: 'hidden',
-    borderRadius: 20,
-  },
-  modalButton: {
-    width: '50%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-    backgroundColor: 'lightgrey',
-    cursor: 'pointer'
-  },
-  modalButtonText: {
-    fontSize: 20,
-    textAlign: 'center'
-  },
-})

@@ -1,35 +1,10 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
 import { useRouter } from "expo-router";
-import { Copy, Fullscreen, LucideIcon, Pencil, Settings } from "lucide-react-native";
-import { Platform, Pressable, Text } from "react-native";
+import { Copy, Fullscreen, Pencil, Settings } from "lucide-react-native";
+import { Platform } from "react-native";
 import { usePagesetActions } from "../stores/boards";
-
-const OptionItem = ({
-  label,
-  icon,
-  onPress,
-}: {
-  label: string;
-  icon: LucideIcon;
-  onPress: () => void;
-}) => {
-  const Icon = icon
-  return (
-    <Pressable
-      onPress={onPress}
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 16,
-        padding: 20,
-      }}
-    >
-      <Icon size={24} />
-      <Text style={{ fontSize: 20 }}>{label}</Text>
-    </Pressable>
-  )
-}
+import { ICON_SIZE, PADDING, useTheme } from "../utils/theme";
+import SheetItem from "./SheetItem";
 
 export default function PageOptions({
   ref,
@@ -38,6 +13,7 @@ export default function PageOptions({
   ref: React.RefObject<TrueSheet | null>;
   copyMessage?: () => void;
 }) {
+  const theme = useTheme()
   const { push } = useRouter()
   const { toggleEditMode } = usePagesetActions()
 
@@ -52,31 +28,31 @@ export default function PageOptions({
     <TrueSheet
       ref={ref}
       detents={['auto']}
-      backgroundColor="white"
-      style={{ padding: 16 }}
+      backgroundColor={theme.surfaceContainer}
+      style={{ padding: PADDING.xl }}
     >
       {copyMessage &&
-      <OptionItem
+      <SheetItem
         label="Copy to clipboard"
-        icon={Copy}
+        icon={<Copy size={ICON_SIZE.lg} color={theme.onSurface} />}
         onPress={() => { copyMessage(); ref.current?.dismiss() }}
       />
       }
-      <OptionItem
+      <SheetItem
         label="Settings"
-        icon={Settings}
+        icon={<Settings size={ICON_SIZE.lg} color={theme.onSurface} />}
         onPress={() => { ref.current?.dismiss(); push('/settings') }}
       />
       {Platform.OS === "web" &&
-      <OptionItem
+      <SheetItem
         label="Full screen"
-        icon={Fullscreen}
+        icon={<Fullscreen size={ICON_SIZE.lg} color={theme.onSurface} />}
         onPress={requestFullscreen}
       />
       }
-      <OptionItem
+      <SheetItem
         label="Edit board"
-        icon={Pencil}
+        icon={<Pencil size={ICON_SIZE.lg} color={theme.onSurface} />}
         onPress={() => { toggleEditMode(); ref.current?.dismiss() }}
       />
     </TrueSheet>
