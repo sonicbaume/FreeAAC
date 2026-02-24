@@ -28,7 +28,7 @@ export default function ConfirmDialog ({
         style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}
         onPress={onCancel}>
         <View style={{...styles.modal, backgroundColor: theme.surfaceContainer}}>
-          <Text style={{ fontSize: FONT_SIZE.md }}>{message}</Text>
+          <Text style={{ fontSize: FONT_SIZE.md, textAlign: 'center' }}>{message}</Text>
           <View style={{ flex: 1, flexDirection: 'row', gap: GAP.lg }}>
             <Button variant="outline" onPress={onCancel} style={{ flex: 1 }}>
               <Text>{cancelLabel}</Text>
@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
     width: '90%',
     maxWidth: MAX_WIDTH,
     margin: 'auto',
-    padding: PADDING.xl,
+    padding: PADDING.xxl,
     borderRadius: RADIUS.lg,
-    gap: GAP.lg
+    gap: GAP.lg,
   }
 })

@@ -49,6 +49,7 @@ export default function BoardOptions({
       visible={showDeleteDialog}
       onCancel={() => setShowDeleteDialog(false)}
       onConfirm={deleteBoard}
+      message={`Are you sure you want to delete ${board?.name}?`}
     />
   </>
 }
