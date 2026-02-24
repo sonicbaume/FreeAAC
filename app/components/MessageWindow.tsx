@@ -20,7 +20,7 @@ export default function MessageWindow({
   setPageTitle,
 }: {
   navigateHome: () => void;
-  buttons: BoardButton[];
+  buttons: {button: BoardButton, pageId: string}[];
   isHome: boolean;
   pageTitle?: string;
   setPageTitle: (title: string) => void;
@@ -44,7 +44,8 @@ export default function MessageWindow({
   const showText = buttonView === "both" || buttonView === "text"
 
   const messageButtons = messageButtonsIds
-    .map(id => buttons.find(b => b.id === id))
+    .map(m => buttons.find(b => b.button.id === m.id && b.pageId === m.pageId))
+    .map(b => b?.button)
     .filter(b => b !== undefined)
   const message =  messageButtons.map(b => b.label).join(' ')
 

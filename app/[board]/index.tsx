@@ -98,7 +98,16 @@ export default function Board() {
 
   const buttons = useMemo(() => {
     if (!tree) return []
-    return Object.values(tree.pages).map(page => page.buttons).flat() 
+    return Object.values(tree.pages)
+      .map(page => {
+        const buttons = page.buttons as BoardButton[]
+        return buttons.map(button => {
+          return {
+            button,
+            pageId: page.id
+          }
+        })
+      }).flat()
   }, [tree])
 
   const pageNames = useMemo(() => {

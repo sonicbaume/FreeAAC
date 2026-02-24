@@ -8,11 +8,16 @@ interface Board {
   name: string;
 }
 
+interface ButtonId {
+  id: string;
+  pageId: string;
+}
+
 interface PagesetsState {
   boards: Board[];
   currentBoardId: string | undefined;
   currentPageId: string | undefined;
-  messageButtonsIds: string[];
+  messageButtonsIds: ButtonId[];
   editMode: boolean;
   editButtonId: string | undefined;
   symbolSearchText: string;
@@ -21,7 +26,7 @@ interface PagesetsState {
     setCurrentPageId: (pageId: string | undefined) => void;
     addBoard: (boards: Board) => void;
     removeBoard: (id: string) => void;
-    addMessageButtonId: (buttonId: string) => void;
+    addMessageButtonId: (buttonId: ButtonId) => void;
     removeLastMessageButtonId: () => void;
     clearMessageButtonIds: () => void;
     toggleEditMode: () => void;
@@ -52,7 +57,7 @@ const useStore = create<PagesetsState>()(persist(
       removeBoard: (id: string) => set({
         boards: get().boards.filter(board => board.id !== id)
       }),
-      addMessageButtonId: (buttonId: string) => set({
+      addMessageButtonId: (buttonId: ButtonId) => set({
         messageButtonsIds: [...get().messageButtonsIds, buttonId]
       }),
       removeLastMessageButtonId: () => set({
