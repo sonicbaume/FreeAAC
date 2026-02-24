@@ -1,9 +1,11 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
 import { Trash2 } from "lucide-react-native";
+import { useState } from "react";
 import { useBoards, usePagesetActions } from "../stores/boards";
 import { handleError } from "../utils/error";
 import { removePath } from "../utils/io";
 import { ICON_SIZE, PADDING, useTheme } from "../utils/theme";
+import ConfirmDialog from "./ConfirmDialog";
 import SheetItem from "./SheetItem";
 
 export default function BoardOptions({
@@ -16,16 +18,18 @@ export default function BoardOptions({
   const theme = useTheme()
   const boards = useBoards()
   const { removeBoard } = usePagesetActions()
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const board = boards.find(b => b.id === boardId)
 
   const deleteBoard = () => {
     if (!board) return handleError("No board found")
     removePath(board.uri)
     removeBoard(board.id)
+    setShowDeleteDialog(false)
     ref.current?.dismiss()
   }
 
-  return (
+  return <>
     <TrueSheet
       ref={ref}
       detents={['auto']}
@@ -35,8 +39,16 @@ export default function BoardOptions({
       <SheetItem
         label="Delete board"
         icon={<Trash2 size={ICON_SIZE.lg} color={theme.onSurface} />}
-        onPress={deleteBoard}
+        onPress={() => {
+          setShowDeleteDialog(true)
+          ref.current?.dismiss()
+        }}
       />
     </TrueSheet>
-  )
+    <ConfirmDialog
+      visible={showDeleteDialog}
+      onCancel={() => setShowDeleteDialog(false)}
+      onConfirm={deleteBoard}
+    />
+  </>
 }
