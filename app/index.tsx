@@ -1,12 +1,14 @@
 
 import { useRouter } from "expo-router";
 import { useTransition } from "react";
-import { ActivityIndicator, Button, FlatList, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Button, Text } from "./components/Styled";
 import { useBoards, usePagesetActions } from "./stores/boards";
 import { handleError } from "./utils/error";
 import { loadBoard, selectFile } from "./utils/file";
 import { FONT_SIZE, GAP, PADDING, useTheme } from "./utils/theme";
+
 export default function Index() {
   const theme = useTheme()
   const insets = useSafeAreaInsets()
@@ -54,25 +56,31 @@ export default function Index() {
         {boards.length > 0 && <>
         <Text style={{ fontSize: FONT_SIZE.lg }}>My boards</Text>
         <FlatList
+          contentContainerStyle={{ gap: GAP.xs}}
           data={boards}
           keyExtractor={item => item.id}
           renderItem={({ item }) => (
             <Button
-              title={item.name}
               onPress={() => {
                 router.push({
                   pathname: '/[board]',
                   params: { board: item.id }
                 })
               }}
-            />
+            >
+              <Text style={{ color: theme.onSecondary }}>{item.name}</Text>
+            </Button>
           )}
         />
         </>}
-        {loading && <ActivityIndicator size="large" />}
+        {loading && <ActivityIndicator size="large" color={theme.onSurface} />}
         {!loading && <>
-          <Button title="View templates" onPress={() => router.push("/templates")} />
-          <Button title="Import board" onPress={openFile}/>
+          <Button variant="primary" onPress={() => router.push("/templates")}>
+            <Text style={{ color: theme.onPrimary}}>View templates</Text>
+          </Button>
+          <Button variant="primary" onPress={openFile}>
+            <Text style={{ color: theme.onPrimary}}>Import board</Text>
+          </Button>
         </>}
       </View>
     </View>

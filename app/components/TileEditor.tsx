@@ -6,7 +6,7 @@ import { EditTile } from "../[board]";
 import { usePagesetActions } from "../stores/boards";
 import { handleError } from "../utils/error";
 import { selectImage } from "../utils/file";
-import { FONT_SIZE, ICON_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme";
+import { FONT_SIZE, GAP, ICON_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme";
 import { BoardButton, TileImage } from "../utils/types";
 import { Text } from "./Styled";
 import SymbolPicker, { SymbolSearchBar } from "./SymbolPicker";
@@ -24,11 +24,12 @@ const TabSelector = ({
 }) => {
   const theme = useTheme()
   return (
-    <View style={{ flexDirection: 'row' }}>
+    <View style={{ flexDirection: 'row', backgroundColor: theme.surfaceContainer }}>
       <Pressable
         style={{
           ...styles.tabButton,
-          borderBottomColor: tab === 'settings' ? theme.onSurface : theme.outline
+          borderBottomColor: tab === 'settings' ? theme.onSurface : theme.outline,
+          borderBottomWidth: tab === 'settings' ? 2 : 1
         }}
         onPress={() => setTab('settings')}
       >
@@ -42,7 +43,8 @@ const TabSelector = ({
       <Pressable
         style={{
           ...styles.tabButton,
-          borderBottomColor: tab === 'symbol' ? theme.onSurface : theme.outline
+          borderBottomColor: tab === 'symbol' ? theme.onSurface : theme.outline,
+          borderBottomWidth: tab === 'symbol' ? 2 : 1
         }}
         onPress={() => setTab('symbol')}
       >
@@ -76,11 +78,16 @@ export default function TileEditor({
   const { setSymbolSearchText } = usePagesetActions()
   const button = tile?.button
   const image = tile?.image
-  const setButton = (newButton: BoardButton | undefined, newImage: TileImage | undefined) => tile && setTile({
-    button: newButton,
-    image: newImage,
-    index: tile.index,
-  })
+  const setButton = (
+    newButton: BoardButton | undefined,
+    newImage: TileImage | undefined
+  ) => {
+    tile && setTile({
+      button: newButton,
+      image: newImage,
+      index: tile.index,
+    })
+  }
   const [tab, setTab] = useState<Tab>('settings')
 
   const deleteTile = () => {
@@ -103,7 +110,7 @@ export default function TileEditor({
       ref={ref}
       detents={Platform.OS === "web" ? [0.75] : [0.5, 0.75]}
       onWillDismiss={onClose}
-      backgroundColor={theme.surfaceContainer}
+      backgroundColor={theme.surface}
       scrollable
       footer={tab === "symbol" ? <SymbolSearchBar onUpload={onUpload} /> : undefined}
     >
@@ -112,6 +119,7 @@ export default function TileEditor({
         <View style={{
           ...styles.labelContainer,
           padding: PADDING.xl,
+          backgroundColor: theme.surfaceContainer
         }}>
           <TextInput
             value={button?.label}
@@ -130,6 +138,7 @@ export default function TileEditor({
             style={{
               ...styles.input,
               ...styles.inputBorder,
+              backgroundColor: theme.surface,
               color: theme.onSurface,
               borderColor: theme.outline
             }}
@@ -163,7 +172,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10
+    gap: GAP.lg
   },
   input: {
     flex: 1,
@@ -175,31 +184,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: RADIUS.md,
   },
-  inputIcon: {
-    position: 'absolute',
-    left: 10,
-    color: 'grey',
-  },
-  label: {
-    fontSize: 16,
-  },
   tabButton: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     height: 40,
-    borderBottomColor: 'grey',
-    borderBottomWidth: 1,
-  },
-  tabButtonActive: {
-    borderBottomWidth: 2,
-    borderBottomColor: 'black',
   },
   tabButtonText: {
-    fontSize: 16,
+    fontSize: FONT_SIZE.md,
     color: 'grey',
   },
-  tabButtonTextActive: {
-    color: 'black',
-  }
 })

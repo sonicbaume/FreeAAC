@@ -3,7 +3,7 @@ import * as Clipboard from 'expo-clipboard';
 import { useRouter } from "expo-router";
 import { Copy, CopyCheck, Delete, EllipsisVertical, Home, Layers, X } from "lucide-react-native";
 import { useEffect, useRef, useState } from "react";
-import { Platform, ScrollView, Text, View } from "react-native";
+import { Platform, ScrollView, View } from "react-native";
 import { useSpeak } from "../stores/audio";
 import { useEditMode, useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { useButtonView, useClearMessageOnPlay, useLabelLocation, useShowBackspace, useShowShareButton } from "../stores/prefs";
@@ -11,7 +11,7 @@ import { HEADER_HEIGHT, ICON_SIZE, PADDING, useTheme } from '../utils/theme';
 import { BoardButton } from "../utils/types";
 import PageOptions from './PageOptions';
 import PageTitle from './PageTitle';
-import { Button } from './Styled';
+import { Button, Text } from './Styled';
 import TileImage from "./TileImage";
 
 export default function MessageWindow({
@@ -84,7 +84,7 @@ export default function MessageWindow({
       </View>
       }
       {!editMode && hasMessage &&
-      <View style={{ flex: 1, flexDirection: 'row', backgroundColor: theme.background }}>
+      <View style={{ flex: 1, flexDirection: 'row', backgroundColor: theme.surface }}>
         <ScrollView
           ref={scrollView}
           horizontal={true}

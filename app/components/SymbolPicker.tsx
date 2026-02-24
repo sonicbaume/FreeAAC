@@ -5,7 +5,7 @@ import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, TextInp
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePagesetActions, useSymbolSearchText } from "../stores/boards";
 import { searchSymbols } from "../utils/symbols";
-import { GAP, ICON_SIZE, useTheme } from "../utils/theme";
+import { FONT_SIZE, GAP, ICON_SIZE, PADDING, useTheme } from "../utils/theme";
 import { TileImage } from "../utils/types";
 import { Button, Text } from "./Styled";
 
@@ -22,41 +22,13 @@ export const SymbolSearchBar = ({
   const bottomInset = isIPad ? 0 : insets.bottom
   const symbolSearchText = useSymbolSearchText()
   const { setSymbolSearchText } = usePagesetActions()
-  const styles = StyleSheet.create({
-    searchBarContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      backgroundColor: theme.surfaceContainer,
-      borderTopColor: theme.outline,
-      borderTopWidth: 1,
-      gap: GAP.lg
-    },
-    searchBar: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: 10,
-      height: searchBarHeight,
-      backgroundColor: theme.surfaceContainer,
-    },
-    input: {
-      flex: 1,
-      paddingLeft: 40,
-      paddingVertical: 10,
-      fontSize: 18,
-      color: theme.onSurface,
-    },
-    inputIcon: {
-      position: 'absolute',
-      left: 10,
-    },
-  })
   return <View style={{
     ...styles.searchBarContainer,
     paddingBottom: bottomInset,
+    backgroundColor: theme.surface,
+    borderTopColor: theme.outline,
   }}>
-    <View style={styles.searchBar}>
+    <View style={{...styles.searchBar, backgroundColor: theme.surface}}>
       <Search size={ICON_SIZE.md} style={styles.inputIcon} color={theme.onSurface} />
       <TextInput
         value={symbolSearchText}
@@ -64,14 +36,16 @@ export const SymbolSearchBar = ({
         style={{
           ...styles.input,
           paddingLeft: 40,
+          color: theme.onSurface,
         }}
       />
     </View>
     <Button
       variant="primary"
       onPress={onUpload}
+      style={{ margin: PADDING.sm }}
     >
-      <Upload size={ICON_SIZE.lg} />
+      <Upload size={ICON_SIZE.lg} color={theme.onPrimary} />
       <Text style={{ color: theme.onPrimary }}>Upload</Text>
     </Button>
   </View>
@@ -85,6 +59,7 @@ export default function SymbolPicker({
   symbol: TileImage | undefined;
   onSelect: (symbol: TileImage) => void;
 }) {
+  const theme = useTheme()
   const searchText = useSymbolSearchText()
   const { isPending, error, data } = useQuery({
     queryKey: ['symbols', searchText],
@@ -113,7 +88,11 @@ export default function SymbolPicker({
             <Pressable
               key={index}
               onPress={() => onSelect(s)}
-              style={symbol && s.url === symbol.url ? styles.selectedSymbol : undefined}
+              style={
+                symbol && s.url === symbol.url
+                ? {...styles.selectedSymbol, outlineColor: theme.onSurface}
+                : undefined
+              }
             >
               <Image
                 source={s.url}
@@ -125,7 +104,7 @@ export default function SymbolPicker({
         </View>
       }
       {isPending &&
-        <ActivityIndicator style={styles.symbolAlert} size="large" />
+        <ActivityIndicator style={styles.symbolAlert} size="large" color={theme.onSurface} />
       }
       {data && data.length === 0 &&
         <Text style={styles.symbolAlert}>No search results</Text>
@@ -135,41 +114,51 @@ export default function SymbolPicker({
 
 const styles = StyleSheet.create({
   header: {
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: FONT_SIZE.md,
+    marginBottom: PADDING.lg,
   },
   symbol: {
     width: 100,
     height: 100,
   },
   symbolAlert: {
-    marginTop: 20,
+    marginTop: PADDING.xxl,
   },
   symbolContainer: {
     display: 'flex',
     flexWrap: 'wrap',
     flexDirection: 'row',
-    gap: 20,
-    padding: 20,
+    gap: GAP.xl,
+    padding: PADDING.xl,
     justifyContent: 'center'
   },
   selectedSymbol: {
     outlineWidth: 2,
-    outlineColor: "white",
     outlineStyle: "solid",
     zIndex: 1,
     boxShadow: "1px 1px 10px black",
   },
-  uploadButton: {
-    display: 'flex',
+  searchBarContainer: {
+    flex: 1,
     flexDirection: 'row',
-    gap: 10,
-    borderWidth: 1,
-    borderColor: 'lightgrey',
-    borderRadius: 10,
+    borderTopWidth: 1,
+  },
+  searchBar: {
+    flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 10,
-    margin: 5,
-  }
+    gap: GAP.lg,
+    height: searchBarHeight,
+  },
+  input: {
+    flex: 1,
+    paddingLeft: GAP.lg + PADDING.xxl,
+    paddingVertical: PADDING.lg,
+    fontSize: FONT_SIZE.lg,
+  },
+  inputIcon: {
+    position: 'absolute',
+    left: GAP.lg,
+  },
 })

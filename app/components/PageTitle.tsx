@@ -1,9 +1,9 @@
 import { Check, X } from "lucide-react-native";
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import { useEditMode } from "../stores/boards";
 import { FONT_SIZE, GAP, ICON_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme";
-import { Button } from "./Styled";
+import { Button, Text } from "./Styled";
 
 export default function PageTitle({
   title,

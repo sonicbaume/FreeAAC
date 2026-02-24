@@ -129,7 +129,7 @@ export default function Board() {
         }}
       >
         {page && <Page page={page} savePage={savePage} homePageId={homePageId} pageNames={pageNames} />}
-        {!page && <ActivityIndicator size="large" />}
+        {!page && <ActivityIndicator size="large" color={theme.onSurface} />}
       </View>
       {messageWindowLocation === "bottom" && messageWindow}
     </SafeAreaView>

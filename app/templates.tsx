@@ -7,9 +7,10 @@ import { usePagesetActions } from "./stores/boards";
 import { BoardTemplate, templates } from "./utils/consts";
 import { handleError } from "./utils/error";
 import { downloadFile } from "./utils/io";
-import { GAP, PADDING } from "./utils/theme";
+import { GAP, PADDING, useTheme } from "./utils/theme";
 
 export default function Templates () {
+  const theme = useTheme()
   const insets = useSafeAreaInsets()
   const router = useRouter()
   const [loading, startLoading] = useTransition()
@@ -28,9 +29,12 @@ export default function Templates () {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      style={{ backgroundColor: theme.background }}
+      contentContainerStyle={styles.container}
+    >
       <View style={{paddingBottom: insets.bottom}}>
-        {loading && <ActivityIndicator size="large" />}
+        {loading && <ActivityIndicator size="large" color={theme.onSurface} />}
         {!loading && templates.map((template, i) => (
           <BoardCard
             key={i}

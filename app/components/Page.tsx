@@ -25,6 +25,19 @@ const getGridPosition = (index: number, rows: number, cols: number) => {
   return { row, col }
 }
 
+const generateNewButton = (pageId: string): BoardButton => {
+  return {
+    id: `${pageId}::${nanoid()}`,
+    label: '',
+    message: '',
+    type: "SPEAK",
+    action: { type: "SPEAK" },
+    semanticAction: {
+      intent: AACSemanticIntent.SPEAK_TEXT
+    }
+  }
+}
+
 export default function Page({
   page,
   savePage,
@@ -52,25 +65,13 @@ export default function Page({
   const rowHeight = getRowHeight(pageHeight, rows)
   if (!rows || !cols) return <></>
 
-  const generateNewButton = (): BoardButton => {
-    return {
-      id: `${page.id}::${nanoid()}`,
-      label: '',
-      message: '',
-      type: "SPEAK",
-      action: { type: "SPEAK" },
-      semanticAction: {
-        intent: AACSemanticIntent.SPEAK_TEXT
-      }
-    }
-  }
-
-  const handleLayout = (event: LayoutChangeEvent) => setPageHeight(event.nativeEvent.layout.height)
+  const handleLayout = (event: LayoutChangeEvent) =>
+    setPageHeight(event.nativeEvent.layout.height)
 
   const grid = page.grid.flat() as (BoardButton | null)[]
 
   const addButton = (index: number) => {
-    setEditTile({ button: generateNewButton(), image: undefined, index })
+    setEditTile({ button: generateNewButton(page.id), image: undefined, index })
     setSymbolSearchText('')
     editSheet.current?.present()
   }
@@ -141,13 +142,15 @@ export default function Page({
 
   return <>
     <View
-      style={{
-        ...styles.container,
-        backgroundColor: theme.surface,
-        borderWidth: editMode ? 6 : 0,
-        borderColor: theme.onSurface,
-        padding: editMode ? pagePadding - 6 : pagePadding
-      }}
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.surface,
+          borderWidth: editMode ? 6 : 0,
+          borderColor: theme.outline,
+          padding: editMode ? pagePadding - 6 : pagePadding
+        }
+      ]}
       onLayout={handleLayout}
     >
       <Sortable.Grid
@@ -173,19 +176,10 @@ export default function Page({
 }
 
 const styles = StyleSheet.create({
-  sheet: {
-    minHeight: '50%'
-  },
   container: {
     height: '100%',
     width: '100%',
     gap: GAP.lg,
     borderStyle: 'dashed'
   },
-  row: {
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'row',
-    gap: GAP.lg
-  }
 })

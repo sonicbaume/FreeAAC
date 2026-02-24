@@ -39,28 +39,7 @@ interface SettingsItemSelect extends SettingItemBase {
 
 export default function SettingsItem(props: SettingsItemToggle | SettingsItemSlider | SettingsItemSelect) {
   const theme = useTheme()
-  const styles = StyleSheet.create({
-    container: {
-      display: 'flex',
-      flexDirection: 'row',
-      width: '100%',
-      padding: PADDING.xl,
-      justifyContent: 'space-between',
-      gap: GAP.xl,
-    },
-    rightContainer: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: GAP.md
-    },
-    title: {
-      fontSize: FONT_SIZE.md,
-    },
-    description: {
-      fontSize: FONT_SIZE.xs,
-      fontWeight: FONT_WEIGHT.light,
-    },
+  const ddStyle = StyleSheet.create({
     dropdown: {
       backgroundColor: theme.surfaceBright,
       borderRadius: RADIUS.md,
@@ -120,16 +99,16 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
       </View>)
     : props.type === 'select' ? (
       <Dropdown
-        style={styles.dropdown}
-        containerStyle={styles.dropdownContainer}
+        style={ddStyle.dropdown}
+        containerStyle={ddStyle.dropdownContainer}
         data={props.items}
         value={props.value}
         onChange={item => props.setValue(item.value)}
         labelField="label"
         valueField="value"
-        selectedTextStyle={styles.dropdownSelectedText}
-        itemTextStyle={styles.dropdownItemText}
-        placeholderStyle={styles.dropdownItemText}
+        selectedTextStyle={ddStyle.dropdownSelectedText}
+        itemTextStyle={ddStyle.dropdownItemText}
+        placeholderStyle={ddStyle.dropdownItemText}
       />
     )
     : null
@@ -152,3 +131,27 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: '100%',
+    padding: PADDING.xl,
+    justifyContent: 'space-between',
+    gap: GAP.xl,
+  },
+  rightContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: GAP.md
+  },
+  title: {
+    fontSize: FONT_SIZE.md,
+  },
+  description: {
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.light,
+  },
+})

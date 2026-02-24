@@ -14,7 +14,9 @@ export default function PreviewButton ({
   const theme = useTheme()
   const speechOptions = useSpeechOptions()
   const ttsStatus = useTtsStatus()
-  const canPreview = (speechOptions.engine === "kokoro" && ttsStatus.isReady) || speechOptions.engine === "device"
+  const canPreview =
+    (speechOptions.engine === "kokoro" && ttsStatus.isReady) ||
+    speechOptions.engine === "device"
 
   const Icon = icon
   return (
