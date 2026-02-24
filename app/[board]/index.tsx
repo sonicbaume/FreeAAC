@@ -10,6 +10,7 @@ import { useMessageWindowLocation } from "../stores/prefs";
 import { handleError } from "../utils/error";
 import { loadBoard, saveBoard } from "../utils/file";
 import { getHomePageId } from "../utils/pagesets";
+import { useTheme } from "../utils/theme";
 import { BoardButton, BoardPage, BoardTree, TileImage } from "../utils/types";
 
 export type EditTile = {
@@ -32,6 +33,7 @@ const prefetchImages = (tree: BoardTree) => {
 }
 
 export default function Board() {
+  const theme = useTheme()
   const { board } = useLocalSearchParams()
   const boards = useBoards()
   const uri = boards.find(b => b.id === board)?.uri
@@ -112,7 +114,7 @@ export default function Board() {
 
   const pageNames = useMemo(() => {
     if (!tree) return []
-    return Object.values(tree.pages).map(({id, name}) => ({ id, name }))
+    return Object.values(tree.pages).map(({id, name}) => ({ value: id, label: name }))
   }, [tree])
 
   const messageWindow = (
@@ -126,7 +128,7 @@ export default function Board() {
   
   return <>
     <Stack.Screen options={{ headerShown: false }} />
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
       {messageWindowLocation === "top" && messageWindow}
       <View
         style={{
@@ -136,7 +138,7 @@ export default function Board() {
         }}
       >
         {page && <Page page={page} savePage={savePage} homePageId={homePageId} pageNames={pageNames} />}
-        {!page && <ActivityIndicator size="large" />}
+        {!page && <ActivityIndicator size="large" color={theme.onSurface} />}
       </View>
       {messageWindowLocation === "bottom" && messageWindow}
     </SafeAreaView>

@@ -1,7 +1,9 @@
+import { Text } from '@/app/components/Styled';
+import { FONT_SIZE, FONT_WEIGHT, GAP, PADDING, useTheme } from '@/app/utils/theme';
 import Slider from '@react-native-community/slider';
 import { JSX } from 'react';
-import { StyleSheet, Switch, Text, View } from "react-native";
-import { Dropdown } from 'react-native-element-dropdown';
+import { StyleSheet, Switch, View } from "react-native";
+import SheetPicker from '../SheetPicker';
 
 interface SettingItemBase {
   title: string;
@@ -36,17 +38,29 @@ interface SettingsItemSelect extends SettingItemBase {
 }
 
 export default function SettingsItem(props: SettingsItemToggle | SettingsItemSlider | SettingsItemSelect) {
+  const theme = useTheme()
   const component =
     props.type === 'toggle' ? (
       <View style={{display: 'flex', alignItems: 'center'}}>
-        <Switch value={props.value} onValueChange={props.setValue} />
+        <Switch
+          value={props.value}
+          onValueChange={props.setValue}
+          thumbColor={theme.secondaryFixed}
+          trackColor={{
+            true: theme.secondary,
+            false: theme.secondaryContainer
+          }}
+          ios_backgroundColor={theme.secondaryContainer}
+          //@ts-ignore
+          activeThumbColor={theme.secondaryFixed}
+        />
         {props.labels && 
         <Text style={{textAlign: 'center', fontSize: 12}}>
           {props.labels.at(Number(props.value))}
         </Text>}
       </View>)
     : props.type === 'slider' ? (
-      <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 10}}>
+      <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: GAP.lg}}>
         <Text>{props.value.toFixed(1)}</Text>
         <Slider
           style={{width: 100, height: 40}}
@@ -54,21 +68,17 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
           onValueChange={props.setValue}
           minimumValue={props.min}
           maximumValue={props.max}
-          minimumTrackTintColor="#FFFFFF"
-          maximumTrackTintColor="#000000"
+          minimumTrackTintColor={theme.secondaryContainer}
+          maximumTrackTintColor={theme.secondaryContainer}
           step={props.step}
+          thumbTintColor={theme.secondary}
         />
       </View>)
     : props.type === 'select' ? (
-      <Dropdown
-        style={styles.dropdown}
-        data={props.items}
+      <SheetPicker
+        items={props.items}
         value={props.value}
         onChange={item => props.setValue(item.value)}
-        labelField="label"
-        valueField="value"
-        selectedTextStyle={{ fontSize: 14, cursor: 'default' }}
-        itemTextStyle={{ fontSize: 14 }}
       />
     )
     : null
@@ -80,7 +90,9 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
         flexShrink: 1,
       }}>
         <Text style={styles.title}>{props.title}</Text>
-        {props.description && <Text style={styles.description}>{props.description}</Text>}
+        {props.description &&
+        <Text style={styles.description}>{props.description}</Text>
+        }
       </View>
       <View style={styles.rightContainer}>
         {component}
@@ -95,28 +107,21 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    padding: 15,
+    padding: PADDING.xl,
     justifyContent: 'space-between',
-    gap: 20
+    gap: GAP.xl,
   },
   rightContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6
+    gap: GAP.md
   },
   title: {
-    fontSize: 16,
+    fontSize: FONT_SIZE.md,
   },
   description: {
-    fontSize: 12,
-    fontWeight: 'light',
+    fontSize: FONT_SIZE.xs,
+    fontWeight: FONT_WEIGHT.light,
   },
-  dropdown: {
-    backgroundColor: 'white',
-    borderRadius: 6,
-    paddingHorizontal: 10,
-    minWidth: 150,
-    minHeight: 30,
-  }
 })

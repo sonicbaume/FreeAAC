@@ -1,5 +1,6 @@
+import { FONT_SIZE, ICON_SIZE, useTheme } from '@/app/utils/theme';
 import { Href, Link } from 'expo-router';
-import { StyleSheet, Text, View } from "react-native";
+import { Button, Text } from '../Styled';
 
 export default function LinkButton ({
   href,
@@ -11,33 +12,13 @@ export default function LinkButton ({
   icon?: any;
 }) {
   const Icon = icon
+  const theme = useTheme()
   return (
-    <Link href={href} style={styles.outsideContainer}>
-      <View style={styles.insideContainer}>
-        {Icon && <Icon size={18} />}
-        <Text style={styles.text}>{title}</Text>
-      </View>
+    <Link href={href} asChild>
+      <Button>
+        {Icon && <Icon size={ICON_SIZE.md} color={theme.onSecondary} />}
+        <Text style={{ fontSize: FONT_SIZE.md, color: theme.onSecondary }}>{title}</Text>
+      </Button>
     </Link>
   )
 }
-
-const styles = StyleSheet.create({
-  outsideContainer: {
-    padding: 6,
-    boxShadow: 'lightgrey 2px 2px 5px',
-    borderRadius: 12,
-    cursor: 'pointer',
-    backgroundColor: "white"
-  },
-  insideContainer: {
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'row',
-    gap: 8,
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  text: {
-    fontSize: 16
-  }
-})

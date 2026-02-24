@@ -1,15 +1,16 @@
+import { FONT_SIZE, GAP, ICON_SIZE, PADDING, useTheme } from "@/app/utils/theme";
 import { CheckCircleIcon } from "lucide-react-native";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useTtsStatus } from "../../stores/audio";
-
-const iconSize = 20
+import { Text } from "../Styled";
 
 export default function TtsStatus() {
-  const { isReady, isGenerating, downloadProgress } = useTtsStatus()
+  const theme = useTheme()
+  const { isReady, downloadProgress } = useTtsStatus()
   let statusText = "Ready"
-  let statusIcon = <CheckCircleIcon size={iconSize} color="green" />
+  let statusIcon = <CheckCircleIcon size={ICON_SIZE.md} color={theme.onSurface} />
   if (!isReady) {
-    statusIcon = <ActivityIndicator size="small" />
+    statusIcon = <ActivityIndicator size="small" color={theme.onSurface}  />
     if (downloadProgress > 0 && downloadProgress < 1) {
       statusText = `Downloading: ${(downloadProgress * 100).toFixed(0)}%`
     } else {
@@ -18,9 +19,9 @@ export default function TtsStatus() {
   }
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Status</Text>
+      <Text style={{ fontSize: FONT_SIZE.md }}>Status</Text>
       <View style={styles.statusContainer}>
-        <Text style={styles.text}>{statusText}</Text>
+        <Text style={{ fontSize: FONT_SIZE.md }}>{statusText}</Text>
         {statusIcon}
       </View>
     </View>
@@ -32,17 +33,14 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     width: '100%',
-    padding: 15,
+    padding: PADDING.xl,
     justifyContent: 'space-between',
-    gap: 20
+    gap: GAP.xl
   },
   statusContainer: {
     display: 'flex',
     flexDirection: 'row',
-    gap: 6,
+    gap: GAP.md,
     alignItems: 'center'
   },
-  text: {
-    fontSize: 16
-  }
 })
