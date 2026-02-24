@@ -24,7 +24,7 @@ const prefetchImages = (tree: BoardTree) => {
     .map(page => page.images).flat()
     .filter(image => image !== undefined)
     .map(image => {
-      if (image.path) return undefined
+      if (image.path || image.data) return undefined
       if (image.data_url?.startsWith('http')) return image.data_url
       return image.url
     })
