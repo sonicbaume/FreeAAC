@@ -149,6 +149,7 @@ export const FONT_WEIGHT = {
   medium: '500',
   bold: 'bold',
   light: 'light',
+  semi: '600',
 } as const;
 
 export const RADIUS = {

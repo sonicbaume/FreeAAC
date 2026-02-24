@@ -1,5 +1,6 @@
 
 import { useRouter } from "expo-router";
+import { Import, PackageOpen } from "lucide-react-native";
 import { useTransition } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -8,7 +9,7 @@ import { Button, Text } from "./components/Styled";
 import { usePagesetActions } from "./stores/boards";
 import { handleError } from "./utils/error";
 import { loadBoard, selectFile } from "./utils/file";
-import { FONT_SIZE, GAP, PADDING, useTheme } from "./utils/theme";
+import { FONT_SIZE, FONT_WEIGHT, GAP, ICON_SIZE, PADDING, useTheme } from "./utils/theme";
 
 export default function Index() {
   const theme = useTheme()
@@ -53,15 +54,18 @@ export default function Index() {
   return <>
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <View style={styles.boardList}>
-        <Text style={{ fontSize: FONT_SIZE.lg }}>My boards</Text>
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
+        <Text style={{ fontSize: FONT_SIZE.md, fontWeight: FONT_WEIGHT.semi }}>My boards</Text>
+          <Button variant="ghost" onPress={openFile}>
+            <Import size={ICON_SIZE.md} color={theme.onSurface} />
+          </Button>
+        </View>
         <BoardList />
         {loading && <ActivityIndicator size="large" color={theme.onSurface} />}
         {!loading && <>
-          <Button variant="primary" onPress={() => router.push("/templates")}>
-            <Text style={{ color: theme.onPrimary}}>View templates</Text>
-          </Button>
-          <Button variant="primary" onPress={openFile}>
-            <Text style={{ color: theme.onPrimary}}>Import board</Text>
+          <Button variant="outline" onPress={() => router.push("/templates")}>
+            <PackageOpen size={ICON_SIZE.md} color={theme.onSurface} />
+            <Text style={{ color: theme.onSurface}}>View templates</Text>
           </Button>
         </>}
       </View>
