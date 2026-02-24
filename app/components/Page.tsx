@@ -47,7 +47,7 @@ export default function Page({
   page: BoardPage;
   savePage: (page: BoardPage) => void;
   homePageId?: string;
-  pageNames: { id: string, name: string }[];
+  pageNames: { value: string, label: string }[];
 }) {
   const theme = useTheme()
   const editSheet = useRef<TrueSheet>(null)

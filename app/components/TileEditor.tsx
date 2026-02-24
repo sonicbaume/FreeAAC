@@ -72,7 +72,7 @@ export default function TileEditor({
   tile: EditTile | undefined;
   setTile: (tile: EditTile) => void;
   onClose: () => void;
-  pageNames: { id: string, name: string }[];
+  pageNames: { value: string, label: string }[];
 }) {
   const theme = useTheme()
   const { setSymbolSearchText } = usePagesetActions()
@@ -115,7 +115,7 @@ export default function TileEditor({
       footer={tab === "symbol" ? <SymbolSearchBar onUpload={onUpload} /> : undefined}
     >
       {button &&
-      <View style={{ flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View style={{
           ...styles.labelContainer,
           padding: PADDING.xl,

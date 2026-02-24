@@ -1,15 +1,15 @@
 import { AACSemanticCategory, AACSemanticIntent } from "@willwade/aac-processors/browser";
 import { ScrollView, StyleSheet, TextInput, View } from "react-native";
-import { Dropdown } from "react-native-element-dropdown";
 import { FONT_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme";
 import { BoardButton } from "../utils/types";
 import ColorPicker from "./ColorPicker";
+import SheetPicker from "./SheetPicker";
 import { Text } from "./Styled";
 import TileDelete from "./TileDelete";
 
 type PageName = {
-  id: string | undefined;
-  name: string
+  value: string | undefined;
+  label: string
 }
 
 export default function TileSettings ({
@@ -24,23 +24,6 @@ export default function TileSettings ({
   deleteTile: () => void;
 }) {
   const theme = useTheme()
-  const styles = StyleSheet.create({
-    input: {
-      flex: 1,
-      paddingVertical: PADDING.lg,
-      paddingLeft: PADDING.lg,
-      fontSize: FONT_SIZE.md,
-      borderWidth: 1,
-      borderColor: theme.outline,
-      borderRadius: RADIUS.md,
-      color: theme.onSurface,
-    },
-    dropdown: {
-      borderWidth: 1,
-      borderColor: theme.outline,
-      borderRadius: RADIUS.md,
-    },
-  })
 
   const setVocalization = (message: string) => {
     setButton({
@@ -52,7 +35,7 @@ export default function TileSettings ({
     })
   }
   const setNavigation = (item: PageName) => {
-    if (item.id === undefined) {
+    if (item.value === undefined) {
       setButton({
         ...button,
         semanticAction: {
@@ -67,10 +50,10 @@ export default function TileSettings ({
         semanticAction: {
           category: AACSemanticCategory.NAVIGATION,
           intent: AACSemanticIntent.NAVIGATE_TO,
-          targetId: item.id,
+          targetId: item.value,
           fallback: {
               type: 'NAVIGATE',
-              targetPageId: item.id,
+              targetPageId: item.value,
           },
         }
       })
@@ -87,60 +70,75 @@ export default function TileSettings ({
           value={button.message}
           onChangeText={setVocalization}
           placeholder={button.label}
-          style={styles.input}
+          style={{
+            ...styles.input,
+            borderColor: theme.outline,
+            color: theme.onSurface,
+          }}
         />
       </View>
       <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
         <Text style={{ fontSize: 16, minWidth: 100, textAlign: 'right' }}>Navigate</Text>
-        <Dropdown
-          data={[
-            {id: undefined, name: '(none)'},
+        <SheetPicker
+          items={[
+            {value: undefined, label: '(none)'},
             ...pageNames
           ]}
-          labelField="name"
-          valueField="id"
           value={button.semanticAction?.targetId}
           onChange={setNavigation}
-          style={{
-            ...styles.input,
-            minWidth: 200,
-          }}
         />
       </View>
-      <ColorPicker
-      label="Background"
-        color={button.style?.backgroundColor}
-        onChange={(backgroundColor) => setButton({
-          ...button,
-          style: {
-            ...button.style,
-            backgroundColor
-          }
-        })}
-      />
-      <ColorPicker
-        label="Border"
-        color={button.style?.borderColor}
-        onChange={(borderColor) => setButton({
-          ...button,
-          style: {
-            ...button.style,
-            borderColor
-          }
-        })}
-      />
-      <ColorPicker
-        label="Text"
-        color={button.style?.fontColor}
-        onChange={(fontColor) => setButton({
-          ...button,
-          style: {
-            ...button.style,
-            fontColor
-          }
-        })}
-      />
+      <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+        <Text style={{ fontSize: 16, minWidth: 100, textAlign: 'right' }}>Background</Text>
+        <ColorPicker
+          color={button.style?.backgroundColor}
+          onChange={(backgroundColor) => setButton({
+            ...button,
+            style: {
+              ...button.style,
+              backgroundColor
+            }
+          })}
+        />
+      </View>
+      <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+        <Text style={{ fontSize: 16, minWidth: 100, textAlign: 'right' }}>Border</Text>
+        <ColorPicker
+          color={button.style?.borderColor}
+          onChange={(borderColor) => setButton({
+            ...button,
+            style: {
+              ...button.style,
+              borderColor
+            }
+          })}
+        />
+      </View>
+      <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+        <Text style={{ fontSize: 16, minWidth: 100, textAlign: 'right' }}>Text</Text>
+        <ColorPicker
+          color={button.style?.fontColor}
+          onChange={(fontColor) => setButton({
+            ...button,
+            style: {
+              ...button.style,
+              fontColor
+            }
+          })}
+        />
+      </View>
       <TileDelete onPress={deleteTile} />
     </ScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+  input: {
+    flex: 1,
+    paddingVertical: PADDING.lg,
+    paddingLeft: PADDING.lg,
+    fontSize: FONT_SIZE.md,
+    borderWidth: 1,
+    borderRadius: RADIUS.md,
+  },
+})
