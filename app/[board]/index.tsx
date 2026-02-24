@@ -105,7 +105,7 @@ export default function Board() {
 
   const pageNames = useMemo(() => {
     if (!tree) return []
-    return Object.values(tree.pages).map(({id, name}) => ({ id, name }))
+    return Object.values(tree.pages).map(({id, name}) => ({ value: id, label: name }))
   }, [tree])
 
   const messageWindow = (

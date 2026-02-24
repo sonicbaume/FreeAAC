@@ -1,37 +1,10 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
 import { useRouter } from "expo-router";
-import { Copy, Fullscreen, LucideIcon, Pencil, Settings } from "lucide-react-native";
+import { Copy, Fullscreen, Pencil, Settings } from "lucide-react-native";
 import { Platform } from "react-native";
 import { usePagesetActions } from "../stores/boards";
-import { FONT_SIZE, GAP, ICON_SIZE, PADDING, useTheme } from "../utils/theme";
-import { Button, Text } from "./Styled";
-
-const OptionItem = ({
-  label,
-  icon,
-  onPress,
-}: {
-  label: string;
-  icon: LucideIcon;
-  onPress: () => void;
-}) => {
-  const theme = useTheme()
-  const Icon = icon
-  return (
-    <Button
-      variant="ghost"
-      onPress={onPress}
-      style={{
-        justifyContent: 'flex-start',
-        gap: GAP.xl,
-        padding: PADDING.xl,
-      }}
-    >
-      <Icon size={ICON_SIZE.lg} color={theme.onSurface} />
-      <Text style={{ fontSize: FONT_SIZE.xl }}>{label}</Text>
-    </Button>
-  )
-}
+import { PADDING, useTheme } from "../utils/theme";
+import SheetItem from "./SheetItem";
 
 export default function PageOptions({
   ref,
@@ -59,25 +32,25 @@ export default function PageOptions({
       style={{ padding: PADDING.xl }}
     >
       {copyMessage &&
-      <OptionItem
+      <SheetItem
         label="Copy to clipboard"
         icon={Copy}
         onPress={() => { copyMessage(); ref.current?.dismiss() }}
       />
       }
-      <OptionItem
+      <SheetItem
         label="Settings"
         icon={Settings}
         onPress={() => { ref.current?.dismiss(); push('/settings') }}
       />
       {Platform.OS === "web" &&
-      <OptionItem
+      <SheetItem
         label="Full screen"
         icon={Fullscreen}
         onPress={requestFullscreen}
       />
       }
-      <OptionItem
+      <SheetItem
         label="Edit board"
         icon={Pencil}
         onPress={() => { toggleEditMode(); ref.current?.dismiss() }}

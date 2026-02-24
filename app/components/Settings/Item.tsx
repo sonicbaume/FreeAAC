@@ -1,9 +1,9 @@
 import { Text } from '@/app/components/Styled';
-import { FONT_SIZE, FONT_WEIGHT, GAP, PADDING, RADIUS, useTheme } from '@/app/utils/theme';
+import { FONT_SIZE, FONT_WEIGHT, GAP, PADDING, useTheme } from '@/app/utils/theme';
 import Slider from '@react-native-community/slider';
 import { JSX } from 'react';
 import { StyleSheet, Switch, View } from "react-native";
-import { Dropdown } from 'react-native-element-dropdown';
+import SheetPicker from '../SheetPicker';
 
 interface SettingItemBase {
   title: string;
@@ -39,29 +39,6 @@ interface SettingsItemSelect extends SettingItemBase {
 
 export default function SettingsItem(props: SettingsItemToggle | SettingsItemSlider | SettingsItemSelect) {
   const theme = useTheme()
-  const ddStyle = StyleSheet.create({
-    dropdown: {
-      backgroundColor: theme.surfaceBright,
-      borderRadius: RADIUS.md,
-      paddingHorizontal: PADDING.lg,
-      minWidth: 150,
-      minHeight: 30,
-    },
-    dropdownContainer: {
-      backgroundColor: theme.surfaceBright,
-      color: theme.onSurface
-    },
-    dropdownItemText: {
-      fontSize: FONT_SIZE.sm,
-      color: theme.onSurface
-    },
-    dropdownSelectedText: {
-      fontSize: FONT_SIZE.sm,
-      cursor: 'default',
-      color: theme.inverseOnSurface
-    }
-  })
-
   const component =
     props.type === 'toggle' ? (
       <View style={{display: 'flex', alignItems: 'center'}}>
@@ -98,18 +75,11 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
         />
       </View>)
     : props.type === 'select' ? (
-      <Dropdown
-        style={ddStyle.dropdown}
-        containerStyle={ddStyle.dropdownContainer}
-        data={props.items}
+      <SheetPicker
+        items={props.items}
         value={props.value}
         onChange={item => props.setValue(item.value)}
-        labelField="label"
-        valueField="value"
-        selectedTextStyle={ddStyle.dropdownSelectedText}
-        itemTextStyle={ddStyle.dropdownItemText}
-        placeholderStyle={ddStyle.dropdownItemText}
-      />
+        />
     )
     : null
 
