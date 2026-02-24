@@ -83,7 +83,7 @@ export default function Page({
       editSheet.current?.present()
     } else if (button.semanticAction?.intent === AACSemanticIntent.SPEAK_TEXT) {
       if (playOnPress) speak(button.semanticAction.text ?? button.message)
-      addMessageButtonId(button.id)
+      addMessageButtonId({id: button.id, pageId: page.id})
       if (goHomeOnPress && homePageId) setCurrentPageId(homePageId)
     } else if (button.semanticAction?.intent === AACSemanticIntent.NAVIGATE_TO && button.semanticAction.targetId) {
       setCurrentPageId(button.semanticAction.targetId)
