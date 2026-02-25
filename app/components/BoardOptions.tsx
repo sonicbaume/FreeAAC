@@ -3,7 +3,7 @@ import { Trash2 } from "lucide-react-native";
 import { useState } from "react";
 import { useBoards, usePagesetActions } from "../stores/boards";
 import { handleError } from "../utils/error";
-import { removePath } from "../utils/io";
+import { deleteBoard } from "../utils/file";
 import { ICON_SIZE, PADDING, useTheme } from "../utils/theme";
 import ConfirmDialog from "./ConfirmDialog";
 import SheetItem from "./SheetItem";
@@ -21,9 +21,9 @@ export default function BoardOptions({
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const board = boards.find(b => b.id === boardId)
 
-  const deleteBoard = () => {
+  const handleDelete = async () => {
     if (!board) return handleError("No board found")
-    removePath(board.uri)
+    await deleteBoard(board.uri)
     removeBoard(board.id)
     setShowDeleteDialog(false)
     ref.current?.dismiss()
@@ -48,7 +48,7 @@ export default function BoardOptions({
     <ConfirmDialog
       visible={showDeleteDialog}
       onCancel={() => setShowDeleteDialog(false)}
-      onConfirm={deleteBoard}
+      onConfirm={handleDelete}
       message={`Are you sure you want to delete ${board?.name}?`}
     />
   </>

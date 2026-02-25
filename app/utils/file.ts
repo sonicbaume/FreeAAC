@@ -103,6 +103,10 @@ export const saveBoard = async (uri: string, tree: BoardTree) => {
   await processor.saveFromTree(tree as unknown as AACTree, uri)
 }
 
+export const deleteBoard = async (uri: string) => {
+  await removePath(uri)
+}
+
 export const loadTemplate = async (templateUrl: string) => {
   const response = await fetch(templateUrl)
   const data = await response.bytes()
