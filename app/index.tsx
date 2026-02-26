@@ -18,22 +18,6 @@ export default function Index() {
   const { addBoard } = usePagesetActions()
   const [loading, startLoading] = useTransition()
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-      backgroundColor: theme.background,
-    },
-    boardList: {
-      width: 400,
-      maxWidth: '100%',
-      padding: PADDING.xl,
-      gap: GAP.xl,
-      backgroundColor: theme.surface,
-    }
-  })
-
   const openFile = async () => {
     try {
       const file = await selectFile()
@@ -53,8 +37,12 @@ export default function Index() {
   }
 
   return <>
-    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
-      <View style={styles.boardList}>
+    <View style={{
+      ...styles.container,
+      backgroundColor: theme.background,
+      paddingBottom: insets.bottom
+    }}>
+      <View style={{...styles.boardList, backgroundColor: theme.surface}}>
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
         <Text style={{ fontSize: FONT_SIZE.md, fontWeight: FONT_WEIGHT.semi }}>My boards</Text>
           <Button variant="ghost" onPress={openFile}>
@@ -73,3 +61,17 @@ export default function Index() {
     </View>
   </>
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  boardList: {
+    width: 400,
+    maxWidth: '100%',
+    padding: PADDING.xl,
+    gap: GAP.xl,
+  }
+})

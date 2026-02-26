@@ -31,16 +31,16 @@ export default function BoardCard({
   }
 
   return (
-    <View style={styles.card}>
+    <View style={{...styles.card, backgroundColor: theme.surfaceContainer}}>
       <Image
         source={board.imageUrl}
         style={{ width: '100%', aspectRatio: 1.91, marginBottom: GAP.xs }}
         contentFit="fill"
       />
       <View style={{ padding: 10 }}>
-        <Text style={{ fontSize: FONT_SIZE.xl }}>{board.name}</Text>
+        <Text style={{ fontSize: FONT_SIZE.xl, color: theme.onSurface }}>{board.name}</Text>
         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={{ fontSize: FONT_SIZE.sm }}>{board.author}</Text>
+          <Text style={{ fontSize: FONT_SIZE.sm, color: theme.onSurface }}>{board.author}</Text>
           {assets && 
           <Link href={licenseLinkMap[board.license]} target="_blank" asChild>
             <Image source={assets[0]} style={{ aspectRatio: 82 / 31, width: 50 }} />
@@ -68,7 +68,6 @@ export default function BoardCard({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'white',
     display: 'flex',
     justifyContent: 'flex-end',
     width: MAX_WIDTH/2,

@@ -26,8 +26,8 @@ export const Button = ({
     secondary: { backgroundColor: theme.secondary },
     outline: {
       backgroundColor: theme.surface,
-      borderColor: theme.secondary,
-      borderWidth: 1
+      borderColor: theme.outlineVariant,
+      borderWidth: 1,
     },
     destructive: { backgroundColor: theme.error },
     ghost: { },

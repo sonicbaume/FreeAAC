@@ -25,9 +25,6 @@ export default function RootLayout() {
     header: {
       backgroundColor: theme.surfaceContainer,
     },
-    headerTitle: {
-      color: theme.onSurface,
-    },
     headerLeft: {
       backgroundColor: theme.surfaceContainer,
       ...Platform.select({
@@ -64,7 +61,7 @@ export default function RootLayout() {
             }}>
               <Stack.Screen name="index" options={{
                 headerStyle: styles.header,
-                headerTitleStyle: styles.headerTitle,
+                headerTintColor: theme.onSurface,
                 headerTitle: 'FreeAAC',
                 headerLeft: () => (
                   <View style={styles.headerLeft}>
