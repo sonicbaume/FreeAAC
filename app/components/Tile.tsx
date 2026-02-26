@@ -17,7 +17,7 @@ const Label = ({
   return (
     <Text style={{
       ...styles.label,
-      color: style?.fontColor,
+      color: style?.fontColor ?? "#000",
       fontSize: style?.fontSize,
     }}>
       {text}
