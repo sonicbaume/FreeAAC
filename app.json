@@ -50,7 +50,8 @@
       ],
       "expo-localization",
       "expo-asset",
-      "react-native-audio-api"
+      "react-native-audio-api",
+      "expo-image-picker"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -1,8 +1,8 @@
 import { AACTree, getProcessor } from '@willwade/aac-processors/browser';
 import * as DocumentPicker from 'expo-document-picker';
-import { File, Paths } from 'expo-file-system';
+import { Paths } from 'expo-file-system';
+import { ImagePickerOptions, launchCameraAsync, launchImageLibraryAsync } from 'expo-image-picker';
 import { nanoid } from 'nanoid/non-secure';
-import { Platform } from "react-native";
 import { getAssetData, getFileSize, isDirectory, listDir, loadFile, mkDir, mkTempDir, pathExists, removePath, saveFile } from './io';
 import { BoardTree, TileImage } from './types';
 import { uuid } from './uuid';
@@ -66,23 +66,26 @@ export const selectFile = async (): Promise<{id: string, uri: string} | undefine
   return {id, uri}
 }
 
-export const selectImage = async (): Promise<TileImage> => {
-  const result = await DocumentPicker.getDocumentAsync({
-    type: 'image/*'
-  })
+export const selectImage = async (takePhoto: boolean): Promise<TileImage | undefined> =>
+{
+  const settings: ImagePickerOptions = {
+    mediaTypes: ['images'],
+    base64: true,
+    exif: false
+  }
+  let result = takePhoto
+    ? await launchCameraAsync(settings)
+    : await launchImageLibraryAsync(settings)
   const file = result.assets?.at(0)
-  if (!file) throw new Error('Could not read file')
-  if (!file.mimeType?.startsWith('image/')) throw new Error('File must be an image')
-  const data = (
-    Platform.OS === "web" ? file.base64
-    : `data:${file.mimeType};base64,` + await new File(file.uri).base64()
-  )
-  if (!data) throw new Error('Could not read file data')
+  if (!file) return undefined
+  if (!file.base64) throw new Error('Could not read file data')
+  const data = `data:${file.mimeType};base64,` + file.base64
+  const id = nanoid()
   return {
     content_type: file.mimeType,
     data_url: data,
-    id: nanoid(),
-    path: file.name,
+    id,
+    path: file.fileName ?? `${id}.jpg`,
     url: data,
   }
 }

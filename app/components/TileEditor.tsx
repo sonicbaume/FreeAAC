@@ -95,11 +95,11 @@ export default function TileEditor({
     ref.current?.dismiss()
   }
 
-  const onUpload = async () => {
+  const onSelectImage = async (takePhoto: boolean) => {
     if (!button) return
     try {
-      const image = await selectImage()
-      setButton(button, image)
+      const image = await selectImage(takePhoto)
+      if (image) setButton(button, image)
     } catch (e) {
       handleError(e)
     }
@@ -112,7 +112,12 @@ export default function TileEditor({
       onWillDismiss={onClose}
       backgroundColor={theme.surface}
       scrollable
-      footer={tab === "symbol" ? <SymbolSearchBar onUpload={onUpload} /> : undefined}
+      footer={tab === "symbol"
+        ? <SymbolSearchBar
+            onSelectImage={() => onSelectImage(false)}
+            onTakePhoto={() => onSelectImage(true)}
+          />
+        : undefined}
     >
       {button &&
       <View style={{ flex: 1 }}>
