@@ -28,7 +28,7 @@ export default function DialogConfirm ({
         style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}
         onPress={onCancel}>
         <View style={{...styles.modal, backgroundColor: theme.surfaceContainer}}>
-          <Text style={{ fontSize: FONT_SIZE.md, textAlign: 'center' }}>{message}</Text>
+          <Text style={{ fontSize: FONT_SIZE.md, textAlign: 'center', paddingVertical: PADDING.lg }}>{message}</Text>
           <View style={{ display: 'flex', flexDirection: 'row', gap: GAP.lg }}>
             <Button variant="outline" onPress={onCancel} style={{ flex: 1 }}>
               <Text>{cancelLabel}</Text>

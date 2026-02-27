@@ -1,6 +1,5 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
 import { AACSemanticIntent } from "@willwade/aac-processors/browser";
-import { nanoid } from "nanoid/non-secure";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LayoutChangeEvent, StyleSheet, View } from "react-native";
 import Sortable, { SortableGridDragEndCallback, type SortableGridRenderItem } from "react-native-sortables";
@@ -8,6 +7,7 @@ import { EditTile } from "../[board]";
 import { useSpeak } from "../stores/audio";
 import { useEditMode, usePagesetActions } from "../stores/boards";
 import { useGoHomeOnPress, usePlayOnPress } from "../stores/prefs";
+import { generateNewButton } from "../utils/boards";
 import { GAP, PADDING, useTheme } from "../utils/theme";
 import { BoardButton, BoardPage } from "../utils/types";
 import { uuid } from "../utils/uuid";
@@ -23,19 +23,6 @@ const getGridPosition = (index: number, rows: number, cols: number) => {
   const row = Math.floor(index / cols)
   const col = index - row*cols
   return { row, col }
-}
-
-const generateNewButton = (pageId: string): BoardButton => {
-  return {
-    id: `${pageId}::${nanoid()}`,
-    label: '',
-    message: '',
-    type: "SPEAK",
-    action: { type: "SPEAK" },
-    semanticAction: {
-      intent: AACSemanticIntent.SPEAK_TEXT
-    }
-  }
 }
 
 export default function Page({

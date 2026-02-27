@@ -35,8 +35,9 @@ export default function DialogRename ({
     >
       <Pressable
         style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}
-        onPress={cancel}>
-        <View style={{...styles.modal, backgroundColor: theme.surfaceContainer}}>
+        onPress={cancel}
+      >
+        <View style={{...styles.modal, backgroundColor: theme.surfaceContainer }}>
           <Text style={{ fontSize: FONT_SIZE.md, textAlign: 'center' }}>{message}</Text>
           <TextInput
             style={{
