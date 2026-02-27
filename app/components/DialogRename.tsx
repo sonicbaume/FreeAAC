@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Modal, Pressable, StyleSheet, TextInput, View } from "react-native";
+import { Modal, StyleSheet, TextInput, View } from "react-native";
 import { FONT_SIZE, GAP, MAX_WIDTH, PADDING, RADIUS, useTheme } from "../utils/theme";
 import { Button, Text } from "./Styled";
 
@@ -33,10 +33,8 @@ export default function DialogRename ({
      onRequestClose={cancel}
      transparent
     >
-      <Pressable
-        style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}
-        onPress={cancel}>
-        <View style={{...styles.modal, backgroundColor: theme.surfaceContainer}}>
+      <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}>
+        <View style={{...styles.modal, backgroundColor: theme.surfaceContainer }}>
           <Text style={{ fontSize: FONT_SIZE.md, textAlign: 'center' }}>{message}</Text>
           <TextInput
             style={{
@@ -59,7 +57,7 @@ export default function DialogRename ({
             </Button>
           </View>
         </View>
-      </Pressable>
+      </View>
     </Modal>
   )
 }

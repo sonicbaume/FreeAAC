@@ -100,6 +100,14 @@ export default function RootLayout() {
                   headerTintColor: theme.onSurface
                 }}
               />
+              <Stack.Screen
+                name="create"
+                options={{
+                  headerTitle: 'Create board',
+                  headerStyle: styles.header,
+                  headerTintColor: theme.onSurface
+                }}
+              />
             </Stack>
           </GestureHandlerRootView>
         </TrueSheetProvider>

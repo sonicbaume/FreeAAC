@@ -7,9 +7,9 @@ import MessageWindow from "../components/MessageWindow";
 import Page from "../components/Page";
 import { useBoards, useCurrentPageId, usePagesetActions } from "../stores/boards";
 import { useMessageWindowLocation } from "../stores/prefs";
+import { getHomePageId } from "../utils/boards";
 import { handleError } from "../utils/error";
 import { loadBoard, saveBoard } from "../utils/file";
-import { getHomePageId } from "../utils/pagesets";
 import { useTheme } from "../utils/theme";
 import { BoardButton, BoardPage, BoardTree, TileImage } from "../utils/types";
 
