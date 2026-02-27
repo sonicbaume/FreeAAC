@@ -2,8 +2,8 @@ import { CircleSmall } from "lucide-react-native";
 import { ICON_SIZE } from "../utils/theme";
 import SheetPicker from "./SheetPicker";
 
-const defaultColors = [
-  { value: undefined, label: "(none)"},
+type ColorValue = { value: string | undefined, label: string }
+const defaultColors: ColorValue[] = [
   { value: "#EB9694", label: "Salmon" },
   { value: "#FAD0C3", label: "Pink" },
   { value: "#FEF3BD", label: "Cream" },
@@ -32,9 +32,10 @@ export default function ColorPicker({
   color: string | undefined;
   onChange: (color: string | undefined) => void;
 }) {
-  const colors = defaultColors
-  const hasCurrentColor = !defaultColors.find(item => item.value === color)
-  if (hasCurrentColor) colors.push({value: color, label: "(current color)"})
+  const colors = [...defaultColors]
+  const hasCurrentColor = defaultColors.find(item => item.value === color)
+  if (!hasCurrentColor) colors.unshift({ value: color, label: "(current color)" })
+  colors.unshift({ value: undefined, label: "(none)" })
   const items = colors.map(color => { return {
     ...color,
     icon: color.value && <CircleSmall size={ICON_SIZE.md} fill={color.value} color={color.value} />,
