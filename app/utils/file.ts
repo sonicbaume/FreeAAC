@@ -106,13 +106,3 @@ export const saveBoard = async (uri: string, tree: BoardTree) => {
 export const deleteBoard = async (uri: string) => {
   await removePath(uri)
 }
-
-export const loadTemplate = async (templateUrl: string) => {
-  const response = await fetch(templateUrl)
-  const data = await response.bytes()
-  const ext = getFileExt(templateUrl.split('/').slice(-1)[0])
-  const id = uuid()
-  const fileName = `${id}.${ext}`
-  const uri = await saveFile(fileName, data)
-  return { uri, id }
-}

@@ -6,7 +6,7 @@ import { useTransition } from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { usePagesetActions } from "../stores/boards";
 import { BoardTemplate, licenseImageMap, licenseLinkMap } from "../utils/consts";
-import { loadTemplate } from "../utils/file";
+import { downloadFile } from "../utils/io";
 import { FONT_SIZE, GAP, MAX_WIDTH, RADIUS, useTheme } from "../utils/theme";
 import { Button, Text } from "./Styled";
 
@@ -24,8 +24,8 @@ export default function BoardCard({
 
   const load = () => {
     startLoading(async () => {
-      const { uri, id } = await loadTemplate(board.url)
-      addBoard({ id, uri, name: board.name})
+      const { fileName, id } = await downloadFile(board.url)
+      addBoard({ id, uri: fileName, name: board.name})
       replace({ pathname: '/[board]', params: { board: id } })
     })
   }
