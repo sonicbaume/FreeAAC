@@ -22,7 +22,7 @@ export default function DialogRename ({
 }) {
   const theme = useTheme()
   const [text, setText] = useState(initialText)
-  useEffect(() => setText(initialText), [initialText])
+  useEffect(() => setText(initialText), [initialText, visible])
   const cancel = () => {
     setText(initialText)
     onCancel()
