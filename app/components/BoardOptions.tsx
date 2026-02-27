@@ -5,7 +5,7 @@ import { useBoards, usePagesetActions } from "../stores/boards";
 import { handleError } from "../utils/error";
 import { deleteBoard } from "../utils/file";
 import { ICON_SIZE, PADDING, useTheme } from "../utils/theme";
-import ConfirmDialog from "./ConfirmDialog";
+import DialogConfirm from "./DialogConfirm";
 import SheetItem from "./SheetItem";
 
 export default function BoardOptions({
@@ -45,7 +45,7 @@ export default function BoardOptions({
         }}
       />
     </TrueSheet>
-    <ConfirmDialog
+    <DialogConfirm
       visible={showDeleteDialog}
       onCancel={() => setShowDeleteDialog(false)}
       onConfirm={handleDelete}

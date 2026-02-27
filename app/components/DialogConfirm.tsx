@@ -2,7 +2,7 @@ import { Modal, Pressable, StyleSheet, View } from "react-native";
 import { FONT_SIZE, GAP, MAX_WIDTH, PADDING, RADIUS, useTheme } from "../utils/theme";
 import { Button, Text } from "./Styled";
 
-export default function ConfirmDialog ({
+export default function DialogConfirm ({
   onConfirm,
   onCancel,
   visible,
