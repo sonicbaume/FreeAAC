@@ -16,7 +16,7 @@ import TtsStatus from './components/Settings/TtsStatus';
 import { Text } from './components/Styled';
 import { useSpeak } from './stores/audio';
 import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useShowBackspace, useShowShareButton, useSpeechOptions } from "./stores/prefs";
-import { korokoVoices } from './utils/consts';
+import { korokoVoices, speechPitchValues, speechRateValues } from './utils/consts';
 import { handleError } from './utils/error';
 import { FONT_SIZE, GAP, ICON_SIZE, MAX_WIDTH, PADDING, useTheme } from './utils/theme';
 
@@ -132,23 +132,19 @@ export default function Settings() {
         <SettingsItem
           title="Rate"
           description="The rate of the speaker's speech"
-          type="slider"
-          value={speechOptions.rate}
-          setValue={rate => setSpeechOptions({rate})}
-          min={0.5}
-          max={1.5}
-          step={0.1}
+          type="select"
+          items={speechRateValues}
+          value={speechOptions.rate.toFixed(1)}
+          setValue={value => value && setSpeechOptions({rate: parseFloat(value)})}
           rightButton={<PreviewButton onPress={() => introduceRate()} />}
         />
         {speechOptions.engine === "device" && <SettingsItem
           title="Pitch"
           description="Pitch of the speaker's voice"
-          type="slider"
-          value={speechOptions.pitch}
-          setValue={pitch => setSpeechOptions({pitch})}
-          min={0.5}
-          max={1.5}
-          step={0.1}
+          type="select"
+          items={speechPitchValues}
+          value={speechOptions.pitch.toFixed(1)}
+          setValue={value => value && setSpeechOptions({pitch: parseFloat(value)})}
           rightButton={<PreviewButton onPress={() => introducePitch()} />}
         />}
         <SettingsItem

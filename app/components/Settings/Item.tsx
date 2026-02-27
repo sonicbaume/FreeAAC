@@ -1,6 +1,5 @@
 import { Text } from '@/app/components/Styled';
 import { FONT_SIZE, FONT_WEIGHT, GAP, PADDING, useTheme } from '@/app/utils/theme';
-import Slider from '@react-native-community/slider';
 import { JSX } from 'react';
 import { StyleSheet, Switch, View } from "react-native";
 import SheetPicker from '../SheetPicker';
@@ -18,15 +17,6 @@ interface SettingsItemToggle extends SettingItemBase {
   labels?: string[];
 }
 
-interface SettingsItemSlider extends SettingItemBase {
-  type: 'slider';
-  value: number;
-  setValue: (val: number) => void;
-  min: number;
-  max: number;
-  step?: number;
-}
-
 interface SettingsItemSelect extends SettingItemBase {
   type: 'select';
   value: string | undefined;
@@ -37,7 +27,7 @@ interface SettingsItemSelect extends SettingItemBase {
   }[]
 }
 
-export default function SettingsItem(props: SettingsItemToggle | SettingsItemSlider | SettingsItemSelect) {
+export default function SettingsItem(props: SettingsItemToggle | SettingsItemSelect) {
   const theme = useTheme()
   const component =
     props.type === 'toggle' ? (
@@ -58,21 +48,6 @@ export default function SettingsItem(props: SettingsItemToggle | SettingsItemSli
         <Text style={{textAlign: 'center', fontSize: 12}}>
           {props.labels.at(Number(props.value))}
         </Text>}
-      </View>)
-    : props.type === 'slider' ? (
-      <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', gap: GAP.lg}}>
-        <Text>{props.value.toFixed(1)}</Text>
-        <Slider
-          style={{width: 100, height: 40}}
-          value={props.value}
-          onValueChange={props.setValue}
-          minimumValue={props.min}
-          maximumValue={props.max}
-          minimumTrackTintColor={theme.secondaryContainer}
-          maximumTrackTintColor={theme.secondaryContainer}
-          step={props.step}
-          thumbTintColor={theme.secondary}
-        />
       </View>)
     : props.type === 'select' ? (
       <SheetPicker
