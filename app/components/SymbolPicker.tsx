@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "expo-image";
-import { Search, Upload } from "lucide-react-native";
+import { Camera, Search, Upload } from "lucide-react-native";
 import { ActivityIndicator, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePagesetActions, useSymbolSearchText } from "../stores/boards";
@@ -13,9 +13,11 @@ const searchBarHeight = 50
 const isIPad = Platform.OS === 'ios' && Platform.isPad;
 
 export const SymbolSearchBar = ({
-  onUpload,
+  onSelectImage,
+  onTakePhoto,
 }: {
-  onUpload: () => void;
+  onSelectImage: () => void;
+  onTakePhoto: () => void;
 }) => {
   const theme = useTheme()
   const insets = useSafeAreaInsets()
@@ -42,11 +44,17 @@ export const SymbolSearchBar = ({
     </View>
     <Button
       variant="primary"
-      onPress={onUpload}
+      onPress={onTakePhoto}
+      style={{ margin: PADDING.sm }}
+    >
+      <Camera size={ICON_SIZE.lg} color={theme.onPrimary} />
+    </Button>
+    <Button
+      variant="primary"
+      onPress={onSelectImage}
       style={{ margin: PADDING.sm }}
     >
       <Upload size={ICON_SIZE.lg} color={theme.onPrimary} />
-      <Text style={{ color: theme.onPrimary }}>Upload</Text>
     </Button>
   </View>
 }
