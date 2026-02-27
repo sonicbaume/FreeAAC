@@ -218,3 +218,19 @@ export const korokoVoices: Pick<Voice, 'identifier' | 'name' | 'language'>[] = [
     language: 'en-GB'
   }
 ]
+
+export const speechRateValues = [
+  { value: '0.5', label: 'Very slow' },
+  { value: '0.8', label: 'Slow' },
+  { value: '1.0', label: 'Normal' },
+  { value: '1.2', label: 'Fast' },
+  { value: '1.5', label: 'Very fast' }
+]
+
+export const speechPitchValues = [
+  { value: '0.5', label: 'Very low' },
+  { value: '0.8', label: 'Low' },
+  { value: '1.0', label: 'Normal' },
+  { value: '1.2', label: 'High' },
+  { value: '1.5', label: 'Very high' }
+]
