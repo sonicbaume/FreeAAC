@@ -163,6 +163,8 @@ export default function Page({
         keyExtractor={item => item?.id ?? uuid()}
         onDragEnd={handleDragEnd}
         itemsLayoutTransitionMode="reorder"
+        itemEntering={null}
+        itemExiting={null}
       />
     </View>
     <TileEditor
