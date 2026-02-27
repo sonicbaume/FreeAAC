@@ -123,7 +123,7 @@ export default function Board() {
     buttons={buttons}
     isHome={homePageId === page?.id}
     pageTitle={page?.name}
-    setPageTitle={(name) => page && savePage({...page, name})}
+    setPageTitle={(name) => page && name && savePage({...page, name})}
   />)
   
   return <>

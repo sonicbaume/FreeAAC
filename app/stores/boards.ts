@@ -26,6 +26,7 @@ interface PagesetsState {
     setCurrentPageId: (pageId: string | undefined) => void;
     addBoard: (boards: Board) => void;
     removeBoard: (id: string) => void;
+    renameBoard: (id: string, name: string) => void;
     addMessageButtonId: (buttonId: ButtonId) => void;
     removeLastMessageButtonId: () => void;
     clearMessageButtonIds: () => void;
@@ -57,6 +58,12 @@ const useStore = create<PagesetsState>()(persist(
       removeBoard: (id: string) => set({
         boards: get().boards.filter(board => board.id !== id)
       }),
+      renameBoard: (id: string, name: string) => {
+        const boards = [...get().boards]
+        const board = boards.find(b => b.id === id)
+        if (board) board.name = name
+        set({ boards })
+      },
       addMessageButtonId: (buttonId: ButtonId) => set({
         messageButtonsIds: [...get().messageButtonsIds, buttonId]
       }),

@@ -25,7 +25,7 @@ export default function MessageWindow({
   buttons: {button: BoardButton, pageId: string}[];
   isHome: boolean;
   pageTitle?: string;
-  setPageTitle: (title: string) => void;
+  setPageTitle: (title: string | undefined) => void;
 }) {
   const theme = useTheme()
   const optionsSheet = useRef<TrueSheet>(null)
