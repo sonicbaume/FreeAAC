@@ -1,5 +1,4 @@
-import { KOKORO_MEDIUM, KOKORO_VOICE_AF_HEART, KOKORO_VOICE_AF_RIVER, KOKORO_VOICE_AF_SARAH, KOKORO_VOICE_AM_ADAM, KOKORO_VOICE_AM_MICHAEL, KOKORO_VOICE_AM_SANTA, KOKORO_VOICE_BF_EMMA, KOKORO_VOICE_BM_DANIEL, useTextToSpeech } from "react-native-executorch"
-import { VoiceConfig } from "react-native-executorch/lib/typescript/types/tts"
+import { KOKORO_MEDIUM, KOKORO_VOICE_AF_HEART, KOKORO_VOICE_AF_RIVER, KOKORO_VOICE_AF_SARAH, KOKORO_VOICE_AM_ADAM, KOKORO_VOICE_AM_MICHAEL, KOKORO_VOICE_AM_SANTA, KOKORO_VOICE_BF_EMMA, KOKORO_VOICE_BM_DANIEL, useTextToSpeech, VoiceConfig } from "react-native-executorch"
 import { SpeechOptions } from "../stores/prefs"
 import { korokoVoices } from "./consts"
 import { ExecuTorchTtsModel } from "./types"
