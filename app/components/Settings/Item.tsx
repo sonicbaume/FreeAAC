@@ -23,7 +23,7 @@ interface SettingsItemSelect extends SettingItemBase {
   setValue: (val: string | undefined) => void;
   items: {
     label: string;
-    value: string;
+    value: string | undefined;
   }[]
 }
 
