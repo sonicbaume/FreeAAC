@@ -157,7 +157,7 @@ export default function Settings() {
           setValue={togglePlayOnPress}
           labels={['Off', 'On']}
         />
-        <SettingsHeader title="Interface" icon={Monitor} />
+        <SettingsHeader title="Display" icon={Monitor} />
         <SettingsItem
           title="Button view"
           description="Choose what to display on the buttons"
@@ -183,6 +183,21 @@ export default function Settings() {
           labels={['Bottom', 'Top']}
         />
         <SettingsItem
+          title="Show backspace"
+          description="Display a button to remove last word"
+          type="toggle"
+          value={showBackspace}
+          setValue={toggleShowBackspace}
+        />
+        <SettingsItem
+          title="Show copy button"
+          description="Display a button to copy to clipboard"
+          type="toggle"
+          value={showShareButton}
+          setValue={toggleShowShareButton}
+        />
+        <SettingsHeader title="Interaction" icon={Hand} />
+        <SettingsItem
           title="Clear message on play"
           description="Clear the message once it has been played"
           type="toggle"
@@ -197,28 +212,13 @@ export default function Settings() {
           setValue={toggleGoHomeOnPress}
         />
         <SettingsItem
-          title="Show backspace"
-          description="Display a button to remove last word"
-          type="toggle"
-          value={showBackspace}
-          setValue={toggleShowBackspace}
-        />
-        <SettingsItem
-          title="Show copy button"
-          description="Display a button to copy to clipboard"
-          type="toggle"
-          value={showShareButton}
-          setValue={toggleShowShareButton}
-        />
-        <SettingsHeader title="Accessibility" icon={Hand} />
-        {speechOptions.engine === "device" && <SettingsItem
           title="Debounce"
           description="Ignore actions if they are within a time period"
           type="select"
           items={debounceValues}
           value={debounceTime?.toFixed(2)}
           setValue={value => setDebounceTime(value ? parseFloat(value) : undefined)}
-        />}
+        />
         <SettingsHeader title="About" icon={Info} />
         <View style={{ padding: PADDING.lg, display: 'flex', gap: GAP.lg }}>
           <View style={{ display: 'flex', flexDirection: 'row', gap: GAP.lg }}>
