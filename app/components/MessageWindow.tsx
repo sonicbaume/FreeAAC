@@ -7,6 +7,7 @@ import { Platform, ScrollView, View } from "react-native";
 import { useSpeak } from "../stores/audio";
 import { useEditMode, useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { useButtonView, useClearMessageOnPlay, useLabelLocation, useShowBackspace, useShowShareButton } from "../stores/prefs";
+import { useDebounce } from '../utils/debounce';
 import { HEADER_HEIGHT, ICON_SIZE, PADDING, useTheme } from '../utils/theme';
 import { BoardButton } from "../utils/types";
 import PageOptions from './PageOptions';
@@ -28,6 +29,7 @@ export default function MessageWindow({
   setPageTitle: (title: string | undefined) => void;
 }) {
   const theme = useTheme()
+  const debounce = useDebounce()
   const optionsSheet = useRef<TrueSheet>(null)
   const [copied, setCopied] = useState(false)
   const scrollView = useRef<ScrollView>(null)
@@ -58,11 +60,13 @@ export default function MessageWindow({
   }
   useEffect(() => setCopied(false), [message])
 
-  const playMessage = () => speak(message, {
-    onDone: () => {
-      if (clearMessageOnPlay) clearMessageButtonIds()
+  const playMessage = () => debounce(() =>
+    speak(message, {
+      onDone: () => {
+        if (clearMessageOnPlay) clearMessageButtonIds()
+      }
     }
-  })
+  ))
 
   const handleHomePress = () => {
     if (isHome) replace('/')

@@ -6,9 +6,8 @@ import Sortable, { SortableGridDragEndCallback, type SortableGridRenderItem } fr
 import { EditTile } from "../[board]";
 import { useSpeak } from "../stores/audio";
 import { useEditMode, usePagesetActions } from "../stores/boards";
-import { useDebounceTime, useGoHomeOnPress, usePlayOnPress } from "../stores/prefs";
+import { useGoHomeOnPress, usePlayOnPress } from "../stores/prefs";
 import { generateNewButton } from "../utils/boards";
-import { DebounceContext, handleDebounce } from "../utils/debounce";
 import { GAP, PADDING, useTheme } from "../utils/theme";
 import { BoardButton, BoardPage } from "../utils/types";
 import { uuid } from "../utils/uuid";
@@ -38,8 +37,6 @@ export default function Page({
   pageNames: { value: string, label: string }[];
 }) {
   const theme = useTheme()
-  const debounceTime = useDebounceTime()
-  const lastTimeRef = useRef(0)
   const editSheet = useRef<TrueSheet>(null)
   const [pageHeight, setPageHeight] = useState(0)
   const [editTile, setEditTile] = useState<EditTile | undefined>()
@@ -130,11 +127,7 @@ export default function Page({
     setEditTile(undefined)
   }
 
-  const debounce = useCallback((action: () => any) =>
-    handleDebounce(action, debounceTime, lastTimeRef), [debounceTime]
-  )
-
-  return <DebounceContext value={debounce}>
+  return <>
     <View
       style={[
         styles.container,
@@ -168,7 +161,7 @@ export default function Page({
       onClose={saveEditTile}
       pageNames={pageNames}
     />
-  </DebounceContext>
+  </>
 }
 
 const styles = StyleSheet.create({

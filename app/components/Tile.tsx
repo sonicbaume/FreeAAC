@@ -48,11 +48,6 @@ export default function Tile({
     "flex-start"
   
   const handlePress = () => {
-    // const now = Date.now()
-    // console.log({ now, debounceTime, lastPressTime })
-    // if (debounceTime && now - lastPressTime < debounceTime*1000) return console.log('debounce')
-    // setLastPressTime(now)
-    // onPress(button, index)
     debounce(() => onPress(button, index))
   }
 
