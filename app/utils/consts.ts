@@ -1,5 +1,6 @@
 import { ExternalPathString } from "expo-router";
 import { Voice } from "expo-speech";
+import { GAP } from "./theme";
 
 export const appName = "FreeAAC"
 export const appDescription = "A free, open-source app for people who use Augmentative and Alternative Communication"
@@ -262,3 +263,11 @@ export const colValues = [
   { value: '14', label: '14' },
 ]
 export const defaultColValue = '6'
+
+export const tileSpacingValues = [
+  { value: '0', label: 'None' },
+  { value: GAP.xs.toFixed(0), label: 'Compact' },
+  { value: GAP.lg.toFixed(0), label: 'Normal' },
+  { value: GAP.xl.toFixed(0), label: 'Wide'}
+]
+export const defaultTileSpacing = GAP.lg

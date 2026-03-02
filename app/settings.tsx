@@ -15,8 +15,8 @@ import PreviewButton from './components/Settings/PreviewButton';
 import TtsStatus from './components/Settings/TtsStatus';
 import { Text } from './components/Styled';
 import { useSpeak } from './stores/audio';
-import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useShowBackspace, useShowShareButton, useSpeechOptions } from "./stores/prefs";
-import { korokoVoices, speechPitchValues, speechRateValues } from './utils/consts';
+import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useShowBackspace, useShowShareButton, useSpeechOptions, useTileSpacing } from "./stores/prefs";
+import { korokoVoices, speechPitchValues, speechRateValues, tileSpacingValues } from './utils/consts';
 import { handleError } from './utils/error';
 import { FONT_SIZE, GAP, ICON_SIZE, MAX_WIDTH, PADDING, useTheme } from './utils/theme';
 
@@ -58,6 +58,7 @@ export default function Settings() {
   const goHomeOnPress = useGoHomeOnPress()
   const showShareButton = useShowShareButton()
   const showBackspace = useShowBackspace()
+  const tileSpacing = useTileSpacing()
   const locales = useLocales()
   const {
     togglePlayOnPress,
@@ -68,7 +69,8 @@ export default function Settings() {
     toggleClearMessageOnPlay,
     toggleGoHomeOnPress,
     toggleShowShareButton,
-    toggleShowBackspace
+    toggleShowBackspace,
+    setTileSpacing
   } = usePrefsActions()
   const [voices, setVoices] = useState<{value: string, label: string, langTag: string}[]>([])
   const speak = useSpeak()
@@ -207,6 +209,14 @@ export default function Settings() {
           type="toggle"
           value={showShareButton}
           setValue={toggleShowShareButton}
+        />
+        <SettingsItem
+          title="Grid gap"
+          description="Space between tiles in the grid"
+          type="select"
+          items={tileSpacingValues}
+          value={tileSpacing.toFixed(0)}
+          setValue={(value) => value && setTileSpacing(parseInt(value))}
         />
         <SettingsHeader title="About" icon={Info} />
         <View style={{ padding: PADDING.lg, display: 'flex', gap: GAP.lg }}>

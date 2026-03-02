@@ -1,6 +1,7 @@
 import { SpeechOptions as ExpoSpeechOptions } from 'expo-speech';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { defaultTileSpacing } from '../utils/consts';
 import { zustandStorage } from './middleware';
 
 export const buttonViewOptions = [ 'both', 'symbol', 'text' ] as const
@@ -26,6 +27,7 @@ interface PrefsState {
   goHomeOnPress: boolean;
   showShareButton: boolean;
   showBackspace: boolean;
+  tileSpacing: number;
   actions: {
     togglePlayOnPress: () => void;
     setMessageWindowLocation: (location: 'top' | 'bottom') => void;
@@ -36,6 +38,7 @@ interface PrefsState {
     toggleGoHomeOnPress: () => void;
     toggleShowShareButton: () => void;
     toggleShowBackspace: () => void;
+    setTileSpacing: (tileSpacing: number) => void;
   }
 }
 
@@ -55,6 +58,7 @@ export const usePrefsStore = create<PrefsState>()(persist(
     goHomeOnPress: false,
     showShareButton: false,
     showBackspace: true,
+    tileSpacing: defaultTileSpacing,
     actions: {
       togglePlayOnPress: () => set({ playOnPress: !(get().playOnPress) }),
       setMessageWindowLocation: (location: 'top' | 'bottom') => set({ messageWindowLocation: location }),
@@ -64,7 +68,8 @@ export const usePrefsStore = create<PrefsState>()(persist(
       toggleClearMessageOnPlay: () => set({ clearMessageOnPlay: !(get().clearMessageOnPlay) }),
       toggleGoHomeOnPress: () => set({ goHomeOnPress: !(get().goHomeOnPress) }),
       toggleShowShareButton: () => set({ showShareButton: !(get().showShareButton) }),
-      toggleShowBackspace: () => set({ showBackspace: !(get().showBackspace) })
+      toggleShowBackspace: () => set({ showBackspace: !(get().showBackspace) }),
+      setTileSpacing: (tileSpacing: number) => set({ tileSpacing })
     }
   }),
   {
@@ -86,5 +91,6 @@ export const useClearMessageOnPlay = () => usePrefsStore(s => s.clearMessageOnPl
 export const useGoHomeOnPress = () => usePrefsStore(s => s.goHomeOnPress)
 export const useShowShareButton = () => usePrefsStore(s => s.showShareButton)
 export const useShowBackspace = () => usePrefsStore(s => s.showBackspace)
+export const useTileSpacing = () => usePrefsStore(s => s.tileSpacing)
 
 export const usePrefsActions = () => usePrefsStore(s => s.actions)
