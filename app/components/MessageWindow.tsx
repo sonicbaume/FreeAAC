@@ -69,8 +69,12 @@ export default function MessageWindow({
   ))
 
   const handleHomePress = () => {
-    if (isHome) replace('/')
-    else navigateHome()
+    if (isHome) {
+      clearMessageButtonIds()
+      replace('/')
+    } else {
+      navigateHome()
+    }
   }
 
   return <>
