@@ -2,6 +2,7 @@ import { AACButton, AACStyle } from "@willwade/aac-processors/browser"
 import { StyleSheet, View } from "react-native"
 import Sortable from "react-native-sortables"
 import { useButtonView, useLabelLocation } from "../stores/prefs"
+import { useDebounce } from "../utils/debounce"
 import { PADDING, RADIUS } from "../utils/theme"
 import { BoardButton } from "../utils/types"
 import { Text } from "./Styled"
@@ -35,6 +36,7 @@ export default function Tile({
   height: number;
   index: number;
 }) {
+  const debounce = useDebounce()
   const labelLocation = useLabelLocation()
   const buttonView = useButtonView()
 
@@ -44,11 +46,20 @@ export default function Tile({
   const labelJustify = buttonView === "text" ? "center" :
     labelLocation === "bottom" ? "flex-end" :
     "flex-start"
+  
+  const handlePress = () => {
+    // const now = Date.now()
+    // console.log({ now, debounceTime, lastPressTime })
+    // if (debounceTime && now - lastPressTime < debounceTime*1000) return console.log('debounce')
+    // setLastPressTime(now)
+    // onPress(button, index)
+    debounce(() => onPress(button, index))
+  }
 
   return (
     <View style={{ height }}>
       <Sortable.Touchable
-        onTap={() => onPress(button, index)}
+        onTap={handlePress}
         style={{
           ...styles.container,
           ...button.style,
