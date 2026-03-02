@@ -14,6 +14,7 @@ interface ButtonId {
 }
 
 interface PagesetsState {
+  loaded: boolean;
   boards: Board[];
   currentBoardId: string | undefined;
   currentPageId: string | undefined;
@@ -22,6 +23,7 @@ interface PagesetsState {
   editButtonId: string | undefined;
   symbolSearchText: string;
   actions: {
+    setLoaded: (loaded: boolean) => void;
     setCurrentBoardId: (boardId: string | undefined) => void;
     setCurrentPageId: (pageId: string | undefined) => void;
     addBoard: (boards: Board) => void;
@@ -38,6 +40,7 @@ interface PagesetsState {
 
 const useStore = create<PagesetsState>()(persist(
   (set, get) => ({
+    loaded: false,
     boards: [],
     currentBoardId: undefined,
     currentPageId: undefined,
@@ -46,6 +49,9 @@ const useStore = create<PagesetsState>()(persist(
     editButtonId: undefined,
     symbolSearchText: '',
     actions: {
+      setLoaded: (loaded) => set({
+        loaded
+      }),
       setCurrentBoardId: (boardId) => set({
         currentBoardId: boardId
       }),
@@ -89,11 +95,15 @@ const useStore = create<PagesetsState>()(persist(
     storage: createJSONStorage(() => zustandStorage),
     partialize: (state) =>
       Object.fromEntries(
-        Object.entries(state).filter(([key]) => !['actions'].includes(key)),
+        Object.entries(state).filter(([key]) => ![ 'actions', 'initialised' ].includes(key)),
       ),
+    onRehydrateStorage: (state) => {
+      return () => state.actions.setLoaded(true)
+    }
   },
 ))
 
+export const useBoardsLoaded = () =>useStore(s => s.loaded)
 export const useBoards = () => useStore(s => s.boards)
 export const useCurrentBoardId = () => useStore(s => s.currentBoardId)
 export const useCurrentPageId = () => useStore(s => s.currentPageId)

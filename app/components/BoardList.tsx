@@ -2,8 +2,8 @@ import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import { useRouter } from "expo-router"
 import { Ellipsis } from "lucide-react-native"
 import { useRef, useState } from "react"
-import { FlatList, StyleSheet, View } from "react-native"
-import { useBoards } from "../stores/boards"
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native"
+import { useBoards, useBoardsLoaded } from "../stores/boards"
 import { FONT_SIZE, GAP, ICON_SIZE, useTheme } from "../utils/theme"
 import BoardOptions from "./BoardOptions"
 import { Button, Text } from "./Styled"
@@ -11,11 +11,12 @@ import { Button, Text } from "./Styled"
 export default function BoardList() {
   const sheetRef = useRef<TrueSheet>(null)
   const theme = useTheme()
+  const boardsLoaded = useBoardsLoaded()
   const boards = useBoards()
   const router = useRouter()
   const [selectedBoardId, setSelectedBoardId] = useState<string>()
   return <>
-    {boards.length > 0 &&
+    {boardsLoaded && boards.length > 0 &&
     <FlatList
       contentContainerStyle={{ gap: GAP.xs}}
       data={boards}
@@ -47,8 +48,11 @@ export default function BoardList() {
       )}
     />
     }
-    {boards.length === 0 &&
+    {boardsLoaded && boards.length === 0 &&
     <Text style={{ textAlign: 'center' }}>No boards found</Text>
+    }
+    {!boardsLoaded &&
+    <ActivityIndicator size="large" color={theme.outline} />
     }
     <BoardOptions ref={sheetRef} boardId={selectedBoardId} />
   </>
