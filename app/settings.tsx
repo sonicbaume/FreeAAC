@@ -212,8 +212,8 @@ export default function Settings() {
           setValue={toggleGoHomeOnPress}
         />
         <SettingsItem
-          title="Debounce"
-          description="Ignore actions if they are within a time period"
+          title="Prevent double-taps"
+          description="Ignore subsequent touches for a time"
           type="select"
           items={debounceValues}
           value={debounceTime?.toFixed(2)}
