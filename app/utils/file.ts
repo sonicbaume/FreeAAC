@@ -3,7 +3,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import { Paths } from 'expo-file-system';
 import { ImagePickerOptions, launchCameraAsync, launchImageLibraryAsync } from 'expo-image-picker';
 import { nanoid } from 'nanoid/non-secure';
-import { getAssetData, getFileSize, isDirectory, listDir, loadFile, mkDir, mkTempDir, pathExists, removePath, saveFile } from './io';
+import { getAssetData, getFileSize, isDirectory, listDir, loadFile, mkDir, mkTempDir, pathExists, removePath, saveAs, saveFile } from './io';
 import { BoardTree, TileImage } from './types';
 import { uuid } from './uuid';
 
@@ -50,6 +50,29 @@ const fileAdapter = {
 export const getFileExt = (name: string): string => {
   const ext = name.split(".").pop()
   return ext ? `${ext.toLowerCase()}` : ''
+}
+
+export const getFileType = (ext: string): { mimeType: string, UTI: string } => {
+  switch (ext) {
+    case 'obf':
+    case 'grd':
+      return { mimeType: "application/json", UTI: 'public.json' }
+    case 'obz':
+    case 'gridset':
+    case 'spb':
+    case 'sps':
+      return { mimeType: "application/zip", UTI: 'public.zip-archive' }
+    case 'dot':
+      return { mimeType: "text/vnd.graphviz", UTI: 'public.data' }
+    case 'opml':
+      return { mimeType: "application/xml", UTI: 'public.xml' }
+    case 'ce':
+      return { mimeType: "application/octet-stream", UTI: 'public.data' }
+    case 'plist':
+      return { mimeType: "application/x-plist", UTI: 'com.apple.property-list' }
+    default:
+      throw new Error(`Unknown file extension: ${ext}`);
+  }
 }
 
 export const selectFile = async (): Promise<{id: string, uri: string} | undefined> => {
@@ -108,4 +131,9 @@ export const saveBoard = async (uri: string, tree: BoardTree) => {
 
 export const deleteBoard = async (uri: string) => {
   await removePath(uri)
+}
+
+export const exportBoard = async (uri: string, name: string) => {
+  const ext = getFileExt(uri)
+  await saveAs(uri, `${name}.${ext}`)
 }
