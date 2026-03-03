@@ -262,3 +262,13 @@ export const colValues = [
   { value: '14', label: '14' },
 ]
 export const defaultColValue = '6'
+
+export const debounceValues = [
+  { value: undefined, label: 'Off' },
+  { value: '0.10', label: '100ms' },
+  { value: '0.25', label: '250ms' },
+  { value: '0.50', label: '500ms' },
+  { value: '0.75', label: '750ms' },
+  { value: '1.00', label: '1 second' },
+  { value: '2.00', label: '2 seconds' },
+]
