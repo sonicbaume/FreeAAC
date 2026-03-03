@@ -263,10 +263,9 @@ export const colValues = [
 ]
 export const defaultColValue = '6'
 
-//TODO Add support for Empty and PointerAndTouchOnly
-export type ButtonVisibility = 'Visible' | 'Hidden' | 'Disabled'
+//TODO Add support for Disabled, Empty and PointerAndTouchOnly
+export type ButtonVisibility = 'Visible' | 'Hidden'
 export const buttonVisibilityValues: { value: ButtonVisibility, label: string}[] = [
   { value: "Visible", label: "Visible" },
   { value: "Hidden", label: "Hidden" },
-  { value: "Disabled", label: "Disabled" },
 ]
