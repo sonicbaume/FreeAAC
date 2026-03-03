@@ -42,6 +42,7 @@ export default function Tile({
 
   const showText = buttonView === "both" || buttonView === "text"
   const showSymbol = buttonView === "both" || buttonView === "symbol"
+  const isHidden = button.visibility === "Hidden"
   const isLink = button.semanticAction?.targetId !== undefined
   const labelJustify = buttonView === "text" ? "center" :
     labelLocation === "bottom" ? "flex-end" :
@@ -60,7 +61,8 @@ export default function Tile({
           ...button.style,
           height,
           borderTopRightRadius: isLink ? 50 : undefined,
-          justifyContent: labelJustify
+          justifyContent: labelJustify,
+          borderStyle: isHidden ? "dashed" : "solid",
         }}
       >
         {showText && labelLocation === "top" && <Label text={button.label} style={button.style} />}
