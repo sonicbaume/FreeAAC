@@ -28,6 +28,7 @@ interface PrefsState {
   showShareButton: boolean;
   showBackspace: boolean;
   tileSpacing: number;
+  debounceTime: number | undefined;
   actions: {
     togglePlayOnPress: () => void;
     setMessageWindowLocation: (location: 'top' | 'bottom') => void;
@@ -39,6 +40,7 @@ interface PrefsState {
     toggleShowShareButton: () => void;
     toggleShowBackspace: () => void;
     setTileSpacing: (tileSpacing: number) => void;
+    setDebounceTime: (value: number | undefined) => void;
   }
 }
 
@@ -59,6 +61,7 @@ export const usePrefsStore = create<PrefsState>()(persist(
     showShareButton: false,
     showBackspace: true,
     tileSpacing: defaultTileSpacing,
+    debounceTime: undefined,
     actions: {
       togglePlayOnPress: () => set({ playOnPress: !(get().playOnPress) }),
       setMessageWindowLocation: (location: 'top' | 'bottom') => set({ messageWindowLocation: location }),
@@ -69,7 +72,8 @@ export const usePrefsStore = create<PrefsState>()(persist(
       toggleGoHomeOnPress: () => set({ goHomeOnPress: !(get().goHomeOnPress) }),
       toggleShowShareButton: () => set({ showShareButton: !(get().showShareButton) }),
       toggleShowBackspace: () => set({ showBackspace: !(get().showBackspace) }),
-      setTileSpacing: (tileSpacing: number) => set({ tileSpacing })
+      setTileSpacing: (tileSpacing: number) => set({ tileSpacing }),
+      setDebounceTime: (debounceTime) => set({ debounceTime }),
     }
   }),
   {
@@ -92,5 +96,6 @@ export const useGoHomeOnPress = () => usePrefsStore(s => s.goHomeOnPress)
 export const useShowShareButton = () => usePrefsStore(s => s.showShareButton)
 export const useShowBackspace = () => usePrefsStore(s => s.showBackspace)
 export const useTileSpacing = () => usePrefsStore(s => s.tileSpacing)
+export const useDebounceTime = () => usePrefsStore(s => s.debounceTime)
 
 export const usePrefsActions = () => usePrefsStore(s => s.actions)

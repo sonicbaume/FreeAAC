@@ -4,7 +4,7 @@ import { Image } from 'expo-image';
 import { useLocales } from 'expo-localization';
 import { Link } from 'expo-router';
 import { getAvailableVoicesAsync } from 'expo-speech';
-import { Bug, Info, Lightbulb, Monitor, Shield, Speech } from "lucide-react-native";
+import { Bug, Hand, Info, Lightbulb, Monitor, Shield, Speech } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import GithubIcon from './components/Icons/Github';
@@ -15,8 +15,8 @@ import PreviewButton from './components/Settings/PreviewButton';
 import TtsStatus from './components/Settings/TtsStatus';
 import { Text } from './components/Styled';
 import { useSpeak } from './stores/audio';
-import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useShowBackspace, useShowShareButton, useSpeechOptions, useTileSpacing } from "./stores/prefs";
-import { korokoVoices, speechPitchValues, speechRateValues, tileSpacingValues } from './utils/consts';
+import { ButtonViewOption, buttonViewOptions, SpeechEngine, speechEngines, useButtonView, useClearMessageOnPlay, useDebounceTime, useGoHomeOnPress, useLabelLocation, useMessageWindowLocation, usePlayOnPress, usePrefsActions, useShowBackspace, useShowShareButton, useSpeechOptions, useTileSpacing } from "./stores/prefs";
+import { debounceValues, korokoVoices, speechPitchValues, speechRateValues, tileSpacingValues } from './utils/consts';
 import { handleError } from './utils/error';
 import { FONT_SIZE, GAP, ICON_SIZE, MAX_WIDTH, PADDING, useTheme } from './utils/theme';
 
@@ -59,6 +59,7 @@ export default function Settings() {
   const showShareButton = useShowShareButton()
   const showBackspace = useShowBackspace()
   const tileSpacing = useTileSpacing()
+  const debounceTime = useDebounceTime()
   const locales = useLocales()
   const {
     togglePlayOnPress,
@@ -70,7 +71,8 @@ export default function Settings() {
     toggleGoHomeOnPress,
     toggleShowShareButton,
     toggleShowBackspace,
-    setTileSpacing
+    setTileSpacing,
+    setDebounceTime,
   } = usePrefsActions()
   const [voices, setVoices] = useState<{value: string, label: string, langTag: string}[]>([])
   const speak = useSpeak()
@@ -157,7 +159,7 @@ export default function Settings() {
           setValue={togglePlayOnPress}
           labels={['Off', 'On']}
         />
-        <SettingsHeader title="Interface" icon={Monitor} />
+        <SettingsHeader title="Display" icon={Monitor} />
         <SettingsItem
           title="Button view"
           description="Choose what to display on the buttons"
@@ -183,20 +185,6 @@ export default function Settings() {
           labels={['Bottom', 'Top']}
         />
         <SettingsItem
-          title="Clear message on play"
-          description="Clear the message once it has been played"
-          type="toggle"
-          value={clearMessageOnPlay}
-          setValue={toggleClearMessageOnPlay}
-        />
-        <SettingsItem
-          title="Go home on press"
-          description="Go to the home page when a button is pressed"
-          type="toggle"
-          value={goHomeOnPress}
-          setValue={toggleGoHomeOnPress}
-        />
-        <SettingsItem
           title="Show backspace"
           description="Display a button to remove last word"
           type="toggle"
@@ -217,6 +205,29 @@ export default function Settings() {
           items={tileSpacingValues}
           value={tileSpacing.toFixed(0)}
           setValue={(value) => value && setTileSpacing(parseInt(value))}
+        />
+        <SettingsHeader title="Interaction" icon={Hand} />
+        <SettingsItem
+          title="Clear message on play"
+          description="Clear the message once it has been played"
+          type="toggle"
+          value={clearMessageOnPlay}
+          setValue={toggleClearMessageOnPlay}
+        />
+        <SettingsItem
+          title="Go home on press"
+          description="Go to the home page when a button is pressed"
+          type="toggle"
+          value={goHomeOnPress}
+          setValue={toggleGoHomeOnPress}
+        />
+        <SettingsItem
+          title="Prevent double-taps"
+          description="Ignore subsequent touches for a time"
+          type="select"
+          items={debounceValues}
+          value={debounceTime?.toFixed(2)}
+          setValue={value => setDebounceTime(value ? parseFloat(value) : undefined)}
         />
         <SettingsHeader title="About" icon={Info} />
         <View style={{ padding: PADDING.lg, display: 'flex', gap: GAP.lg }}>
