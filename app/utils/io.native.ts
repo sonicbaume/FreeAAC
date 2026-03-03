@@ -1,7 +1,8 @@
 import { DocumentPickerAsset } from "expo-document-picker"
 import { Directory, File, Paths } from "expo-file-system"
+import { shareAsync } from "expo-sharing"
 import { nanoid } from "nanoid/non-secure"
-import { getFileExt } from "./file"
+import { getFileExt, getFileType } from "./file"
 import { uuid } from "./uuid"
 
 export const pathExists = async (path: string): Promise<boolean> => {
@@ -78,4 +79,15 @@ export const downloadFile = async (url: string):
   const destination = new File(Paths.document, fileName)
   await File.downloadFileAsync(url, destination)
   return { id, fileName }
+}
+
+export const saveAs = async (
+  uri: string,
+  name: string
+) => {
+  const root = Paths.document
+  const file = new File(root, uri)
+  const ext = getFileExt(uri)
+  const { mimeType, UTI } = getFileType(ext)
+  await shareAsync(file.uri, { mimeType, UTI })
 }

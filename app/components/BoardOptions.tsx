@@ -1,9 +1,10 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet";
-import { Pencil, Trash2 } from "lucide-react-native";
-import { useState } from "react";
+import { Download, Pencil, Trash2 } from "lucide-react-native";
+import { useState, useTransition } from "react";
+import { ActivityIndicator } from "react-native";
 import { useBoards, usePagesetActions } from "../stores/boards";
 import { handleError } from "../utils/error";
-import { deleteBoard } from "../utils/file";
+import { deleteBoard, exportBoard, getFileExt } from "../utils/file";
 import { ICON_SIZE, PADDING, useTheme } from "../utils/theme";
 import DialogConfirm from "./DialogConfirm";
 import DialogRename from "./DialogRename";
@@ -21,7 +22,17 @@ export default function BoardOptions({
   const { removeBoard, renameBoard } = usePagesetActions()
   const [showRenameDialog, setShowRenameDialog] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [isExporting, startExporting] = useTransition()
   const board = boards.find(b => b.id === boardId)
+  const ext = board ? getFileExt(board.uri) : undefined
+
+  const handleExport = async () => {
+    if (!board) return handleError("No board found")
+    startExporting(async () => {
+      await exportBoard(board.uri, board.name)
+      ref.current?.dismiss()
+    })
+  }
 
   const handleRename = (name: string | undefined) => {
     if (!board) return handleError("No board found")
@@ -46,6 +57,13 @@ export default function BoardOptions({
       backgroundColor={theme.surfaceContainer}
       style={{ padding: PADDING.xl }}
     >
+      <SheetItem
+        label={`Export as file ${ext ? `(.${ext})` : ''}`}
+        icon={isExporting
+          ? <ActivityIndicator size="small" color={theme.onSurface} />
+          : <Download size={ICON_SIZE.lg} color={theme.onSurface} />}
+        onPress={handleExport}
+      />
       <SheetItem
         label="Rename board"
         icon={<Pencil size={ICON_SIZE.lg} color={theme.onSurface} />}

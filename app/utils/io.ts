@@ -1,5 +1,4 @@
 import { DocumentPickerAsset } from "expo-document-picker";
-import { nanoid } from "nanoid/non-secure";
 import { getFileExt } from "./file";
 import { uuid } from "./uuid";
 
@@ -54,7 +53,7 @@ export const removePath = async (path: string, options?: { recursive?: boolean; 
 
 export const mkTempDir = async (prefix: string): Promise<string> => {
   const root = await navigator.storage.getDirectory()
-  const tempDir = await root.getDirectoryHandle(nanoid(), { create: true })
+  const tempDir = await root.getDirectoryHandle(prefix, { create: true })
   return tempDir.name
 }
 
@@ -102,4 +101,27 @@ export const downloadFile = async (url: string):
   const data = await response.bytes()
   await saveFile(fileName, data)
   return { id, fileName }
+}
+
+export const saveAs = async (
+  uri: string,
+  name: string
+) => {
+  const opfsRoot = await navigator.storage.getDirectory()
+  const opfsFileHandle = await opfsRoot.getFileHandle(uri)
+  const file = await opfsFileHandle.getFile()
+
+  if ('showSaveFilePicker' in window) {
+    //@ts-ignore
+    const localHandle = await window.showSaveFilePicker({ suggestedName: name })
+    const writable = await localHandle.createWritable()
+    await file.stream().pipeTo(writable)
+  } else {
+    const url = URL.createObjectURL(file)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = name
+    a.click()
+    // URL.revokeObjectURL(url)
+  }
 }
