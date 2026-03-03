@@ -1,5 +1,6 @@
 import { AACSemanticCategory, AACSemanticIntent } from "@willwade/aac-processors/browser";
 import { ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { ButtonVisibility, buttonVisibilityValues } from "../utils/consts";
 import { FONT_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme";
 import { BoardButton } from "../utils/types";
 import ColorPicker from "./ColorPicker";
@@ -124,6 +125,17 @@ export default function TileSettings ({
               ...button.style,
               fontColor
             }
+          })}
+        />
+      </View>
+      <View style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center' }}>
+        <Text style={{ fontSize: 16, minWidth: 100, textAlign: 'right' }}>Visibility</Text>
+        <SheetPicker
+          items={buttonVisibilityValues}
+          value={button.visibility ?? "Visible"}
+          onChange={({value, label}) => setButton({
+            ...button,
+            visibility: value as ButtonVisibility
           })}
         />
       </View>
