@@ -49,7 +49,6 @@ export default function Page({
   const rowHeight = (pageHeight - tileSpacing*2 - (tileSpacing * (rows-1))) / rows
   if (!rows || !cols) return <></>
 
-
   const handleLayout = (event: LayoutChangeEvent) =>
     setPageHeight(event.nativeEvent.layout.height)
 
@@ -142,6 +141,7 @@ export default function Page({
       onLayout={handleLayout}
     >
       <Sortable.Grid
+        key={page.id}
         columns={cols}
         data={grid}
         renderItem={renderButton}
