@@ -1,13 +1,14 @@
 import { Image } from "expo-image";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import MessageWindow from "../components/MessageWindow";
 import Page from "../components/Page";
 import { useBoards, useCurrentPageId, usePagesetActions } from "../stores/boards";
-import { useMessageWindowLocation } from "../stores/prefs";
+import { useDebounceTime, useMessageWindowLocation } from "../stores/prefs";
 import { getHomePageId } from "../utils/boards";
+import { DebounceContext, handleDebounce } from "../utils/debounce";
 import { handleError } from "../utils/error";
 import { loadBoard, saveBoard } from "../utils/file";
 import { useTheme } from "../utils/theme";
@@ -34,6 +35,8 @@ const prefetchImages = (tree: BoardTree) => {
 
 export default function Board() {
   const theme = useTheme()
+  const debounceTime = useDebounceTime()
+  const lastTimeRef = useRef(0)
   const { board } = useLocalSearchParams()
   const boards = useBoards()
   const uri = boards.find(b => b.id === board)?.uri
@@ -125,8 +128,12 @@ export default function Board() {
     pageTitle={page?.name}
     setPageTitle={(name) => page && name && savePage({...page, name})}
   />)
+
+  const debounce = useCallback((action: () => any) =>
+    handleDebounce(action, debounceTime, lastTimeRef), [debounceTime]
+  )
   
-  return <>
+  return <DebounceContext value={debounce}>
     <Stack.Screen options={{ headerShown: false }} />
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
       {messageWindowLocation === "top" && messageWindow}
@@ -142,5 +149,5 @@ export default function Board() {
       </View>
       {messageWindowLocation === "bottom" && messageWindow}
     </SafeAreaView>
-  </>
+  </DebounceContext>
 }

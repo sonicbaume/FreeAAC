@@ -6,19 +6,15 @@ import Sortable, { SortableGridDragEndCallback, type SortableGridRenderItem } fr
 import { EditTile } from "../[board]";
 import { useSpeak } from "../stores/audio";
 import { useEditMode, usePagesetActions } from "../stores/boards";
-import { useGoHomeOnPress, usePlayOnPress } from "../stores/prefs";
+import { useGoHomeOnPress, usePlayOnPress, useTileSpacing } from "../stores/prefs";
 import { generateNewButton } from "../utils/boards";
-import { GAP, PADDING, useTheme } from "../utils/theme";
+import { GAP, useTheme } from "../utils/theme";
 import { BoardButton, BoardPage } from "../utils/types";
 import { uuid } from "../utils/uuid";
 import Tile from "./Tile";
 import TileAdd from "./TileAdd";
 import TileEditor from "./TileEditor";
 
-const pagePadding = PADDING.lg
-const rowGap = GAP.lg
-const colGap = GAP.lg
-const getRowHeight = (pageHeight: number, rows: number) => (pageHeight - pagePadding*2 - (rowGap * (rows-1))) / rows
 const getGridPosition = (index: number, rows: number, cols: number) => {
   const row = Math.floor(index / cols)
   const col = index - row*cols
@@ -45,12 +41,14 @@ export default function Page({
   const editMode = useEditMode()
   const playOnPress = usePlayOnPress()
   const goHomeOnPress = useGoHomeOnPress()
+  const tileSpacing = useTileSpacing()
   const speak = useSpeak()
   const { setCurrentPageId, addMessageButtonId, setSymbolSearchText } = usePagesetActions()
   const rows = page.grid.length
-  const cols = page.grid.at(0)?.length
-  const rowHeight = getRowHeight(pageHeight, rows)
+  const cols = page.grid.at(0)?.length 
+  const rowHeight = (pageHeight - tileSpacing*2 - (tileSpacing * (rows-1))) / rows
   if (!rows || !cols) return <></>
+
 
   const handleLayout = (event: LayoutChangeEvent) =>
     setPageHeight(event.nativeEvent.layout.height)
@@ -138,7 +136,7 @@ export default function Page({
           backgroundColor: theme.surface,
           borderWidth: editMode ? 6 : 0,
           borderColor: theme.outline,
-          padding: editMode ? pagePadding - 6 : pagePadding
+          padding: editMode ? tileSpacing - 6 : tileSpacing
         }
       ]}
       onLayout={handleLayout}
@@ -147,8 +145,8 @@ export default function Page({
         columns={cols}
         data={grid}
         renderItem={renderButton}
-        rowGap={rowGap}
-        columnGap={colGap}
+        rowGap={tileSpacing}
+        columnGap={tileSpacing}
         sortEnabled={editMode}
         keyExtractor={item => item?.id ?? uuid()}
         onDragEnd={handleDragEnd}

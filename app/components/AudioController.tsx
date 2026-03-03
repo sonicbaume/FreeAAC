@@ -55,6 +55,7 @@ export default function AudioController () {
     if (!text) return
 
     if (speechOptions.engine === "device") {
+      Speech.stop()
       if (text === "I") text = "i"  // avoid "capital I" output
       Speech.speak(text, {...speechOptions, ...options})
       return

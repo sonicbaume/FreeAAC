@@ -1,5 +1,6 @@
 import { ExternalPathString } from "expo-router";
 import { Voice } from "expo-speech";
+import { GAP } from "./theme";
 
 export const appName = "FreeAAC"
 export const appDescription = "A free, open-source app for people who use Augmentative and Alternative Communication"
@@ -268,4 +269,22 @@ export type ButtonVisibility = 'Visible' | 'Hidden'
 export const buttonVisibilityValues: { value: ButtonVisibility, label: string}[] = [
   { value: "Visible", label: "Visible" },
   { value: "Hidden", label: "Hidden" },
+]
+
+export const tileSpacingValues = [
+  { value: '0', label: 'None' },
+  { value: GAP.xs.toFixed(0), label: 'Compact' },
+  { value: GAP.lg.toFixed(0), label: 'Normal' },
+  { value: GAP.xl.toFixed(0), label: 'Wide'}
+]
+
+export const defaultTileSpacing = GAP.lg
+export const debounceValues = [
+  { value: undefined, label: 'Off' },
+  { value: '0.10', label: '100ms' },
+  { value: '0.25', label: '250ms' },
+  { value: '0.50', label: '500ms' },
+  { value: '0.75', label: '750ms' },
+  { value: '1.00', label: '1 second' },
+  { value: '2.00', label: '2 seconds' },
 ]
