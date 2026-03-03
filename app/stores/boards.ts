@@ -22,6 +22,7 @@ interface PagesetsState {
   editMode: boolean;
   editButtonId: string | undefined;
   symbolSearchText: string;
+  customMessages: Record<string, string>;
   actions: {
     setLoaded: (loaded: boolean) => void;
     setCurrentBoardId: (boardId: string | undefined) => void;
@@ -35,6 +36,7 @@ interface PagesetsState {
     toggleEditMode: () => void;
     setEditButtonId: (buttonId: string | undefined) => void;
     setSymbolSearchText: (text: string) => void;
+    addCustomMessage: (id: string, text: string) => void;
   }
 }
 
@@ -48,6 +50,7 @@ const useStore = create<PagesetsState>()(persist(
     editMode: false,
     editButtonId: undefined,
     symbolSearchText: '',
+    customMessages: {},
     actions: {
       setLoaded: (loaded) => set({
         loaded
@@ -88,6 +91,12 @@ const useStore = create<PagesetsState>()(persist(
       setSymbolSearchText: (text: string) => set({
         symbolSearchText: text
       }),
+      addCustomMessage: (id: string, text: string) => set({
+        customMessages: {
+          ...get().customMessages,
+          [id]: text
+        }
+      })
     }
   }),
   {
@@ -95,7 +104,7 @@ const useStore = create<PagesetsState>()(persist(
     storage: createJSONStorage(() => zustandStorage),
     partialize: (state) =>
       Object.fromEntries(
-        Object.entries(state).filter(([key]) => ![ 'actions', 'initialised' ].includes(key)),
+        Object.entries(state).filter(([key]) => ![ 'actions', 'initialised', 'customMessages' ].includes(key)),
       ),
     onRehydrateStorage: (state) => {
       return () => state.actions.setLoaded(true)
@@ -111,4 +120,6 @@ export const useMessageButtonsIds = () => useStore(s => s.messageButtonsIds)
 export const useEditMode = () => useStore(s => s.editMode)
 export const useEditButtonId = () => useStore(s => s.editButtonId)
 export const useSymbolSearchText = () => useStore(s => s.symbolSearchText)
+export const useCustomMessages = () => useStore(s => s.customMessages)
+
 export const usePagesetActions = () => useStore(s => s.actions)
