@@ -64,7 +64,9 @@ export default function Page({
   }
 
   const onButtonPress = (button: BoardButton, index: number) => {
-    if (editMode) {
+    if (!editMode && button.visibility && button.visibility === "Disabled") {
+      return
+    } else if (editMode) {
       setEditTile({button, image: page.images?.find(i => i.url === button.image), index})
       setSymbolSearchText(button.label)
       editSheet.current?.present()
@@ -78,7 +80,8 @@ export default function Page({
   }
 
   const renderButton = useCallback<SortableGridRenderItem<BoardButton | null>>(({item, index}) => {
-    if (item) return (
+    const isHidden = item && item.visibility && item.visibility === "Hidden"
+    if (item && (editMode || !isHidden)) return (
       <Tile
         button={item}
         onPress={onButtonPress}
