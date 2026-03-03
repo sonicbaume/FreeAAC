@@ -5,7 +5,7 @@ import { Copy, CopyCheck, Delete, EllipsisVertical, Home, Layers, X } from "luci
 import { useEffect, useRef, useState } from "react";
 import { Platform, ScrollView, View } from "react-native";
 import { useSpeak } from "../stores/audio";
-import { useEditMode, useMessageButtonsIds, usePagesetActions } from "../stores/boards";
+import { useCustomMessages, useEditMode, useMessageButtonsIds, usePagesetActions } from "../stores/boards";
 import { useButtonView, useClearMessageOnPlay, useLabelLocation, useShowBackspace, useShowShareButton } from "../stores/prefs";
 import { useDebounce } from '../utils/debounce';
 import { HEADER_HEIGHT, ICON_SIZE, PADDING, useTheme } from '../utils/theme';
@@ -40,6 +40,7 @@ export default function MessageWindow({
   const buttonView = useButtonView()
   const labelLocation = useLabelLocation()
   const editMode = useEditMode()
+  const customMessages = useCustomMessages()
   const { removeLastMessageButtonId, clearMessageButtonIds, toggleEditMode } = usePagesetActions()
   const speak = useSpeak()
   const { replace } = useRouter()
@@ -49,8 +50,12 @@ export default function MessageWindow({
   const showText = buttonView === "both" || buttonView === "text"
 
   const messageButtons = messageButtonsIds
-    .map(m => buttons.find(b => b.button.id === m.id && b.pageId === m.pageId))
-    .map(b => b?.button)
+    .map(m => {
+      const matchingButton = buttons.find(b => b.button.id === m.id && b.pageId === m.pageId)
+      if (matchingButton) return matchingButton.button
+      if (m.id in customMessages) return { label: customMessages[m.id], image: undefined }
+      return undefined
+    })
     .filter(b => b !== undefined)
   const message =  messageButtons.map(b => b.label).join(' ')
 
