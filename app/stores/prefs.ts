@@ -1,6 +1,7 @@
 import { SpeechOptions as ExpoSpeechOptions } from 'expo-speech';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { defaultTileSpacing } from '../utils/consts';
 import { zustandStorage } from './middleware';
 
 export const buttonViewOptions = [ 'both', 'symbol', 'text' ] as const
@@ -26,6 +27,7 @@ interface PrefsState {
   goHomeOnPress: boolean;
   showShareButton: boolean;
   showBackspace: boolean;
+  tileSpacing: number;
   debounceTime: number | undefined;
   actions: {
     togglePlayOnPress: () => void;
@@ -37,6 +39,7 @@ interface PrefsState {
     toggleGoHomeOnPress: () => void;
     toggleShowShareButton: () => void;
     toggleShowBackspace: () => void;
+    setTileSpacing: (tileSpacing: number) => void;
     setDebounceTime: (value: number | undefined) => void;
   }
 }
@@ -57,6 +60,7 @@ export const usePrefsStore = create<PrefsState>()(persist(
     goHomeOnPress: false,
     showShareButton: false,
     showBackspace: true,
+    tileSpacing: defaultTileSpacing,
     debounceTime: undefined,
     actions: {
       togglePlayOnPress: () => set({ playOnPress: !(get().playOnPress) }),
@@ -68,7 +72,8 @@ export const usePrefsStore = create<PrefsState>()(persist(
       toggleGoHomeOnPress: () => set({ goHomeOnPress: !(get().goHomeOnPress) }),
       toggleShowShareButton: () => set({ showShareButton: !(get().showShareButton) }),
       toggleShowBackspace: () => set({ showBackspace: !(get().showBackspace) }),
-      setDebounceTime: (debounceTime) => set({ debounceTime })
+      setTileSpacing: (tileSpacing: number) => set({ tileSpacing }),
+      setDebounceTime: (debounceTime) => set({ debounceTime }),
     }
   }),
   {
@@ -90,6 +95,7 @@ export const useClearMessageOnPlay = () => usePrefsStore(s => s.clearMessageOnPl
 export const useGoHomeOnPress = () => usePrefsStore(s => s.goHomeOnPress)
 export const useShowShareButton = () => usePrefsStore(s => s.showShareButton)
 export const useShowBackspace = () => usePrefsStore(s => s.showBackspace)
+export const useTileSpacing = () => usePrefsStore(s => s.tileSpacing)
 export const useDebounceTime = () => usePrefsStore(s => s.debounceTime)
 
 export const usePrefsActions = () => usePrefsStore(s => s.actions)
