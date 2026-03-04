@@ -2,8 +2,8 @@ name: Deploy web build
 on:
   push:
     branches:
-      - 'main'
-      - 'deploy-web'
+      - "main"
+      - "deploy-web"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -13,6 +13,7 @@ jobs:
         id: build
         run: |
           npm ci
+          npm run lint
           npm run deploy:web
           touch dist/.nojekyll
       - name: Upload static files as artifact

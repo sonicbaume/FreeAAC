@@ -8,19 +8,15 @@ import { BoardButton } from "../utils/types"
 import { Text } from "./Styled"
 import TileImage from "./TileImage"
 
-const Label = ({
-  text,
-  style,
-}: {
-  text: string;
-  style?: AACStyle;
-}) => {
+const Label = ({ text, style }: { text: string; style?: AACStyle }) => {
   return (
-    <Text style={{
-      ...styles.label,
-      color: style?.fontColor ?? "#000",
-      fontSize: style?.fontSize,
-    }}>
+    <Text
+      style={{
+        ...styles.label,
+        color: style?.fontColor ?? "#000",
+        fontSize: style?.fontSize,
+      }}
+    >
       {text}
     </Text>
   )
@@ -31,10 +27,10 @@ export default function Tile({
   height,
   index,
 }: {
-  button: BoardButton;
-  onPress: (button: AACButton, index: number) => void;
-  height: number;
-  index: number;
+  button: BoardButton
+  onPress: (button: AACButton, index: number) => void
+  height: number
+  index: number
 }) {
   const debounce = useDebounce()
   const labelLocation = useLabelLocation()
@@ -44,10 +40,13 @@ export default function Tile({
   const showSymbol = buttonView === "both" || buttonView === "symbol"
   const isHidden = button.visibility === "Hidden"
   const isLink = button.semanticAction?.targetId !== undefined
-  const labelJustify = buttonView === "text" ? "center" :
-    labelLocation === "bottom" ? "flex-end" :
-    "flex-start"
-  
+  const labelJustify =
+    buttonView === "text"
+      ? "center"
+      : labelLocation === "bottom"
+        ? "flex-end"
+        : "flex-start"
+
   const handlePress = () => {
     debounce(() => onPress(button, index))
   }
@@ -65,9 +64,15 @@ export default function Tile({
           borderStyle: isHidden ? "dashed" : "solid",
         }}
       >
-        {showText && labelLocation === "top" && <Label text={button.label} style={button.style} />}
-        {showSymbol && button.image && <TileImage uri={button.image} style={styles.symbol} />}
-        {showText && labelLocation === "bottom" && <Label text={button.label} style={button.style} />}
+        {showText && labelLocation === "top" && (
+          <Label text={button.label} style={button.style} />
+        )}
+        {showSymbol && button.image && (
+          <TileImage uri={button.image} style={styles.symbol} />
+        )}
+        {showText && labelLocation === "bottom" && (
+          <Label text={button.label} style={button.style} />
+        )}
       </Sortable.Touchable>
     </View>
   )
@@ -75,20 +80,20 @@ export default function Tile({
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
+    display: "flex",
     flex: 1,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderRadius: RADIUS.lg,
-    cursor: 'pointer',
+    cursor: "pointer",
     borderWidth: 2,
   },
   label: {
     paddingVertical: PADDING.sm,
-    textAlign: 'center',
-    flexShrink: 1
+    textAlign: "center",
+    flexShrink: 1,
   },
   symbol: {
     flex: 1,
-    pointerEvents: 'none'
+    pointerEvents: "none",
   },
 })

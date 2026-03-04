@@ -1,5 +1,5 @@
-import { createMMKV } from 'react-native-mmkv'
-import { StateStorage } from 'zustand/middleware'
+import { createMMKV } from "react-native-mmkv"
+import { StateStorage } from "zustand/middleware"
 
 const storage = createMMKV()
 

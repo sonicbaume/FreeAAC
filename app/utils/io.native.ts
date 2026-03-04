@@ -17,17 +17,23 @@ export const getFileSize = async (path: string): Promise<number> => {
   return new File(path).size
 }
 
-export const mkDir = async (path: string, options?: { recursive?: boolean }): Promise<void> => {
+export const mkDir = async (
+  path: string,
+  options?: { recursive?: boolean },
+): Promise<void> => {
   new Directory(path).create({
-    intermediates: options?.recursive ?? false
+    intermediates: options?.recursive ?? false,
   })
 }
 
 export const listDir = async (path: string): Promise<string[]> => {
-  return new Directory(path).list().map(item => item.name)
+  return new Directory(path).list().map((item) => item.name)
 }
 
-export const removePath = async (path: string, options?: { recursive?: boolean; force?: boolean }): Promise<void> => {
+export const removePath = async (
+  path: string,
+  options?: { recursive?: boolean; force?: boolean },
+): Promise<void> => {
   const resolvedPath = Paths.join(Paths.document, path)
   if (Paths.info(resolvedPath).isDirectory) {
     new Directory(resolvedPath).delete()
@@ -42,9 +48,9 @@ export const mkTempDir = async (prefix: string): Promise<string> => {
   return tempDir.name
 }
 
-export const getAssetData = async (asset: DocumentPickerAsset):
-  Promise<Uint8Array> =>
-{
+export const getAssetData = async (
+  asset: DocumentPickerAsset,
+): Promise<Uint8Array> => {
   const file = new File(asset.uri)
   if (!file) throw new Error("Could not read file")
   return await file.bytes()
@@ -56,24 +62,22 @@ export const saveFile = async (
 ): Promise<string> => {
   const root = Paths.document
   const file = new File(root, fileName)
-  console.log({root, fileName, uri: file.uri})
+  console.log({ root, fileName, uri: file.uri })
   file.create({ overwrite: true })
   file.write(data)
   return fileName
 }
 
-export const loadFile = async (fileName: string):
-  Promise<Uint8Array> =>
-{
+export const loadFile = async (fileName: string): Promise<Uint8Array> => {
   const root = Paths.document
   const file = new File(root, fileName)
   return await file.bytes()
 }
 
-export const downloadFile = async (url: string):
-  Promise<{id: string, fileName: string}> =>
-{
-  const ext = getFileExt(url.split('/').slice(-1)[0])
+export const downloadFile = async (
+  url: string,
+): Promise<{ id: string; fileName: string }> => {
+  const ext = getFileExt(url.split("/").slice(-1)[0])
   const id = uuid()
   const fileName = `${id}.${ext}`
   const destination = new File(Paths.document, fileName)
@@ -81,10 +85,7 @@ export const downloadFile = async (url: string):
   return { id, fileName }
 }
 
-export const saveAs = async (
-  uri: string,
-  name: string
-) => {
+export const saveAs = async (uri: string, name: string) => {
   const root = Paths.document
   const file = new File(root, uri)
   const ext = getFileExt(uri)

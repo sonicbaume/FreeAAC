@@ -1,23 +1,30 @@
-import { TrueSheet } from "@lodev09/react-native-true-sheet";
-import { AACSemanticIntent } from "@willwade/aac-processors/browser";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { LayoutChangeEvent, StyleSheet, View } from "react-native";
-import Sortable, { SortableGridDragEndCallback, type SortableGridRenderItem } from "react-native-sortables";
-import { EditTile } from "../[board]";
-import { useSpeak } from "../stores/audio";
-import { useEditMode, usePagesetActions } from "../stores/boards";
-import { useGoHomeOnPress, usePlayOnPress, useTileSpacing } from "../stores/prefs";
-import { generateNewButton } from "../utils/boards";
-import { GAP, useTheme } from "../utils/theme";
-import { BoardButton, BoardPage } from "../utils/types";
-import { uuid } from "../utils/uuid";
-import Tile from "./Tile";
-import TileAdd from "./TileAdd";
-import TileEditor from "./TileEditor";
+import { TrueSheet } from "@lodev09/react-native-true-sheet"
+import { AACSemanticIntent } from "@willwade/aac-processors/browser"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { LayoutChangeEvent, StyleSheet, View } from "react-native"
+import Sortable, {
+  SortableGridDragEndCallback,
+  type SortableGridRenderItem,
+} from "react-native-sortables"
+import { EditTile } from "../[board]"
+import { useSpeak } from "../stores/audio"
+import { useEditMode, usePagesetActions } from "../stores/boards"
+import {
+  useGoHomeOnPress,
+  usePlayOnPress,
+  useTileSpacing,
+} from "../stores/prefs"
+import { generateNewButton } from "../utils/boards"
+import { GAP, useTheme } from "../utils/theme"
+import { BoardButton, BoardPage } from "../utils/types"
+import { uuid } from "../utils/uuid"
+import Tile from "./Tile"
+import TileAdd from "./TileAdd"
+import TileEditor from "./TileEditor"
 
 const getGridPosition = (index: number, rows: number, cols: number) => {
   const row = Math.floor(index / cols)
-  const col = index - row*cols
+  const col = index - row * cols
   return { row, col }
 }
 
@@ -27,10 +34,10 @@ export default function Page({
   homePageId,
   pageNames,
 }: {
-  page: BoardPage;
-  savePage: (page: BoardPage) => void;
-  homePageId?: string;
-  pageNames: { value: string, label: string }[];
+  page: BoardPage
+  savePage: (page: BoardPage) => void
+  homePageId?: string
+  pageNames: { value: string; label: string }[]
 }) {
   const theme = useTheme()
   const editSheet = useRef<TrueSheet>(null)
@@ -43,133 +50,177 @@ export default function Page({
   const goHomeOnPress = useGoHomeOnPress()
   const tileSpacing = useTileSpacing()
   const speak = useSpeak()
-  const { setCurrentPageId, addMessageButtonId, setSymbolSearchText } = usePagesetActions()
+  const { setCurrentPageId, addMessageButtonId, setSymbolSearchText } =
+    usePagesetActions()
   const rows = page.grid.length
-  const cols = page.grid.at(0)?.length 
-  const rowHeight = (pageHeight - tileSpacing*2 - (tileSpacing * (rows-1))) / rows
-  if (!rows || !cols) return <></>
+  const cols = page.grid.at(0)?.length
+  const rowHeight =
+    (pageHeight - tileSpacing * 2 - tileSpacing * (rows - 1)) / rows
 
   const handleLayout = (event: LayoutChangeEvent) =>
     setPageHeight(event.nativeEvent.layout.height)
 
   const grid = page.grid.flat() as (BoardButton | null)[]
 
-  const addButton = (index: number) => {
-    setEditTile({ button: generateNewButton(page.id), image: undefined, index })
-    setSymbolSearchText('')
-    editSheet.current?.present()
-  }
-
-  const onButtonPress = (button: BoardButton, index: number) => {
-    if (!editMode && button.visibility && button.visibility === "Disabled") {
-      return
-    } else if (editMode) {
-      setEditTile({button, image: page.images?.find(i => i.url === button.image), index})
-      setSymbolSearchText(button.label)
+  const addButton = useCallback(
+    (index: number) => {
+      setEditTile({
+        button: generateNewButton(page.id),
+        image: undefined,
+        index,
+      })
+      setSymbolSearchText("")
       editSheet.current?.present()
-    } else if (button.semanticAction?.intent === AACSemanticIntent.SPEAK_TEXT) {
-      if (playOnPress) speak(button.semanticAction.text ?? button.message)
-      addMessageButtonId({id: button.id, pageId: page.id})
-      if (goHomeOnPress && homePageId) setCurrentPageId(homePageId)
-    } else if (button.semanticAction?.intent === AACSemanticIntent.NAVIGATE_TO && button.semanticAction.targetId) {
-      setCurrentPageId(button.semanticAction.targetId)
-    }
-  }
+    },
+    [page.id, setSymbolSearchText],
+  )
 
-  const renderButton = useCallback<SortableGridRenderItem<BoardButton | null>>(({item, index}) => {
-    const isHidden = item && item.visibility && item.visibility === "Hidden"
-    if (item && (editMode || !isHidden)) return (
-      <Tile
-        button={item}
-        onPress={onButtonPress}
-        height={rowHeight}
-        index={index}
-      />
-    )
-    if (editMode) return <TileAdd height={rowHeight} onPress={() => addButton(index)} />
-    return <View style={{ height: rowHeight }} />
-  }, [rowHeight, onButtonPress, editMode])
-  
-  const handleDragEnd: SortableGridDragEndCallback<BoardButton | null> = (result) => {
+  const onButtonPress = useCallback(
+    (button: BoardButton, index: number) => {
+      if (!editMode && button.visibility && button.visibility === "Disabled") {
+        return
+      } else if (editMode) {
+        setEditTile({
+          button,
+          image: page.images?.find((i) => i.url === button.image),
+          index,
+        })
+        setSymbolSearchText(button.label)
+        editSheet.current?.present()
+      } else if (
+        button.semanticAction?.intent === AACSemanticIntent.SPEAK_TEXT
+      ) {
+        if (playOnPress) speak(button.semanticAction.text ?? button.message)
+        addMessageButtonId({ id: button.id, pageId: page.id })
+        if (goHomeOnPress && homePageId) setCurrentPageId(homePageId)
+      } else if (
+        button.semanticAction?.intent === AACSemanticIntent.NAVIGATE_TO &&
+        button.semanticAction.targetId
+      ) {
+        setCurrentPageId(button.semanticAction.targetId)
+      }
+    },
+    [
+      addMessageButtonId,
+      editMode,
+      goHomeOnPress,
+      homePageId,
+      page.id,
+      page.images,
+      playOnPress,
+      setCurrentPageId,
+      setSymbolSearchText,
+      speak,
+    ],
+  )
+
+  const renderButton = useCallback<SortableGridRenderItem<BoardButton | null>>(
+    ({ item, index }) => {
+      const isHidden = item && item.visibility && item.visibility === "Hidden"
+      if (item && (editMode || !isHidden))
+        return (
+          <Tile
+            button={item}
+            onPress={onButtonPress}
+            height={rowHeight}
+            index={index}
+          />
+        )
+      if (editMode)
+        return <TileAdd height={rowHeight} onPress={() => addButton(index)} />
+      return <View style={{ height: rowHeight }} />
+    },
+    [editMode, onButtonPress, rowHeight, addButton],
+  )
+
+  const handleDragEnd: SortableGridDragEndCallback<BoardButton | null> = (
+    result,
+  ) => {
     const flatGrid = result.data
     const grid = []
     while (flatGrid.length) grid.push(flatGrid.splice(0, cols))
-    savePage({...page, grid})
+    savePage({ ...page, grid })
   }
 
-  useEffect(() => { editTileRef.current = editTile }, [editTile])
-  useEffect(() => { pageRef.current = page }, [page])
+  useEffect(() => {
+    editTileRef.current = editTile
+  }, [editTile])
+  useEffect(() => {
+    pageRef.current = page
+  }, [page])
   const saveEditTile = () => {
-    const tile = {...editTileRef.current}
+    const tile = { ...editTileRef.current }
     const page = pageRef.current
-    if (!tile || tile.index === undefined) return undefined
+    if (!tile || tile.index === undefined || !rows || !cols) return undefined
     if (tile.button && !tile.button.label) return undefined
     const { row, col } = getGridPosition(tile.index, rows, cols)
-    const otherImages = page.images?.filter(i => i.url !== tile.image?.url) ?? []
-    const newImages = tile.image
-      ? [...otherImages, tile.image]
-      : otherImages
+    const otherImages =
+      page.images?.filter((i) => i.url !== tile.image?.url) ?? []
+    const newImages = tile.image ? [...otherImages, tile.image] : otherImages
     if (tile.button && tile.image) {
       tile.button = {
         ...tile.button,
         image: tile.image.url,
-        parameters: {...tile.button.parameters, image_id: tile.image.id}
+        parameters: { ...tile.button.parameters, image_id: tile.image.id },
       }
     }
     const newGrid = [...page.grid]
     newGrid[row][col] = tile.button ?? null
     savePage({
       ...page,
-      buttons: newGrid.flat().filter(b => b !== null),
+      buttons: newGrid.flat().filter((b) => b !== null),
       grid: newGrid,
-      images: newImages
+      images: newImages,
     })
     setEditTile(undefined)
   }
 
-  return <>
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: theme.surface,
-          borderWidth: editMode ? 6 : 0,
-          borderColor: theme.outline,
-          padding: editMode ? tileSpacing - 6 : tileSpacing
-        }
-      ]}
-      onLayout={handleLayout}
-    >
-      <Sortable.Grid
-        key={page.id}
-        columns={cols}
-        data={grid}
-        renderItem={renderButton}
-        rowGap={tileSpacing}
-        columnGap={tileSpacing}
-        sortEnabled={editMode}
-        keyExtractor={item => item?.id ?? uuid()}
-        onDragEnd={handleDragEnd}
-        itemsLayoutTransitionMode="reorder"
-        itemEntering={null}
-        itemExiting={null}
+  if (!rows || !cols) return <></>
+  return (
+    <>
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: theme.surface,
+            borderWidth: editMode ? 6 : 0,
+            borderColor: theme.outline,
+            padding: editMode ? tileSpacing - 6 : tileSpacing,
+          },
+        ]}
+        onLayout={handleLayout}
+      >
+        <Sortable.Grid
+          key={page.id}
+          columns={cols}
+          data={grid}
+          renderItem={renderButton}
+          rowGap={tileSpacing}
+          columnGap={tileSpacing}
+          sortEnabled={editMode}
+          keyExtractor={(item) => item?.id ?? uuid()}
+          onDragEnd={handleDragEnd}
+          itemsLayoutTransitionMode="reorder"
+          itemEntering={null}
+          itemExiting={null}
+        />
+      </View>
+      <TileEditor
+        ref={editSheet}
+        tile={editTile}
+        setTile={setEditTile}
+        onClose={saveEditTile}
+        pageNames={pageNames}
       />
-    </View>
-    <TileEditor
-      ref={editSheet}
-      tile={editTile}
-      setTile={setEditTile}
-      onClose={saveEditTile}
-      pageNames={pageNames}
-    />
-  </>
+    </>
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
-    width: '100%',
+    height: "100%",
+    width: "100%",
     gap: GAP.lg,
-    borderStyle: 'dashed'
+    borderStyle: "dashed",
   },
 })

@@ -11,30 +11,29 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: 🏗 Setup repo
-      uses: actions/checkout@v6
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v6
 
-    - name: 🏗 Setup Node
-      uses: actions/setup-node@v6
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v6
 
-    - name: 🏗 Setup Expo and EAS
-      uses: expo/expo-github-action@v8
-      with:
-        token: ${{ secrets.EXPO_TOKEN }}
-        eas-version: latest
+      - name: 🏗 Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          token: ${{ secrets.EXPO_TOKEN }}
+          eas-version: latest
 
-    - name: 📦 Install dependencies
-      run: npm ci
+      - name: 📦 Install dependencies
+        run: npm ci
 
-    - name: 👷 Build app
-      run: |
-        eas build --local \
-          --non-interactive \
-          --output=./app-build.apk \
-          --platform=android \
-          --profile=preview
+      - name: 👷 Build app
+        run: |
+          eas build --local \
+            --non-interactive \
+            --output=./app-build.apk \
+            --platform=android \
+            --profile=preview
 
-    - name: 🚢 Submit
-      if: ${{ github.event.inputs.should_submit }}
-      run: eas submit -p android --profile ${{ github.event.inputs.profile }} --path app-build.apk
-
+      - name: 🚢 Submit
+        if: ${{ github.event.inputs.should_submit }}
+        run: eas submit -p android --profile ${{ github.event.inputs.profile }} --path app-build.apk
