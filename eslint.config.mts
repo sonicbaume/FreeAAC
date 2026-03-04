@@ -24,6 +24,13 @@ export default defineConfig([
     },
   },
   {
-    ignores: ["node_modules/*", "dist/*", "android/*", "ios/*"],
+    ignores: [
+      "node_modules/*",
+      "dist/*",
+      "android/*",
+      "ios/*",
+      "*.cjs",
+      "**/*.cjs",
+    ],
   },
 ])
