@@ -1,16 +1,16 @@
-import * as Speech from 'expo-speech';
-import { SpeechOptions } from 'expo-speech';
-import { useCallback, useEffect, useRef, useState } from "react";
+import * as Speech from "expo-speech"
+import { SpeechOptions } from "expo-speech"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
   AudioBuffer,
   AudioBufferSourceNode,
   AudioContext,
-  AudioManager
-} from 'react-native-audio-api';
-import { useAudioActions } from "../stores/audio";
-import { useSpeechOptions } from "../stores/prefs";
-import { handleError } from '../utils/error';
-import { useTts } from '../utils/tts';
+  AudioManager,
+} from "react-native-audio-api"
+import { useAudioActions } from "../stores/audio"
+import { useSpeechOptions } from "../stores/prefs"
+import { handleError } from "../utils/error"
+import { useTts } from "../utils/tts"
 
 /**
  * Converts an audio vector (Float32Array) to an AudioBuffer for playback
@@ -21,110 +21,113 @@ import { useTts } from '../utils/tts';
 const createAudioBufferFromVector = (
   audioVector: Float32Array,
   audioContext: AudioContext | null = null,
-  sampleRate: number = 24000
+  sampleRate: number = 24000,
 ): AudioBuffer => {
-  if (audioContext == null) audioContext = new AudioContext({ sampleRate });
+  if (audioContext == null) audioContext = new AudioContext({ sampleRate })
 
   const audioBuffer = audioContext.createBuffer(
     1,
     audioVector.length,
-    sampleRate
-  );
-  const channelData = audioBuffer.getChannelData(0);
-  channelData.set(audioVector);
+    sampleRate,
+  )
+  const channelData = audioBuffer.getChannelData(0)
+  channelData.set(audioVector)
 
-  return audioBuffer;
-};
+  return audioBuffer
+}
 
-export default function AudioController () {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const sourceRef = useRef<AudioBufferSourceNode>(null);
+export default function AudioController() {
+  const [isPlaying, setIsPlaying] = useState(false)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const sourceRef = useRef<AudioBufferSourceNode>(null)
   const speechOptions = useSpeechOptions()
   const { setSpeak, setTtsStatus } = useAudioActions()
 
   const model = useTts(speechOptions)
   useEffect(() => {
     if (!model) return
-    const {isReady, isGenerating, downloadProgress, ...props} = model
+    const { isReady, isGenerating, downloadProgress, ...props } = model
     setTtsStatus({ isReady, isGenerating, downloadProgress })
   }, [model])
 
-  const speak = useCallback(async (inputText: string, options?: Partial<SpeechOptions>) => {
-    let text = inputText.trim()
-    if (!text) return
+  const speak = useCallback(
+    async (inputText: string, options?: Partial<SpeechOptions>) => {
+      let text = inputText.trim()
+      if (!text) return
 
-    if (speechOptions.engine === "device") {
-      Speech.stop()
-      if (text === "I") text = "i"  // avoid "capital I" output
-      Speech.speak(text, {...speechOptions, ...options})
-      return
-    }
-    
-    if (!model || isPlaying) return
-    setIsPlaying(true)
-
-    try {
-      const audioContext = audioContextRef.current;
-      if (!audioContext) return;
-
-      if (audioContext.state === 'suspended') {
-        await audioContext.resume();
+      if (speechOptions.engine === "device") {
+        Speech.stop()
+        if (text === "I") text = "i" // avoid "capital I" output
+        Speech.speak(text, { ...speechOptions, ...options })
+        return
       }
 
-      const onNext = async (audioVec: Float32Array) => {
-        return new Promise<void>((resolve) => {
-          const audioBuffer = createAudioBufferFromVector(
-            audioVec,
-            audioContext,
-            24000
-          );
+      if (!model || isPlaying) return
+      setIsPlaying(true)
 
-          const source = (sourceRef.current =
-            audioContext.createBufferSource());
-          source.buffer = audioBuffer;
-          source.connect(audioContext.destination);
+      try {
+        const audioContext = audioContextRef.current
+        if (!audioContext) return
 
-          source.onEnded = () => resolve();
+        if (audioContext.state === "suspended") {
+          await audioContext.resume()
+        }
 
-          source.start();
-        });
-      };
+        const onNext = async (audioVec: Float32Array) => {
+          return new Promise<void>((resolve) => {
+            const audioBuffer = createAudioBufferFromVector(
+              audioVec,
+              audioContext,
+              24000,
+            )
 
-      const onEnd = async () => {
-        setIsPlaying(false);
-        await audioContext.suspend();
-      };
+            const source = (sourceRef.current =
+              audioContext.createBufferSource())
+            source.buffer = audioBuffer
+            source.connect(audioContext.destination)
 
-      await model.stream({
-        text: inputText,
-        speed: speechOptions.rate,
-        onNext,
-        onEnd,
-      });
-    } catch (e) {
-      handleError(e)
-      setIsPlaying(false)
-    }
-  }, [speechOptions, model, audioContextRef, sourceRef])
+            source.onEnded = () => resolve()
+
+            source.start()
+          })
+        }
+
+        const onEnd = async () => {
+          setIsPlaying(false)
+          await audioContext.suspend()
+        }
+
+        await model.stream({
+          text: inputText,
+          speed: speechOptions.rate,
+          onNext,
+          onEnd,
+        })
+      } catch (e) {
+        handleError(e)
+        setIsPlaying(false)
+      }
+    },
+    [speechOptions, model, audioContextRef, sourceRef],
+  )
 
   useEffect(() => setSpeak(speak), [speak])
 
   useEffect(() => {
     AudioManager.setAudioSessionOptions({
-      iosCategory: 'playback',
-      iosMode: 'spokenAudio',
-      iosOptions: ['defaultToSpeaker'],
-    });
+      iosCategory: "playback",
+      iosMode: "spokenAudio",
+      iosOptions: ["defaultToSpeaker"],
+    })
 
-    audioContextRef.current = new AudioContext({ sampleRate: 24000 });
-    audioContextRef.current.suspend();
+    audioContextRef.current = new AudioContext({ sampleRate: 24000 })
+    audioContextRef.current.suspend()
 
     return () => {
-      audioContextRef.current?.close();
-      audioContextRef.current = null;
-    };
-  }, []);
+      audioContextRef.current?.close()
+      audioContextRef.current = null
+    }
+  }, [])
 
   return null
 }

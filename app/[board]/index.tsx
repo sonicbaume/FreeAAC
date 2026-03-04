@@ -1,35 +1,41 @@
-import { Image } from "expo-image";
-import { Stack, useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import MessageWindow from "../components/MessageWindow";
-import Page from "../components/Page";
-import { useBoards, useCurrentPageId, usePagesetActions } from "../stores/boards";
-import { useDebounceTime, useMessageWindowLocation } from "../stores/prefs";
-import { getHomePageId } from "../utils/boards";
-import { DebounceContext, handleDebounce } from "../utils/debounce";
-import { handleError } from "../utils/error";
-import { loadBoard, saveBoard } from "../utils/file";
-import { useTheme } from "../utils/theme";
-import { BoardButton, BoardPage, BoardTree, TileImage } from "../utils/types";
+import { Image } from "expo-image"
+import { Stack, useLocalSearchParams } from "expo-router"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { ActivityIndicator, View } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
+import MessageWindow from "../components/MessageWindow"
+import Page from "../components/Page"
+import {
+  useBoards,
+  useCurrentPageId,
+  usePagesetActions,
+} from "../stores/boards"
+import { useDebounceTime, useMessageWindowLocation } from "../stores/prefs"
+import { getHomePageId } from "../utils/boards"
+import { DebounceContext, handleDebounce } from "../utils/debounce"
+import { handleError } from "../utils/error"
+import { loadBoard, saveBoard } from "../utils/file"
+import { useTheme } from "../utils/theme"
+import { BoardButton, BoardPage, BoardTree, TileImage } from "../utils/types"
 
 export type EditTile = {
-  button: BoardButton | undefined;
-  image: TileImage | undefined;
-  index: number;
+  button: BoardButton | undefined
+  image: TileImage | undefined
+  index: number
 }
 
 const prefetchImages = (tree: BoardTree) => {
-  Image.prefetch(Object.values(tree.pages)
-    .map(page => page.images).flat()
-    .filter(image => image !== undefined)
-    .map(image => {
-      if (image.path || image.data) return undefined
-      if (image.data_url?.startsWith('http')) return image.data_url
-      return image.url
-    })
-    .filter(image => image !== undefined)
+  Image.prefetch(
+    Object.values(tree.pages)
+      .map((page) => page.images)
+      .flat()
+      .filter((image) => image !== undefined)
+      .map((image) => {
+        if (image.path || image.data) return undefined
+        if (image.data_url?.startsWith("http")) return image.data_url
+        return image.url
+      })
+      .filter((image) => image !== undefined),
   )
 }
 
@@ -39,53 +45,57 @@ export default function Board() {
   const lastTimeRef = useRef(0)
   const { board } = useLocalSearchParams()
   const boards = useBoards()
-  const uri = boards.find(b => b.id === board)?.uri
+  const uri = boards.find((b) => b.id === board)?.uri
   const messageWindowLocation = useMessageWindowLocation()
   const currentPageId = useCurrentPageId()
   const { setCurrentPageId } = usePagesetActions()
   const [tree, setTree] = useState<BoardTree>()
 
-  useEffect(() => {(async () => {
-    if (!uri) return
-    try {
-      const tree = await loadBoard(uri)
-      console.log(tree)
-      if (Object.keys(tree.pages).length < 1) return handleError("No pages found")
-      setTree(tree)
-      if (!currentPageId || !(currentPageId in tree.pages)) {
-        const homePageId = getHomePageId(tree)
-        setCurrentPageId(homePageId)
+  useEffect(() => {
+    ;(async () => {
+      if (!uri) return
+      try {
+        const tree = await loadBoard(uri)
+        console.log(tree)
+        if (Object.keys(tree.pages).length < 1)
+          return handleError("No pages found")
+        setTree(tree)
+        if (!currentPageId || !(currentPageId in tree.pages)) {
+          const homePageId = getHomePageId(tree)
+          setCurrentPageId(homePageId)
+        }
+        prefetchImages(tree)
+      } catch (e) {
+        handleError(e)
       }
-      prefetchImages(tree)
-    } catch (e) {
-      handleError(e)
-    }
-  })()}, [uri])
+    })()
+  }, [uri])
 
   const page = useMemo(() => {
     if (!tree || !currentPageId) return
-    if (!(currentPageId in tree.pages)) return handleError('Could not find page in tree')
+    if (!(currentPageId in tree.pages))
+      return handleError("Could not find page in tree")
     return tree.pages[currentPageId]
   }, [currentPageId, tree])
 
   const savePage = (page: BoardPage) => {
-    if (!uri) return handleError('Could not save page - file not defined')
-    if (!tree) return handleError('Could not save page - tree does not exist')
-    if (!currentPageId) return handleError('Could not save page - ID undefined')
+    if (!uri) return handleError("Could not save page - file not defined")
+    if (!tree) return handleError("Could not save page - tree does not exist")
+    if (!currentPageId) return handleError("Could not save page - ID undefined")
     console.log("Saving page", page)
-    const pages = {...tree.pages}
+    const pages = { ...tree.pages }
     pages[currentPageId] = {
       ...pages[currentPageId],
-      ...page
+      ...page,
     }
-    const metadata = {...tree.metadata}
+    const metadata = { ...tree.metadata }
     if (currentPageId === metadata.defaultHomePageId) {
       metadata.name = page.name
     }
     const newTree = {
       ...tree,
       metadata,
-      pages
+      pages,
     }
     saveBoard(uri, newTree)
     setTree(newTree)
@@ -104,50 +114,65 @@ export default function Board() {
   const buttons = useMemo(() => {
     if (!tree) return []
     return Object.values(tree.pages)
-      .map(page => {
+      .map((page) => {
         const buttons = page.buttons as BoardButton[]
-        return buttons.map(button => {
+        return buttons.map((button) => {
           return {
             button,
-            pageId: page.id
+            pageId: page.id,
           }
         })
-      }).flat()
+      })
+      .flat()
   }, [tree])
 
   const pageNames = useMemo(() => {
     if (!tree) return []
-    return Object.values(tree.pages).map(({id, name}) => ({ value: id, label: name }))
+    return Object.values(tree.pages).map(({ id, name }) => ({
+      value: id,
+      label: name,
+    }))
   }, [tree])
 
   const messageWindow = (
-  <MessageWindow
-    navigateHome={handleNavigateHome}
-    buttons={buttons}
-    isHome={homePageId === page?.id}
-    pageTitle={page?.name}
-    setPageTitle={(name) => page && name && savePage({...page, name})}
-  />)
-
-  const debounce = useCallback((action: () => any) =>
-    handleDebounce(action, debounceTime, lastTimeRef), [debounceTime]
+    <MessageWindow
+      navigateHome={handleNavigateHome}
+      buttons={buttons}
+      isHome={homePageId === page?.id}
+      pageTitle={page?.name}
+      setPageTitle={(name) => page && name && savePage({ ...page, name })}
+    />
   )
-  
-  return <DebounceContext value={debounce}>
-    <Stack.Screen options={{ headerShown: false }} />
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
-      {messageWindowLocation === "top" && messageWindow}
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {page && <Page page={page} savePage={savePage} homePageId={homePageId} pageNames={pageNames} />}
-        {!page && <ActivityIndicator size="large" color={theme.onSurface} />}
-      </View>
-      {messageWindowLocation === "bottom" && messageWindow}
-    </SafeAreaView>
-  </DebounceContext>
+
+  const debounce = useCallback(
+    (action: () => any) => handleDebounce(action, debounceTime, lastTimeRef),
+    [debounceTime],
+  )
+
+  return (
+    <DebounceContext value={debounce}>
+      <Stack.Screen options={{ headerShown: false }} />
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
+        {messageWindowLocation === "top" && messageWindow}
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {page && (
+            <Page
+              page={page}
+              savePage={savePage}
+              homePageId={homePageId}
+              pageNames={pageNames}
+            />
+          )}
+          {!page && <ActivityIndicator size="large" color={theme.onSurface} />}
+        </View>
+        {messageWindowLocation === "bottom" && messageWindow}
+      </SafeAreaView>
+    </DebounceContext>
+  )
 }

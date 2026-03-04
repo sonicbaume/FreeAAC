@@ -1,6 +1,6 @@
-import { DocumentPickerAsset } from "expo-document-picker";
-import { getFileExt } from "./file";
-import { uuid } from "./uuid";
+import { DocumentPickerAsset } from "expo-document-picker"
+import { getFileExt } from "./file"
+import { uuid } from "./uuid"
 
 export const pathExists = async (path: string): Promise<boolean> => {
   const root = await navigator.storage.getDirectory()
@@ -37,16 +37,22 @@ export const getFileSize = async (path: string): Promise<number> => {
   return file.size
 }
 
-export const mkDir = async (path: string, options?: { recursive?: boolean }): Promise<void> => {
+export const mkDir = async (
+  path: string,
+  options?: { recursive?: boolean },
+): Promise<void> => {
   const root = await navigator.storage.getDirectory()
   await root.getDirectoryHandle(path, { create: true })
 }
 
 export const listDir = async (path: string): Promise<string[]> => {
-  throw new Error('listDir not available on web')
+  throw new Error("listDir not available on web")
 }
 
-export const removePath = async (path: string, options?: { recursive?: boolean; force?: boolean }): Promise<void> => {
+export const removePath = async (
+  path: string,
+  options?: { recursive?: boolean; force?: boolean },
+): Promise<void> => {
   const root = await navigator.storage.getDirectory()
   await root.removeEntry(path)
 }
@@ -57,10 +63,9 @@ export const mkTempDir = async (prefix: string): Promise<string> => {
   return tempDir.name
 }
 
-
-export const getAssetData = async (asset: DocumentPickerAsset):
-  Promise<Uint8Array> =>
-{
+export const getAssetData = async (
+  asset: DocumentPickerAsset,
+): Promise<Uint8Array> => {
   if (!asset.file) throw new Error("Could not read file")
   return await asset.file.bytes()
 }
@@ -82,19 +87,17 @@ export const saveFile = async (
   return fileName
 }
 
-export const loadFile = async (fileName: string):
-  Promise<Uint8Array> =>
-{
+export const loadFile = async (fileName: string): Promise<Uint8Array> => {
   const root = await navigator.storage.getDirectory()
   const fileHandle = await root.getFileHandle(fileName)
   const file = await fileHandle.getFile()
   return await file.bytes()
 }
 
-export const downloadFile = async (url: string):
-  Promise<{id: string, fileName: string}> =>
-{
-  const ext = getFileExt(url.split('/').slice(-1)[0])
+export const downloadFile = async (
+  url: string,
+): Promise<{ id: string; fileName: string }> => {
+  const ext = getFileExt(url.split("/").slice(-1)[0])
   const id = uuid()
   const fileName = `${id}.${ext}`
   const response = await fetch(url)
@@ -103,22 +106,19 @@ export const downloadFile = async (url: string):
   return { id, fileName }
 }
 
-export const saveAs = async (
-  uri: string,
-  name: string
-) => {
+export const saveAs = async (uri: string, name: string) => {
   const opfsRoot = await navigator.storage.getDirectory()
   const opfsFileHandle = await opfsRoot.getFileHandle(uri)
   const file = await opfsFileHandle.getFile()
 
-  if ('showSaveFilePicker' in window) {
+  if ("showSaveFilePicker" in window) {
     //@ts-ignore
     const localHandle = await window.showSaveFilePicker({ suggestedName: name })
     const writable = await localHandle.createWritable()
     await file.stream().pipeTo(writable)
   } else {
     const url = URL.createObjectURL(file)
-    const a = document.createElement('a')
+    const a = document.createElement("a")
     a.href = url
     a.download = name
     a.click()

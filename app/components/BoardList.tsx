@@ -15,53 +15,59 @@ export default function BoardList() {
   const boards = useBoards()
   const router = useRouter()
   const [selectedBoardId, setSelectedBoardId] = useState<string>()
-  return <>
-    {boardsLoaded && boards.length > 0 &&
-    <FlatList
-      contentContainerStyle={{ gap: GAP.xs}}
-      data={boards}
-      keyExtractor={item => item.id}
-      renderItem={({ item }) => (
-        <View style={styles.container}>
-          <Button
-            variant="ghost"
-            style={{ justifyContent: 'flex-start', flex: 1 }}
-            onPress={() => {
-              router.push({
-                pathname: '/[board]',
-                params: { board: item.id }
-              })
-            }}
-          >
-            <Text style={{ color: theme.onSurface, fontSize: FONT_SIZE.lg }}>{item.name}</Text>
-          </Button>
-          <Button
-            variant="ghost"
-            onPress={() => {
-              setSelectedBoardId(item.id)
-              sheetRef.current?.present()
-            }}
-          >
-            <Ellipsis size={ICON_SIZE.md} color={theme.outline} />
-          </Button>
-        </View>
+  return (
+    <>
+      {boardsLoaded && boards.length > 0 && (
+        <FlatList
+          contentContainerStyle={{ gap: GAP.xs }}
+          data={boards}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.container}>
+              <Button
+                variant="ghost"
+                style={{ justifyContent: "flex-start", flex: 1 }}
+                onPress={() => {
+                  router.push({
+                    pathname: "/[board]",
+                    params: { board: item.id },
+                  })
+                }}
+              >
+                <Text
+                  style={{ color: theme.onSurface, fontSize: FONT_SIZE.lg }}
+                >
+                  {item.name}
+                </Text>
+              </Button>
+              <Button
+                variant="ghost"
+                onPress={() => {
+                  setSelectedBoardId(item.id)
+                  sheetRef.current?.present()
+                }}
+              >
+                <Ellipsis size={ICON_SIZE.md} color={theme.outline} />
+              </Button>
+            </View>
+          )}
+        />
       )}
-    />
-    }
-    {boardsLoaded && boards.length === 0 &&
-    <Text style={{ textAlign: 'center' }}>No boards found</Text>
-    }
-    {!boardsLoaded &&
-    <ActivityIndicator size="large" color={theme.outline} />
-    }
-    <BoardOptions ref={sheetRef} boardId={selectedBoardId} />
-  </>
+      {boardsLoaded && boards.length === 0 && (
+        <Text style={{ textAlign: "center" }}>No boards found</Text>
+      )}
+      {!boardsLoaded && (
+        <ActivityIndicator size="large" color={theme.outline} />
+      )}
+      <BoardOptions ref={sheetRef} boardId={selectedBoardId} />
+    </>
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  }
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
 })

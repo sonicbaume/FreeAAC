@@ -1,15 +1,33 @@
-import { AACTree, getProcessor } from '@willwade/aac-processors/browser';
-import * as DocumentPicker from 'expo-document-picker';
-import { Paths } from 'expo-file-system';
-import { ImagePickerOptions, launchCameraAsync, launchImageLibraryAsync } from 'expo-image-picker';
-import { nanoid } from 'nanoid/non-secure';
-import { getAssetData, getFileSize, isDirectory, listDir, loadFile, mkDir, mkTempDir, pathExists, removePath, saveAs, saveFile } from './io';
-import { BoardTree, TileImage } from './types';
-import { uuid } from './uuid';
+import { AACTree, getProcessor } from "@willwade/aac-processors/browser"
+import * as DocumentPicker from "expo-document-picker"
+import { Paths } from "expo-file-system"
+import {
+  ImagePickerOptions,
+  launchCameraAsync,
+  launchImageLibraryAsync,
+} from "expo-image-picker"
+import { nanoid } from "nanoid/non-secure"
+import {
+  getAssetData,
+  getFileSize,
+  isDirectory,
+  listDir,
+  loadFile,
+  mkDir,
+  mkTempDir,
+  pathExists,
+  removePath,
+  saveAs,
+  saveFile,
+} from "./io"
+import { BoardTree, TileImage } from "./types"
+import { uuid } from "./uuid"
 
 const fileAdapter = {
-  readBinaryFromInput: async (input: string | Buffer | ArrayBuffer | Uint8Array): Promise<Uint8Array> => {
-    if (typeof(input) === "string") {
+  readBinaryFromInput: async (
+    input: string | Buffer | ArrayBuffer | Uint8Array,
+  ): Promise<Uint8Array> => {
+    if (typeof input === "string") {
       return await loadFile(input)
     } else if (input instanceof ArrayBuffer) {
       return new Uint8Array(input)
@@ -17,19 +35,25 @@ const fileAdapter = {
       return input
     }
   },
-  readTextFromInput: async (input: string | Buffer | ArrayBuffer | Uint8Array, encoding: BufferEncoding = 'utf-8'): Promise<string> => {
-    if (typeof input === 'string') {
+  readTextFromInput: async (
+    input: string | Buffer | ArrayBuffer | Uint8Array,
+    encoding: BufferEncoding = "utf-8",
+  ): Promise<string> => {
+    if (typeof input === "string") {
       const data = await loadFile(input)
       return new TextDecoder(encoding).decode(data)
-    } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(input)) {
-      return input.toString(encoding);
-    } else if (typeof Buffer !== 'undefined' && Buffer.isBuffer(input)) {
-        return input.toString('utf8');
+    } else if (typeof Buffer !== "undefined" && Buffer.isBuffer(input)) {
+      return input.toString(encoding)
+    } else if (typeof Buffer !== "undefined" && Buffer.isBuffer(input)) {
+      return input.toString("utf8")
     } else {
-      return new TextDecoder(encoding).decode(input);
+      return new TextDecoder(encoding).decode(input)
     }
   },
-  writeBinaryToPath: async (outputPath: string, data: Uint8Array): Promise<void> => {
+  writeBinaryToPath: async (
+    outputPath: string,
+    data: Uint8Array,
+  ): Promise<void> => {
     await saveFile(outputPath, data)
   },
   writeTextToPath: async (outputPath: string, text: string): Promise<void> => {
@@ -44,40 +68,43 @@ const fileAdapter = {
   mkTempDir,
   join: (...pathParts: string[]): string => Paths.join(...pathParts),
   dirname: (path: string): string => Paths.dirname(path),
-  basename: (path: string, suffix?: string): string => Paths.basename(path, suffix)
+  basename: (path: string, suffix?: string): string =>
+    Paths.basename(path, suffix),
 }
 
 export const getFileExt = (name: string): string => {
   const ext = name.split(".").pop()
-  return ext ? `${ext.toLowerCase()}` : ''
+  return ext ? `${ext.toLowerCase()}` : ""
 }
 
-export const getFileType = (ext: string): { mimeType: string, UTI: string } => {
+export const getFileType = (ext: string): { mimeType: string; UTI: string } => {
   switch (ext) {
-    case 'obf':
-    case 'grd':
-      return { mimeType: "application/json", UTI: 'public.json' }
-    case 'obz':
-    case 'gridset':
-    case 'spb':
-    case 'sps':
-      return { mimeType: "application/zip", UTI: 'public.zip-archive' }
-    case 'dot':
-      return { mimeType: "text/vnd.graphviz", UTI: 'public.data' }
-    case 'opml':
-      return { mimeType: "application/xml", UTI: 'public.xml' }
-    case 'ce':
-      return { mimeType: "application/octet-stream", UTI: 'public.data' }
-    case 'plist':
-      return { mimeType: "application/x-plist", UTI: 'com.apple.property-list' }
+    case "obf":
+    case "grd":
+      return { mimeType: "application/json", UTI: "public.json" }
+    case "obz":
+    case "gridset":
+    case "spb":
+    case "sps":
+      return { mimeType: "application/zip", UTI: "public.zip-archive" }
+    case "dot":
+      return { mimeType: "text/vnd.graphviz", UTI: "public.data" }
+    case "opml":
+      return { mimeType: "application/xml", UTI: "public.xml" }
+    case "ce":
+      return { mimeType: "application/octet-stream", UTI: "public.data" }
+    case "plist":
+      return { mimeType: "application/x-plist", UTI: "com.apple.property-list" }
     default:
-      throw new Error(`Unknown file extension: ${ext}`);
+      throw new Error(`Unknown file extension: ${ext}`)
   }
 }
 
-export const selectFile = async (): Promise<{id: string, uri: string} | undefined> => {
+export const selectFile = async (): Promise<
+  { id: string; uri: string } | undefined
+> => {
   const result = await DocumentPicker.getDocumentAsync({
-    copyToCacheDirectory: true
+    copyToCacheDirectory: true,
   })
   const asset = result.assets?.at(0)
   if (!asset) return undefined
@@ -86,22 +113,23 @@ export const selectFile = async (): Promise<{id: string, uri: string} | undefine
   const id = uuid()
   const fileName = `${id}.${ext}`
   const uri = await saveFile(fileName, data)
-  return {id, uri}
+  return { id, uri }
 }
 
-export const selectImage = async (takePhoto: boolean): Promise<TileImage | undefined> =>
-{
+export const selectImage = async (
+  takePhoto: boolean,
+): Promise<TileImage | undefined> => {
   const settings: ImagePickerOptions = {
-    mediaTypes: ['images'],
+    mediaTypes: ["images"],
     base64: true,
-    exif: false
+    exif: false,
   }
   let result = takePhoto
     ? await launchCameraAsync(settings)
     : await launchImageLibraryAsync(settings)
   const file = result.assets?.at(0)
   if (!file) return undefined
-  if (!file.base64) throw new Error('Could not read file data')
+  if (!file.base64) throw new Error("Could not read file data")
   const data = `data:${file.mimeType};base64,` + file.base64
   const id = nanoid()
   return {
@@ -115,7 +143,7 @@ export const selectImage = async (takePhoto: boolean): Promise<TileImage | undef
 
 export const loadBoard = async (uri: string): Promise<BoardTree> => {
   const boardFile = await loadFile(uri)
-  if (!boardFile) throw new Error('Could not load file')
+  if (!boardFile) throw new Error("Could not load file")
   const ext = getFileExt(uri)
   const processor = getProcessor(`.${ext}`, { fileAdapter })
   const tree = await processor.loadIntoTree(boardFile)

@@ -1,39 +1,44 @@
-import { AACButton, AACPage, AACTree } from "@willwade/aac-processors/browser";
-import { RnExecutorchError } from "react-native-executorch";
-import { TextToSpeechInput, TextToSpeechStreamingInput } from "react-native-executorch/lib/typescript/types/tts";
+import { AACButton, AACPage, AACTree } from "@willwade/aac-processors/browser"
+import { RnExecutorchError } from "react-native-executorch"
+import {
+  TextToSpeechInput,
+  TextToSpeechStreamingInput,
+} from "react-native-executorch/lib/typescript/types/tts"
 
 export interface ExecuTorchTtsModel {
-  error: RnExecutorchError | null;
-  isReady: boolean;
-  isGenerating: boolean;
-  forward: (input: TextToSpeechInput) => Promise<any>;
-  stream: (input: TextToSpeechStreamingInput) => Promise<void>;
-  streamStop: any;
-  downloadProgress: number;
+  error: RnExecutorchError | null
+  isReady: boolean
+  isGenerating: boolean
+  forward: (input: TextToSpeechInput) => Promise<any>
+  stream: (input: TextToSpeechStreamingInput) => Promise<void>
+  streamStop: any
+  downloadProgress: number
 }
 
 type DataOnly<T> = {
   [K in keyof T as T[K] extends Function ? never : K]: T[K]
-};
+}
 export type BoardButton = DataOnly<AACButton>
-export type BoardPage = Omit<DataOnly<AACPage>, 'images'> & {
+export type BoardPage = Omit<DataOnly<AACPage>, "images"> & {
   images?: TileImage[]
 }
-export type BoardTree = Omit<DataOnly<AACTree>, 'pages'> & { pages: { [key: string]: BoardPage } }
+export type BoardTree = Omit<DataOnly<AACTree>, "pages"> & {
+  pages: { [key: string]: BoardPage }
+}
 export type TileImage = {
-  content_type?: string;
-  data?: string;
-  data_url?: string;
-  height?: number;
-  id: string;
+  content_type?: string
+  data?: string
+  data_url?: string
+  height?: number
+  id: string
   license?: {
-    author_name?: string;
-    author_url?: string;
-    copyright_notice_url?: string;
-    type?: string;
-    uneditable?: boolean;
+    author_name?: string
+    author_url?: string
+    copyright_notice_url?: string
+    type?: string
+    uneditable?: boolean
   }
-  path?: string;
-  url: string;
-  width?: number;
+  path?: string
+  url: string
+  width?: number
 }

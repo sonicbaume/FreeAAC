@@ -1,13 +1,13 @@
-import { Plus } from "lucide-react-native";
-import { Pressable, StyleSheet } from "react-native";
-import { ICON_SIZE, RADIUS, useTheme } from "../utils/theme";
+import { Plus } from "lucide-react-native"
+import { Pressable, StyleSheet } from "react-native"
+import { ICON_SIZE, RADIUS, useTheme } from "../utils/theme"
 
 export default function TileAdd({
   onPress,
-  height
+  height,
 }: {
-  onPress: () => void;
-  height: number;
+  onPress: () => void
+  height: number
 }) {
   const theme = useTheme()
   return (
@@ -22,11 +22,11 @@ export default function TileAdd({
 
 const styles = StyleSheet.create({
   tile: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     borderWidth: 2,
-    borderStyle: 'dashed',
+    borderStyle: "dashed",
     borderRadius: RADIUS.xl,
-  }
+  },
 })
