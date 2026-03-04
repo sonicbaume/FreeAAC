@@ -1,7 +1,7 @@
 import { createContext, RefObject, useContext } from "react"
 
 export const handleDebounce = (
-  action: () => any,
+  action: () => unknown,
   time: number | undefined,
   lastTimeRef: RefObject<number>,
 ) => {
@@ -14,7 +14,7 @@ export const handleDebounce = (
   }
 }
 
-export const DebounceContext = createContext((action: any) => {
+export const DebounceContext = createContext((action: unknown) => {
   console.log("Debounce context not initialised")
 })
 

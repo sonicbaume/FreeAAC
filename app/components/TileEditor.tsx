@@ -19,8 +19,7 @@ import { Text } from "./Styled"
 import SymbolPicker, { SymbolSearchBar } from "./SymbolPicker"
 import TileSettings from "./TileSettings"
 
-const tabs = ["settings", "symbol"] as const
-type Tab = (typeof tabs)[number]
+type Tab = "settings" | "symbol"
 
 const TabSelector = ({
   tab,
@@ -94,7 +93,7 @@ export default function TileEditor({
     newButton: BoardButton | undefined,
     newImage: TileImage | undefined,
   ) => {
-    tile &&
+    if (tile)
       setTile({
         button: newButton,
         image: newImage,

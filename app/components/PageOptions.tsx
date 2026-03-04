@@ -11,7 +11,6 @@ import { nanoid } from "nanoid/non-secure"
 import { useState } from "react"
 import { Platform } from "react-native"
 import { useCurrentPageId, usePagesetActions } from "../stores/boards"
-import { generateNewButton } from "../utils/boards"
 import { ICON_SIZE, PADDING, useTheme } from "../utils/theme"
 import DialogRename from "./DialogRename"
 import SheetItem from "./SheetItem"
@@ -61,8 +60,6 @@ export default function PageOptions({
             if (!currentPageId)
               return console.error("Could not find currentPageId")
             setShowCustomWordDialog(true)
-            const button = generateNewButton(currentPageId)
-
             ref.current?.dismiss()
           }}
         />

@@ -9,14 +9,16 @@ export interface ExecuTorchTtsModel {
   error: RnExecutorchError | null
   isReady: boolean
   isGenerating: boolean
-  forward: (input: TextToSpeechInput) => Promise<any>
+  forward: (input: TextToSpeechInput) => Promise<unknown>
   stream: (input: TextToSpeechStreamingInput) => Promise<void>
-  streamStop: any
+  streamStop: unknown
   downloadProgress: number
 }
 
 type DataOnly<T> = {
-  [K in keyof T as T[K] extends Function ? never : K]: T[K]
+  [K in keyof T as T[K] extends (...args: unknown[]) => unknown
+    ? never
+    : K]: T[K]
 }
 export type BoardButton = DataOnly<AACButton>
 export type BoardPage = Omit<DataOnly<AACPage>, "images"> & {

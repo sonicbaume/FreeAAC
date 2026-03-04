@@ -1,7 +1,7 @@
 import { Alert, Platform } from "react-native"
 
 export const handleError = (e: unknown) => {
-  let message = ""
+  let message
   if (e instanceof Error) {
     message = e.message
   } else if (typeof e === "string") {

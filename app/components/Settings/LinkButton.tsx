@@ -1,5 +1,6 @@
 import { FONT_SIZE, ICON_SIZE, useTheme } from "@/app/utils/theme"
 import { Href, Link } from "expo-router"
+import { LucideIcon } from "lucide-react-native"
 import { Button, Text } from "../Styled"
 
 export default function LinkButton({
@@ -9,7 +10,7 @@ export default function LinkButton({
 }: {
   href: Href
   title: string
-  icon?: any
+  icon?: LucideIcon
 }) {
   const Icon = icon
   const theme = useTheme()

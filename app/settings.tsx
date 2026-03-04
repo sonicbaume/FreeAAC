@@ -99,9 +99,7 @@ const speechEngineLabels: Record<SpeechEngine, string> = {
 
 export default function Settings() {
   const theme = useTheme()
-  const [assets, error] = useAssets([
-    require("../assets/images/icon-64x64.png"),
-  ])
+  const [assets] = useAssets([require("../assets/images/icon-64x64.png")])
   const appVersion = Application.nativeApplicationVersion
   const playOnPress = usePlayOnPress()
   const messageWindowLocation = useMessageWindowLocation()
@@ -170,7 +168,7 @@ export default function Settings() {
         setSpeechOptions({ voice: voiceOptions[0].value })
       }
     })()
-  }, [locales, speechOptions.engine])
+  }, [locales, setSpeechOptions, speechOptions.engine, speechOptions.voice])
 
   return (
     <ScrollView style={{ backgroundColor: theme.background }}>

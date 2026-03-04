@@ -5,14 +5,14 @@ import { uuid } from "./uuid"
 export const pathExists = async (path: string): Promise<boolean> => {
   const root = await navigator.storage.getDirectory()
   try {
-    const fileHandle = await root.getFileHandle(path)
+    await root.getFileHandle(path)
     return true
   } catch (e) {
     if (e instanceof TypeError) {
       try {
-        const dirHandle = await root.getDirectoryHandle(path)
+        await root.getDirectoryHandle(path)
         return true
-      } catch (e) {
+      } catch {
         return false
       }
     }
@@ -23,9 +23,9 @@ export const pathExists = async (path: string): Promise<boolean> => {
 export const isDirectory = async (path: string): Promise<boolean> => {
   const root = await navigator.storage.getDirectory()
   try {
-    const dirHandle = await root.getDirectoryHandle(path)
+    await root.getDirectoryHandle(path)
     return true
-  } catch (e) {
+  } catch {
     return false
   }
 }
@@ -82,7 +82,9 @@ export const saveFile = async (
     await writable.close()
   } catch (e) {
     if (e instanceof Error && e.name === "SecurityError")
-      throw new Error("This app does not work in private browsing mode")
+      throw new Error("This app does not work in private browsing mode", {
+        cause: e,
+      })
   }
   return fileName
 }
@@ -112,7 +114,7 @@ export const saveAs = async (uri: string, name: string) => {
   const file = await opfsFileHandle.getFile()
 
   if ("showSaveFilePicker" in window) {
-    //@ts-ignore
+    //@ts-expect-error Only supported in Chrome
     const localHandle = await window.showSaveFilePicker({ suggestedName: name })
     const writable = await localHandle.createWritable()
     await file.stream().pipeTo(writable)

@@ -46,9 +46,9 @@ export default function AudioController() {
   const model = useTts(speechOptions)
   useEffect(() => {
     if (!model) return
-    const { isReady, isGenerating, downloadProgress, ...props } = model
+    const { isReady, isGenerating, downloadProgress } = model
     setTtsStatus({ isReady, isGenerating, downloadProgress })
-  }, [model])
+  }, [model, setTtsStatus])
 
   const speak = useCallback(
     async (inputText: string, options?: Partial<SpeechOptions>) => {
@@ -108,10 +108,10 @@ export default function AudioController() {
         setIsPlaying(false)
       }
     },
-    [speechOptions, model, audioContextRef, sourceRef],
+    [speechOptions, model, isPlaying],
   )
 
-  useEffect(() => setSpeak(speak), [speak])
+  useEffect(() => setSpeak(speak), [setSpeak, speak])
 
   useEffect(() => {
     AudioManager.setAudioSessionOptions({

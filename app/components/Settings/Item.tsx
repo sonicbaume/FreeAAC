@@ -49,7 +49,7 @@ export default function SettingsItem(
             false: theme.secondaryContainer,
           }}
           ios_backgroundColor={theme.secondaryContainer}
-          //@ts-ignore
+          //@ts-expect-error Property only available on web
           activeThumbColor={theme.secondaryFixed}
         />
         {props.labels && (

@@ -56,41 +56,63 @@ export default function Page({
   const cols = page.grid.at(0)?.length
   const rowHeight =
     (pageHeight - tileSpacing * 2 - tileSpacing * (rows - 1)) / rows
-  if (!rows || !cols) return <></>
 
   const handleLayout = (event: LayoutChangeEvent) =>
     setPageHeight(event.nativeEvent.layout.height)
 
   const grid = page.grid.flat() as (BoardButton | null)[]
 
-  const addButton = (index: number) => {
-    setEditTile({ button: generateNewButton(page.id), image: undefined, index })
-    setSymbolSearchText("")
-    editSheet.current?.present()
-  }
-
-  const onButtonPress = (button: BoardButton, index: number) => {
-    if (!editMode && button.visibility && button.visibility === "Disabled") {
-      return
-    } else if (editMode) {
+  const addButton = useCallback(
+    (index: number) => {
       setEditTile({
-        button,
-        image: page.images?.find((i) => i.url === button.image),
+        button: generateNewButton(page.id),
+        image: undefined,
         index,
       })
-      setSymbolSearchText(button.label)
+      setSymbolSearchText("")
       editSheet.current?.present()
-    } else if (button.semanticAction?.intent === AACSemanticIntent.SPEAK_TEXT) {
-      if (playOnPress) speak(button.semanticAction.text ?? button.message)
-      addMessageButtonId({ id: button.id, pageId: page.id })
-      if (goHomeOnPress && homePageId) setCurrentPageId(homePageId)
-    } else if (
-      button.semanticAction?.intent === AACSemanticIntent.NAVIGATE_TO &&
-      button.semanticAction.targetId
-    ) {
-      setCurrentPageId(button.semanticAction.targetId)
-    }
-  }
+    },
+    [page.id, setSymbolSearchText],
+  )
+
+  const onButtonPress = useCallback(
+    (button: BoardButton, index: number) => {
+      if (!editMode && button.visibility && button.visibility === "Disabled") {
+        return
+      } else if (editMode) {
+        setEditTile({
+          button,
+          image: page.images?.find((i) => i.url === button.image),
+          index,
+        })
+        setSymbolSearchText(button.label)
+        editSheet.current?.present()
+      } else if (
+        button.semanticAction?.intent === AACSemanticIntent.SPEAK_TEXT
+      ) {
+        if (playOnPress) speak(button.semanticAction.text ?? button.message)
+        addMessageButtonId({ id: button.id, pageId: page.id })
+        if (goHomeOnPress && homePageId) setCurrentPageId(homePageId)
+      } else if (
+        button.semanticAction?.intent === AACSemanticIntent.NAVIGATE_TO &&
+        button.semanticAction.targetId
+      ) {
+        setCurrentPageId(button.semanticAction.targetId)
+      }
+    },
+    [
+      addMessageButtonId,
+      editMode,
+      goHomeOnPress,
+      homePageId,
+      page.id,
+      page.images,
+      playOnPress,
+      setCurrentPageId,
+      setSymbolSearchText,
+      speak,
+    ],
+  )
 
   const renderButton = useCallback<SortableGridRenderItem<BoardButton | null>>(
     ({ item, index }) => {
@@ -108,7 +130,7 @@ export default function Page({
         return <TileAdd height={rowHeight} onPress={() => addButton(index)} />
       return <View style={{ height: rowHeight }} />
     },
-    [rowHeight, onButtonPress, editMode],
+    [editMode, onButtonPress, rowHeight, addButton],
   )
 
   const handleDragEnd: SortableGridDragEndCallback<BoardButton | null> = (
@@ -129,7 +151,7 @@ export default function Page({
   const saveEditTile = () => {
     const tile = { ...editTileRef.current }
     const page = pageRef.current
-    if (!tile || tile.index === undefined) return undefined
+    if (!tile || tile.index === undefined || !rows || !cols) return undefined
     if (tile.button && !tile.button.label) return undefined
     const { row, col } = getGridPosition(tile.index, rows, cols)
     const otherImages =
@@ -153,6 +175,7 @@ export default function Page({
     setEditTile(undefined)
   }
 
+  if (!rows || !cols) return <></>
   return (
     <>
       <View

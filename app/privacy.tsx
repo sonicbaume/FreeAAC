@@ -42,9 +42,9 @@ export default function Privacy() {
       <View style={styles.contentContainer}>
         <Text style={styles.body}>Last Updated: 29th January 2026</Text>
         <Text style={styles.body}>
-          This Privacy Policy describes how Sonic Baume Ltd ("we," "us," or
-          "our") handles information in the mobile application FreeAAC (the
-          "App").
+          This Privacy Policy describes how Sonic Baume Ltd (&quot;we,&quot;
+          &quot;us,&quot; or &quot;our&quot;) handles information in the mobile
+          application FreeAAC (the &quot;App&quot;).
         </Text>
         <Text style={styles.header}>Data collection</Text>
         <Text style={styles.body}>
@@ -71,29 +71,29 @@ export default function Privacy() {
         <Text style={styles.header}>Data security</Text>
         <Text style={styles.body}>
           Since we do not collect any data, your information is as secure as
-          your device. We recommend that you keep your device's operating system
-          updated, use device-level security features such as passwords and
-          PINs, use your device's backup features to prevent data loss, and be
-          cautious about who has physical access to your device.
+          your device. We recommend that you keep your device&apos;s operating
+          system updated, use device-level security features such as passwords
+          and PINs, use your device&apos;s backup features to prevent data loss,
+          and be cautious about who has physical access to your device.
         </Text>
         <Text style={styles.header}>Data retention</Text>
         <Text style={styles.body}>
           All data created in the App remains on your device until you choose to
           delete it. You can delete individual items within the App or remove
-          all data by uninstalling the App or clearing the App's data through
-          your device settings. We recommend regularly backing up your device
-          using your device manufacturer's backup solutions to prevent
-          accidental data loss.
+          all data by uninstalling the App or clearing the App&apos;s data
+          through your device settings. We recommend regularly backing up your
+          device using your device manufacturer&apos;s backup solutions to
+          prevent accidental data loss.
         </Text>
-        <Text style={styles.header}>Children's privacy</Text>
+        <Text style={styles.header}>Children&apos;s privacy</Text>
         <Text style={styles.body}>
           We do not knowingly collect any information from children or any
           users. Since all data is stored locally on the device, parents,
           guardians, and caregivers maintain full control over any information
           created within the App. This App is designed to be used by individuals
           of all ages, including children. We are committed to protecting
-          children's privacy. If you are a parent or guardian and have concerns
-          about your child's use of the App, please contact us.
+          children&apos;s privacy. If you are a parent or guardian and have
+          concerns about your child&apos;s use of the App, please contact us.
         </Text>
         <Text style={styles.header}>Your rights</Text>
         <Text style={styles.body}>
@@ -114,9 +114,9 @@ export default function Privacy() {
         <Text style={styles.body}>
           We may update this Privacy Policy from time to time to reflect changes
           in our practices, legal requirements, or for other operational
-          reasons. Any changes will be posted on this page with an updated "Last
-          Updated" date. We encourage you to review this Privacy Policy
-          periodically. Your continued use of the App after any changes
+          reasons. Any changes will be posted on this page with an updated
+          &quot;Last Updated&quot; date. We encourage you to review this Privacy
+          Policy periodically. Your continued use of the App after any changes
           indicates your acceptance of the updated policy.
         </Text>
         <Text style={styles.header}>Contact us</Text>

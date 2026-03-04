@@ -16,9 +16,7 @@ export const unstable_settings = {
 }
 
 export default function RootLayout() {
-  const [assets, error] = useAssets([
-    require("../assets/images/icon-64x64.png"),
-  ])
+  const [assets] = useAssets([require("../assets/images/icon-64x64.png")])
   const queryClient = new QueryClient()
   const themeId = useColorScheme() ?? "light"
   const theme = themes[themeId]

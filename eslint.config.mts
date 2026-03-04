@@ -1,9 +1,11 @@
 import js from "@eslint/js"
-import expoConfig from "eslint-config-expo/flat"
 import eslintConfigPrettier from "eslint-config-prettier/flat"
 import { defineConfig } from "eslint/config"
 import globals from "globals"
-import tseslint from "typescript-eslint"
+import { createRequire } from "module"
+import { configs as tseslintConfigs } from "typescript-eslint"
+const require = createRequire(import.meta.url)
+const expoConfig = require("eslint-config-expo/flat")
 
 export default defineConfig([
   expoConfig,
@@ -14,6 +16,14 @@ export default defineConfig([
     languageOptions: { globals: globals.browser },
     ignores: ["dist/*"],
   },
-  tseslint.configs.recommended,
+  tseslintConfigs.recommended,
   eslintConfigPrettier,
+  {
+    settings: {
+      react: { version: "19" }, // Avoids auto-detection crash
+    },
+  },
+  {
+    ignores: ["node_modules/*", "dist/*", "android/*", "ios/*"],
+  },
 ])

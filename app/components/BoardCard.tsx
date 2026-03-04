@@ -12,7 +12,7 @@ import { Button, Text } from "./Styled"
 
 export default function BoardCard({ board }: { board: BoardTemplate }) {
   const theme = useTheme()
-  const [assets, error] = useAssets([licenseImageMap.light[board.license]])
+  const [assets] = useAssets([licenseImageMap.light[board.license]])
   const sizeMB = Math.max(board.size / 1024 / 1024, 1).toFixed(0)
   const [isLoading, startLoading] = useTransition()
   const { replace } = useRouter()

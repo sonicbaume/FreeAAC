@@ -69,7 +69,7 @@ export default function Board() {
         handleError(e)
       }
     })()
-  }, [uri])
+  }, [uri, currentPageId, setCurrentPageId])
 
   const page = useMemo(() => {
     if (!tree || !currentPageId) return
@@ -145,7 +145,8 @@ export default function Board() {
   )
 
   const debounce = useCallback(
-    (action: () => any) => handleDebounce(action, debounceTime, lastTimeRef),
+    (action: () => unknown) =>
+      handleDebounce(action, debounceTime, lastTimeRef),
     [debounceTime],
   )
 

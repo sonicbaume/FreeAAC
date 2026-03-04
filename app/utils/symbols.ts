@@ -1,12 +1,11 @@
 import { nanoid } from "nanoid/non-secure"
 import { TileImage } from "./types"
 
-const symbolApis = ["global"] as const
 const symbolApiUrls: Record<SymbolApi, string> = {
   global: "https://globalsymbols.com/api/v1/labels/search",
 }
 
-type SymbolApi = (typeof symbolApis)[number]
+type SymbolApi = "global"
 type GlobalSymbolsResponse = {
   id: number
   text: string

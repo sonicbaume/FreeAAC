@@ -44,8 +44,6 @@ const fileAdapter = {
       return new TextDecoder(encoding).decode(data)
     } else if (typeof Buffer !== "undefined" && Buffer.isBuffer(input)) {
       return input.toString(encoding)
-    } else if (typeof Buffer !== "undefined" && Buffer.isBuffer(input)) {
-      return input.toString("utf8")
     } else {
       return new TextDecoder(encoding).decode(input)
     }
@@ -124,7 +122,7 @@ export const selectImage = async (
     base64: true,
     exif: false,
   }
-  let result = takePhoto
+  const result = takePhoto
     ? await launchCameraAsync(settings)
     : await launchImageLibraryAsync(settings)
   const file = result.assets?.at(0)
