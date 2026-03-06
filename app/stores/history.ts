@@ -7,11 +7,13 @@ import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 import { zustandStorage } from "./middleware"
 
+type LogEvent = Omit<HistoryOccurrence, "timestamp">
+
 interface HistoryState {
   entries: HistoryEntry[]
   shouldLog: boolean
   actions: {
-    logEvent(content: string, occurance: HistoryOccurrence): void
+    logEvent(content: string, occurance: LogEvent): void
     toggleShouldLog(): void
     deleteLogs(): void
   }
@@ -32,15 +34,19 @@ const useStore = create<HistoryState>()(
       entries: [],
       shouldLog: false,
       actions: {
-        logEvent: (content: string, occurance: HistoryOccurrence) => {
+        logEvent: (content: string, occurance: LogEvent) => {
           const { entries, shouldLog } = get()
           if (!shouldLog) return
           const entry =
             entries.find((e) => e.content === content) ?? generateEntry(content)
-          entry.occurrences.push(occurance)
+          entry.occurrences.push({
+            ...occurance,
+            timestamp: new Date(),
+          })
           set({
             entries: [...entries.filter((e) => e.content !== content), entry],
           })
+          console.log("Added log entry", entry)
         },
         toggleShouldLog: () => {
           set({ shouldLog: !get().shouldLog })

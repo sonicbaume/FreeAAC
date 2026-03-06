@@ -8,7 +8,13 @@ import Sortable, {
 } from "react-native-sortables"
 import { EditTile } from "../[board]"
 import { useSpeak } from "../stores/audio"
-import { useEditMode, usePagesetActions } from "../stores/boards"
+import {
+  useCurrentBoardId,
+  useCurrentPageId,
+  useEditMode,
+  usePagesetActions,
+} from "../stores/boards"
+import { useHistoryActions } from "../stores/history"
 import {
   useGoHomeOnPress,
   usePlayOnPress,
@@ -49,9 +55,12 @@ export default function Page({
   const playOnPress = usePlayOnPress()
   const goHomeOnPress = useGoHomeOnPress()
   const tileSpacing = useTileSpacing()
+  const currentPageId = useCurrentPageId()
+  const currentBoardId = useCurrentBoardId()
   const speak = useSpeak()
   const { navigateToPage, addMessageButtonId, setSymbolSearchText } =
     usePagesetActions()
+  const { logEvent } = useHistoryActions()
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
   const rowHeight =
@@ -75,6 +84,22 @@ export default function Page({
     [page.id, setSymbolSearchText],
   )
 
+  const logButtonPress = useCallback(
+    (button: BoardButton, spoken: boolean) => {
+      logEvent(button.message, {
+        type: "utterance",
+        vocalization: button.semanticAction?.text,
+        intent: button.semanticAction?.intent,
+        category: button.semanticAction?.category,
+        buttonId: button.id,
+        boardId: currentBoardId,
+        pageId: currentPageId,
+        spoken,
+      })
+    },
+    [currentBoardId, currentPageId, logEvent],
+  )
+
   const onButtonPress = useCallback(
     (button: BoardButton, index: number) => {
       if (!editMode && button.visibility && button.visibility === "Disabled") {
@@ -93,24 +118,27 @@ export default function Page({
         if (playOnPress) speak(button.semanticAction.text ?? button.message)
         addMessageButtonId({ id: button.id, pageId: page.id })
         if (goHomeOnPress && homePageId) navigateToPage(homePageId)
+        logButtonPress(button, playOnPress)
       } else if (
         button.semanticAction?.intent === AACSemanticIntent.NAVIGATE_TO &&
         button.semanticAction.targetId
       ) {
         navigateToPage(button.semanticAction.targetId)
+        logButtonPress(button, false)
       }
     },
     [
-      addMessageButtonId,
       editMode,
+      page.images,
+      page.id,
+      setSymbolSearchText,
+      playOnPress,
+      speak,
+      addMessageButtonId,
       goHomeOnPress,
       homePageId,
-      page.id,
-      page.images,
-      playOnPress,
       navigateToPage,
-      setSymbolSearchText,
-      speak,
+      logButtonPress,
     ],
   )
 
