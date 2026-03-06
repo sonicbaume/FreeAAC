@@ -1,0 +1,55 @@
+import {
+  HistoryEntry,
+  HistoryOccurrence,
+} from "@willwade/aac-processors/analytics"
+import { nanoid } from "nanoid/non-secure"
+import { create } from "zustand"
+import { createJSONStorage, persist } from "zustand/middleware"
+import { zustandStorage } from "./middleware"
+
+interface HistoryState {
+  entries: HistoryEntry[]
+  actions: {
+    addOccurance(content: string, occurance: HistoryOccurrence): void
+  }
+}
+
+const generateEntry = (content: string): HistoryEntry => {
+  return {
+    id: nanoid(),
+    content,
+    occurrences: [],
+    source: "OBL",
+  }
+}
+
+const useStore = create<HistoryState>()(
+  persist(
+    (set, get) => ({
+      entries: [],
+      actions: {
+        addOccurance: (content: string, occurance: HistoryOccurrence) => {
+          const entries = get().entries
+          const entry =
+            entries.find((e) => e.content === content) ?? generateEntry(content)
+          entry.occurrences.push(occurance)
+          set({
+            entries: [...entries.filter((e) => e.content !== content), entry],
+          })
+        },
+      },
+    }),
+    {
+      name: "history",
+      storage: createJSONStorage(() => zustandStorage),
+      partialize: (state) =>
+        Object.fromEntries(
+          Object.entries(state).filter(([key]) => !["actions"].includes(key)),
+        ),
+    },
+  ),
+)
+
+export const useHistoryEntries = () => useStore((s) => s.entries)
+
+export const useHistoryActions = () => useStore((s) => s.actions)
