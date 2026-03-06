@@ -314,3 +314,11 @@ export const debounceValues = [
   { value: "1.00", label: "1 second" },
   { value: "2.00", label: "2 seconds" },
 ]
+
+export const defaultBackButton = "home"
+export type BackButton = "home" | "back" | "both"
+export const backButtonValues: { value: BackButton; label: string }[] = [
+  { value: "home", label: "Home" },
+  { value: "back", label: "Back" },
+  { value: "both", label: "Home and back" },
+]

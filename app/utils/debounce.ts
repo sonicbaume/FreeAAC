@@ -14,7 +14,7 @@ export const handleDebounce = (
   }
 }
 
-export const DebounceContext = createContext((action: unknown) => {
+export const DebounceContext = createContext((action: () => unknown) => {
   console.log("Debounce context not initialised")
 })
 

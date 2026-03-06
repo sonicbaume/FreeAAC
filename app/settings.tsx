@@ -9,6 +9,7 @@ import {
   Hand,
   Info,
   Lightbulb,
+  LucideIcon,
   Monitor,
   Shield,
   Speech,
@@ -28,6 +29,7 @@ import {
   buttonViewOptions,
   SpeechEngine,
   speechEngines,
+  useBackButton,
   useButtonView,
   useClearMessageOnPlay,
   useDebounceTime,
@@ -42,6 +44,8 @@ import {
   useTileSpacing,
 } from "./stores/prefs"
 import {
+  BackButton,
+  backButtonValues,
   debounceValues,
   korokoVoices,
   speechPitchValues,
@@ -112,6 +116,7 @@ export default function Settings() {
   const showBackspace = useShowBackspace()
   const tileSpacing = useTileSpacing()
   const debounceTime = useDebounceTime()
+  const backButton = useBackButton()
   const locales = useLocales()
   const {
     togglePlayOnPress,
@@ -125,6 +130,7 @@ export default function Settings() {
     toggleShowBackspace,
     setTileSpacing,
     setDebounceTime,
+    setBackButton,
   } = usePrefsActions()
   const [voices, setVoices] = useState<
     { value: string; label: string; langTag: string }[]
@@ -286,6 +292,14 @@ export default function Settings() {
           value={tileSpacing.toFixed(0)}
           setValue={(value) => value && setTileSpacing(parseInt(value))}
         />
+        <SettingsItem
+          title="Backwards navigation"
+          description="Which buttons to show"
+          type="select"
+          items={backButtonValues}
+          value={backButton}
+          setValue={(value) => setBackButton(value as BackButton)}
+        />
         <SettingsHeader title="Interaction" icon={Hand} />
         <SettingsItem
           title="Clear message on play"
@@ -330,7 +344,7 @@ export default function Settings() {
           <LinkButton
             href="https://github.com/sonicbaume/FreeAAC"
             title="Visit project page"
-            icon={GithubIcon}
+            icon={GithubIcon as LucideIcon}
           />
           <LinkButton
             href="https://github.com/sonicbaume/FreeAAC/issues/new?type=bug"

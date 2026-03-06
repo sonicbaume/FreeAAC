@@ -50,7 +50,7 @@ export default function Page({
   const goHomeOnPress = useGoHomeOnPress()
   const tileSpacing = useTileSpacing()
   const speak = useSpeak()
-  const { setCurrentPageId, addMessageButtonId, setSymbolSearchText } =
+  const { navigateToPage, addMessageButtonId, setSymbolSearchText } =
     usePagesetActions()
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
@@ -92,12 +92,12 @@ export default function Page({
       ) {
         if (playOnPress) speak(button.semanticAction.text ?? button.message)
         addMessageButtonId({ id: button.id, pageId: page.id })
-        if (goHomeOnPress && homePageId) setCurrentPageId(homePageId)
+        if (goHomeOnPress && homePageId) navigateToPage(homePageId)
       } else if (
         button.semanticAction?.intent === AACSemanticIntent.NAVIGATE_TO &&
         button.semanticAction.targetId
       ) {
-        setCurrentPageId(button.semanticAction.targetId)
+        navigateToPage(button.semanticAction.targetId)
       }
     },
     [
@@ -108,7 +108,7 @@ export default function Page({
       page.id,
       page.images,
       playOnPress,
-      setCurrentPageId,
+      navigateToPage,
       setSymbolSearchText,
       speak,
     ],
