@@ -1,4 +1,3 @@
-import { HistoryEntry } from "@willwade/aac-processors/analytics"
 import { AACSemanticIntent } from "@willwade/aac-processors/browser"
 import { nanoid } from "nanoid/non-secure"
 import { BoardButton, BoardPage, BoardTree } from "./types"
@@ -57,8 +56,4 @@ export const generateNewBoard = (rows: number, cols: number): BoardTree => {
     toolbarId: null,
     dashboardId: page.id,
   }
-}
-
-export const exportLogs = (entries: HistoryEntry[]) => {
-  console.log(entries)
 }

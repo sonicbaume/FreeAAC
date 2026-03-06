@@ -50,7 +50,6 @@ import {
   useSpeechOptions,
   useTileSpacing,
 } from "./stores/prefs"
-import { exportLogs } from "./utils/boards"
 import {
   BackButton,
   backButtonValues,
@@ -61,6 +60,7 @@ import {
   tileSpacingValues,
 } from "./utils/consts"
 import { handleError } from "./utils/error"
+import { exportLogs } from "./utils/file"
 import {
   FONT_SIZE,
   GAP,
@@ -78,11 +78,9 @@ export const getVoiceOptions = async (
   deviceLangCodes: string[],
 ) => {
   const allVoices =
-    engine === "device"
-      ? await getAvailableVoicesAsync()
-      : engine === "kokoro"
-        ? korokoVoices
-        : []
+    engine === "device" ? await getAvailableVoicesAsync()
+    : engine === "kokoro" ? korokoVoices
+    : []
   const allVoiceLangCodes = [
     ...new Set(allVoices.map((l) => tagToCode(l.language))),
   ]

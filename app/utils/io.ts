@@ -108,10 +108,15 @@ export const downloadFile = async (
   return { id, fileName }
 }
 
-export const saveAs = async (uri: string, name: string) => {
+export const saveAs = async (uri: string | Blob, name: string) => {
   const opfsRoot = await navigator.storage.getDirectory()
-  const opfsFileHandle = await opfsRoot.getFileHandle(uri)
-  const file = await opfsFileHandle.getFile()
+  let file
+  if (typeof uri === "string") {
+    const opfsFileHandle = await opfsRoot.getFileHandle(uri)
+    file = await opfsFileHandle.getFile()
+  } else {
+    file = uri
+  }
 
   if ("showSaveFilePicker" in window) {
     //@ts-expect-error Only supported in Chrome
@@ -124,6 +129,5 @@ export const saveAs = async (uri: string, name: string) => {
     a.href = url
     a.download = name
     a.click()
-    // URL.revokeObjectURL(url)
   }
 }
