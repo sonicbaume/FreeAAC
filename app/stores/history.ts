@@ -9,8 +9,10 @@ import { zustandStorage } from "./middleware"
 
 interface HistoryState {
   entries: HistoryEntry[]
+  shouldLog: boolean
   actions: {
-    addOccurance(content: string, occurance: HistoryOccurrence): void
+    logEvent(content: string, occurance: HistoryOccurrence): void
+    toggleShouldLog(): void
   }
 }
 
@@ -27,8 +29,9 @@ const useStore = create<HistoryState>()(
   persist(
     (set, get) => ({
       entries: [],
+      shouldLog: false,
       actions: {
-        addOccurance: (content: string, occurance: HistoryOccurrence) => {
+        logEvent: (content: string, occurance: HistoryOccurrence) => {
           const entries = get().entries
           const entry =
             entries.find((e) => e.content === content) ?? generateEntry(content)
@@ -36,6 +39,9 @@ const useStore = create<HistoryState>()(
           set({
             entries: [...entries.filter((e) => e.content !== content), entry],
           })
+        },
+        toggleShouldLog: () => {
+          set({ shouldLog: !get().shouldLog })
         },
       },
     }),
