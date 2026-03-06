@@ -8,7 +8,7 @@ import Page from "../components/Page"
 import {
   useBoards,
   useCurrentPageId,
-  usePagesetActions,
+  usePagesetActions
 } from "../stores/boards"
 import { useDebounceTime, useMessageWindowLocation } from "../stores/prefs"
 import { getHomePageId } from "../utils/boards"
@@ -48,7 +48,7 @@ export default function Board() {
   const uri = boards.find((b) => b.id === board)?.uri
   const messageWindowLocation = useMessageWindowLocation()
   const currentPageId = useCurrentPageId()
-  const { setCurrentPageId } = usePagesetActions()
+  const { navigateToPage, navigateBack } = usePagesetActions()
   const [tree, setTree] = useState<BoardTree>()
 
   useEffect(() => {
@@ -62,14 +62,14 @@ export default function Board() {
         setTree(tree)
         if (!currentPageId || !(currentPageId in tree.pages)) {
           const homePageId = getHomePageId(tree)
-          setCurrentPageId(homePageId)
+          navigateToPage(homePageId)
         }
         prefetchImages(tree)
       } catch (e) {
         handleError(e)
       }
     })()
-  }, [uri, currentPageId, setCurrentPageId])
+  }, [uri, currentPageId, navigateToPage])
 
   const page = useMemo(() => {
     if (!tree || !currentPageId) return
@@ -109,7 +109,7 @@ export default function Board() {
     }
   }, [tree])
 
-  const handleNavigateHome = () => homePageId && setCurrentPageId(homePageId)
+  const navigateHome = () => homePageId && navigateToPage(homePageId)
 
   const buttons = useMemo(() => {
     if (!tree) return []
@@ -136,7 +136,8 @@ export default function Board() {
 
   const messageWindow = (
     <MessageWindow
-      navigateHome={handleNavigateHome}
+      navigateHome={navigateHome}
+      navigateBack={navigateBack}
       buttons={buttons}
       isHome={homePageId === page?.id}
       pageTitle={page?.name}
