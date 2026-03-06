@@ -26,7 +26,11 @@ import PreviewButton from "./components/Settings/PreviewButton"
 import TtsStatus from "./components/Settings/TtsStatus"
 import { Text } from "./components/Styled"
 import { useSpeak } from "./stores/audio"
-import { useHistoryActions, useShouldLog } from "./stores/history"
+import {
+  useHistoryActions,
+  useHistoryEntries,
+  useShouldLog,
+} from "./stores/history"
 import {
   ButtonViewOption,
   buttonViewOptions,
@@ -124,6 +128,7 @@ export default function Settings() {
   const backButton = useBackButton()
   const locales = useLocales()
   const shouldLog = useShouldLog()
+  const logHistory = useHistoryEntries()
   const {
     togglePlayOnPress,
     setMessageWindowLocation,
@@ -346,7 +351,7 @@ export default function Settings() {
             description="Download logs as an OBF file"
             type="button"
             label="Export logs"
-            onPress={exportLogs}
+            onPress={() => exportLogs(logHistory)}
           />
           <SettingsItem
             title="Delete logs"

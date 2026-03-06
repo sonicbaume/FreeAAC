@@ -86,11 +86,15 @@ export default function Page({
 
   const logButtonPress = useCallback(
     (button: BoardButton, spoken: boolean) => {
+      if (!button.semanticAction)
+        return console.error("Button is missing semanticAction")
+      const type =
+        button.semanticAction.intent === "SPEAK_TEXT" ? "utterance" : "action"
       logEvent(button.message, {
-        type: "utterance",
-        vocalization: button.semanticAction?.text,
-        intent: button.semanticAction?.intent,
-        category: button.semanticAction?.category,
+        type,
+        vocalization: button.semanticAction.text,
+        intent: button.semanticAction.intent,
+        category: button.semanticAction.category,
         buttonId: button.id,
         boardId: currentBoardId,
         pageId: currentPageId,

@@ -1,4 +1,8 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
+import {
+  AACSemanticCategory,
+  AACSemanticIntent,
+} from "@willwade/aac-processors/browser"
 import * as Clipboard from "expo-clipboard"
 import { useRouter } from "expo-router"
 import {
@@ -11,15 +15,18 @@ import {
   Layers,
   X,
 } from "lucide-react-native"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { Platform, ScrollView, View } from "react-native"
 import { useSpeak } from "../stores/audio"
 import {
+  useCurrentBoardId,
+  useCurrentPageId,
   useCustomMessages,
   useEditMode,
   useMessageButtonsIds,
   usePagesetActions,
 } from "../stores/boards"
+import { useHistoryActions } from "../stores/history"
 import {
   useBackButton,
   useButtonView,
@@ -65,8 +72,11 @@ export default function MessageWindow({
   const editMode = useEditMode()
   const customMessages = useCustomMessages()
   const backButton = useBackButton()
+  const currentPageId = useCurrentPageId()
+  const currentBoardId = useCurrentBoardId()
   const { removeLastMessageButtonId, clearMessageButtonIds, toggleEditMode } =
     usePagesetActions()
+  const { logEvent } = useHistoryActions()
   const speak = useSpeak()
   const { replace } = useRouter()
 
@@ -90,6 +100,7 @@ export default function MessageWindow({
   const copyMessage = async () => {
     const success = await Clipboard.setStringAsync(message)
     if (success) setCopied(true)
+    logButtonPress("copy")
   }
   useEffect(() => setCopied(false), [message])
 
@@ -106,6 +117,26 @@ export default function MessageWindow({
     clearMessageButtonIds()
     replace("/")
   }
+
+  const logButtonPress = useCallback(
+    (type: "home" | "back" | "backspace" | "clear" | "copy") => {
+      const intent =
+        type === "home" ? AACSemanticIntent.GO_HOME
+        : type === "back" ? AACSemanticIntent.GO_BACK
+        : type === "backspace" ? AACSemanticIntent.DELETE_WORD
+        : type === "clear" ? AACSemanticIntent.CLEAR_TEXT
+        : type === "copy" ? AACSemanticIntent.COPY_TEXT
+        : undefined
+      logEvent(`:${type}`, {
+        type: "action",
+        intent,
+        category: AACSemanticCategory.COMMUNICATION,
+        boardId: currentBoardId,
+        pageId: currentPageId,
+      })
+    },
+    [currentBoardId, currentPageId, logEvent],
+  )
 
   return (
     <>
@@ -131,12 +162,24 @@ export default function MessageWindow({
               </Button>
             )}
             {!isHome && (backButton === "home" || backButton === "both") && (
-              <Button variant="ghost" onPress={navigateHome}>
+              <Button
+                variant="ghost"
+                onPress={() => {
+                  navigateHome()
+                  logButtonPress("home")
+                }}
+              >
                 <Home size={ICON_SIZE.xl} color={theme.onSurface} />
               </Button>
             )}
             {!isHome && (backButton === "back" || backButton === "both") && (
-              <Button variant="ghost" onPress={navigateBack}>
+              <Button
+                variant="ghost"
+                onPress={() => {
+                  navigateBack()
+                  logButtonPress("back")
+                }}
+              >
                 <ArrowLeft size={ICON_SIZE.xl} color={theme.onSurface} />
               </Button>
             )}
@@ -193,22 +236,32 @@ export default function MessageWindow({
                 <>
                   {showShareButton && (
                     <Button variant="ghost" onPress={copyMessage}>
-                      {copied ? (
+                      {copied ?
                         <CopyCheck
                           size={ICON_SIZE.xl}
                           color={theme.onSurface}
                         />
-                      ) : (
-                        <Copy size={ICON_SIZE.xl} color={theme.onSurface} />
-                      )}
+                      : <Copy size={ICON_SIZE.xl} color={theme.onSurface} />}
                     </Button>
                   )}
                   {showBackspace && (
-                    <Button variant="ghost" onPress={removeLastMessageButtonId}>
+                    <Button
+                      variant="ghost"
+                      onPress={() => {
+                        removeLastMessageButtonId()
+                        logButtonPress("backspace")
+                      }}
+                    >
                       <Delete size={ICON_SIZE.xl} color={theme.onSurface} />
                     </Button>
                   )}
-                  <Button variant="ghost" onPress={clearMessageButtonIds}>
+                  <Button
+                    variant="ghost"
+                    onPress={() => {
+                      clearMessageButtonIds()
+                      logButtonPress("clear")
+                    }}
+                  >
                     <X size={ICON_SIZE.xl} color={theme.onSurface} />
                   </Button>
                 </>
