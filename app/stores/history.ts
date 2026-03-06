@@ -7,7 +7,7 @@ import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
 import { zustandStorage } from "./middleware"
 
-type LogEvent = Omit<HistoryOccurrence, "timestamp">
+export type LogEvent = Omit<HistoryOccurrence, "timestamp">
 
 interface HistoryState {
   entries: HistoryEntry[]

@@ -339,14 +339,14 @@ export default function Settings() {
           <SettingsHeader title="Logging" icon={List} />
           <SettingsItem
             title="Log events"
-            description="Record a history of events"
+            description="Record a history of interactions"
             type="toggle"
             value={shouldLog}
             setValue={toggleShouldLog}
           />
           <SettingsItem
             title="Export logs"
-            description="Download logs as an OBF file"
+            description="Download logs as an OBL file"
             type="button"
             label="Export logs"
             onPress={() => exportLogs(logHistory)}

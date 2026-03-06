@@ -26,7 +26,7 @@ import {
   useMessageButtonsIds,
   usePagesetActions,
 } from "../stores/boards"
-import { useHistoryActions } from "../stores/history"
+import { LogEvent, useHistoryActions } from "../stores/history"
 import {
   useBackButton,
   useButtonView,
@@ -105,13 +105,14 @@ export default function MessageWindow({
   useEffect(() => setCopied(false), [message])
 
   const playMessage = () =>
-    debounce(() =>
+    debounce(() => {
       speak(message, {
         onDone: () => {
           if (clearMessageOnPlay) clearMessageButtonIds()
         },
-      }),
-    )
+      })
+      logButtonPress("speak")
+    })
 
   const navigateMenu = () => {
     clearMessageButtonIds()
@@ -119,23 +120,41 @@ export default function MessageWindow({
   }
 
   const logButtonPress = useCallback(
-    (type: "home" | "back" | "backspace" | "clear" | "copy") => {
+    (type: "home" | "back" | "backspace" | "clear" | "copy" | "speak") => {
       const intent =
         type === "home" ? AACSemanticIntent.GO_HOME
         : type === "back" ? AACSemanticIntent.GO_BACK
         : type === "backspace" ? AACSemanticIntent.DELETE_WORD
         : type === "clear" ? AACSemanticIntent.CLEAR_TEXT
         : type === "copy" ? AACSemanticIntent.COPY_TEXT
+        : type === "speak" ? AACSemanticIntent.SPEAK_TEXT
         : undefined
-      logEvent(`:${type}`, {
+      const category =
+        type === "home" ? AACSemanticCategory.NAVIGATION
+        : type === "back" ? AACSemanticCategory.NAVIGATION
+        : type === "backspace" ? AACSemanticCategory.TEXT_EDITING
+        : type === "clear" ? AACSemanticCategory.TEXT_EDITING
+        : type === "copy" ? AACSemanticCategory.TEXT_EDITING
+        : type === "speak" ? AACSemanticCategory.COMMUNICATION
+        : undefined
+      let event: LogEvent = {
         type: "action",
         intent,
-        category: AACSemanticCategory.COMMUNICATION,
+        category,
         boardId: currentBoardId,
         pageId: currentPageId,
-      })
+      }
+      if (type === "speak") {
+        event = {
+          ...event,
+          type: "utterance",
+          vocalization: message,
+          spoken: true,
+        }
+      }
+      logEvent(`:${type}`, event)
     },
-    [currentBoardId, currentPageId, logEvent],
+    [currentBoardId, currentPageId, logEvent, message],
   )
 
   return (

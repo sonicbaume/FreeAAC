@@ -89,7 +89,7 @@ export default function Page({
       if (!button.semanticAction)
         return console.error("Button is missing semanticAction")
       const type =
-        button.semanticAction.intent === "SPEAK_TEXT" ? "utterance" : "action"
+        button.semanticAction.intent === "SPEAK_TEXT" ? "button" : "action"
       logEvent(button.message, {
         type,
         vocalization: button.semanticAction.text,
@@ -99,6 +99,7 @@ export default function Page({
         boardId: currentBoardId,
         pageId: currentPageId,
         spoken,
+        imageUrl: button.image?.startsWith("http") ? button.image : undefined,
       })
     },
     [currentBoardId, currentPageId, logEvent],
