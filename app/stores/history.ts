@@ -13,6 +13,7 @@ interface HistoryState {
   actions: {
     logEvent(content: string, occurance: HistoryOccurrence): void
     toggleShouldLog(): void
+    deleteLogs(): void
   }
 }
 
@@ -44,6 +45,9 @@ const useStore = create<HistoryState>()(
         toggleShouldLog: () => {
           set({ shouldLog: !get().shouldLog })
         },
+        deleteLogs: () => {
+          set({ entries: [] })
+        },
       },
     }),
     {
@@ -58,5 +62,6 @@ const useStore = create<HistoryState>()(
 )
 
 export const useHistoryEntries = () => useStore((s) => s.entries)
+export const useShouldLog = () => useStore((s) => s.shouldLog)
 
 export const useHistoryActions = () => useStore((s) => s.actions)

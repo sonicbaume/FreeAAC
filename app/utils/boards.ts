@@ -57,3 +57,7 @@ export const generateNewBoard = (rows: number, cols: number): BoardTree => {
     dashboardId: page.id,
   }
 }
+
+export const exportLogs = () => {
+  throw new Error("Not yet implemented")
+}
