@@ -32,7 +32,8 @@ const useStore = create<HistoryState>()(
       shouldLog: false,
       actions: {
         logEvent: (content: string, occurance: HistoryOccurrence) => {
-          const entries = get().entries
+          const { entries, shouldLog } = get()
+          if (!shouldLog) return
           const entry =
             entries.find((e) => e.content === content) ?? generateEntry(content)
           entry.occurrences.push(occurance)
