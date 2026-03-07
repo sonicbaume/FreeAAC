@@ -3,6 +3,7 @@ import { useRouter } from "expo-router"
 import { speak } from "expo-speech"
 import {
   Copy,
+  Forward,
   Fullscreen,
   Keyboard,
   Pencil,
@@ -20,9 +21,11 @@ import SheetItem from "./SheetItem"
 export default function PageOptions({
   ref,
   copyMessage,
+  openPageNav,
 }: {
   ref: React.RefObject<TrueSheet | null>
   copyMessage?: () => void
+  openPageNav: () => void
 }) {
   const theme = useTheme()
   const [showCustomWordDialog, setShowCustomWordDialog] = useState(false)
@@ -85,11 +88,11 @@ export default function PageOptions({
           />
         )}
         <SheetItem
-          label="Settings"
-          icon={<Settings size={ICON_SIZE.lg} color={theme.onSurface} />}
+          label="Jump to page"
+          icon={<Forward size={ICON_SIZE.lg} color={theme.onSurface} />}
           onPress={() => {
+            openPageNav()
             ref.current?.dismiss()
-            push("/settings")
           }}
         />
         {Platform.OS === "web" && (
@@ -105,6 +108,14 @@ export default function PageOptions({
           onPress={() => {
             toggleEditMode()
             ref.current?.dismiss()
+          }}
+        />
+        <SheetItem
+          label="Settings"
+          icon={<Settings size={ICON_SIZE.lg} color={theme.onSurface} />}
+          onPress={() => {
+            ref.current?.dismiss()
+            push("/settings")
           }}
         />
       </TrueSheet>
