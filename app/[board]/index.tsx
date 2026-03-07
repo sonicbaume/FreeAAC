@@ -1,3 +1,4 @@
+import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import { Image } from "expo-image"
 import { Stack, useLocalSearchParams } from "expo-router"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
@@ -5,6 +6,7 @@ import { ActivityIndicator, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import MessageWindow from "../components/MessageWindow"
 import Page from "../components/Page"
+import PageNav from "../components/PageNav"
 import {
   useBoards,
   useCurrentPageId,
@@ -51,6 +53,7 @@ export default function Board() {
   const { navigateToPage, navigateBack, setCurrentBoardId } =
     usePagesetActions()
   const [tree, setTree] = useState<BoardTree>()
+  const pageNavSheet = useRef<TrueSheet>(null)
 
   useEffect(
     () => setCurrentBoardId(board as string),
@@ -148,6 +151,7 @@ export default function Board() {
       isHome={homePageId === page?.id}
       pageTitle={page?.name}
       setPageTitle={(name) => page && name && savePage({ ...page, name })}
+      openPageNav={() => pageNavSheet.current?.present()}
     />
   )
 
@@ -156,6 +160,14 @@ export default function Board() {
       handleDebounce(action, debounceTime, lastTimeRef),
     [debounceTime],
   )
+
+  const pages = useMemo(() => {
+    if (!tree) return []
+    return Object.entries(tree.pages).map(([id, page]) => ({
+      id,
+      name: page.name,
+    }))
+  }, [tree])
 
   return (
     <DebounceContext value={debounce}>
@@ -181,6 +193,7 @@ export default function Board() {
         </View>
         {messageWindowLocation === "bottom" && messageWindow}
       </SafeAreaView>
+      <PageNav ref={pageNavSheet} pages={pages} />
     </DebounceContext>
   )
 }

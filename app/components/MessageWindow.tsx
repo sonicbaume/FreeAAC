@@ -9,6 +9,7 @@ import {
   EllipsisVertical,
   Home,
   Layers,
+  LibraryBig,
   X,
 } from "lucide-react-native"
 import { useEffect, useRef, useState } from "react"
@@ -43,6 +44,7 @@ export default function MessageWindow({
   isHome,
   pageTitle,
   setPageTitle,
+  openPageNav,
 }: {
   navigateHome: () => void
   navigateBack: () => void
@@ -50,6 +52,7 @@ export default function MessageWindow({
   isHome: boolean
   pageTitle?: string
   setPageTitle: (title: string | undefined) => void
+  openPageNav: () => void
 }) {
   const theme = useTheme()
   const debounce = useDebounce()
@@ -123,43 +126,50 @@ export default function MessageWindow({
           backgroundColor: theme.surfaceContainer,
         }}
       >
-        {!editMode && (
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              padding: PADDING.lg,
-            }}
-          >
-            {isHome && (
-              <Button variant="ghost" onPress={navigateMenu}>
-                <Layers size={ICON_SIZE.xl} color={theme.onSurface} />
-              </Button>
-            )}
-            {!isHome && (backButton === "home" || backButton === "both") && (
-              <Button
-                variant="ghost"
-                onPress={() => {
-                  navigateHome()
-                  logEvent({ type: "home" })
-                }}
-              >
-                <Home size={ICON_SIZE.xl} color={theme.onSurface} />
-              </Button>
-            )}
-            {!isHome && (backButton === "back" || backButton === "both") && (
-              <Button
-                variant="ghost"
-                onPress={() => {
-                  navigateBack()
-                  logEvent({ type: "back" })
-                }}
-              >
-                <ArrowLeft size={ICON_SIZE.xl} color={theme.onSurface} />
-              </Button>
-            )}
-          </View>
-        )}
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            padding: PADDING.lg,
+          }}
+        >
+          {editMode && (
+            <Button variant="ghost" onPress={openPageNav}>
+              <Layers size={ICON_SIZE.xl} color={theme.onSurface} />
+            </Button>
+          )}
+          {!editMode && (
+            <>
+              {isHome && (
+                <Button variant="ghost" onPress={navigateMenu}>
+                  <LibraryBig size={ICON_SIZE.xl} color={theme.onSurface} />
+                </Button>
+              )}
+              {!isHome && (backButton === "home" || backButton === "both") && (
+                <Button
+                  variant="ghost"
+                  onPress={() => {
+                    navigateHome()
+                    logEvent({ type: "home" })
+                  }}
+                >
+                  <Home size={ICON_SIZE.xl} color={theme.onSurface} />
+                </Button>
+              )}
+              {!isHome && (backButton === "back" || backButton === "both") && (
+                <Button
+                  variant="ghost"
+                  onPress={() => {
+                    navigateBack()
+                    logEvent({ type: "back" })
+                  }}
+                >
+                  <ArrowLeft size={ICON_SIZE.xl} color={theme.onSurface} />
+                </Button>
+              )}
+            </>
+          )}
+        </View>
         {!editMode && hasMessage && (
           <View
             style={{
@@ -266,6 +276,7 @@ export default function MessageWindow({
       <PageOptions
         ref={optionsSheet}
         copyMessage={hasMessage ? copyMessage : undefined}
+        openPageNav={openPageNav}
       />
     </>
   )
