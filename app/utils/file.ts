@@ -1,4 +1,6 @@
+import { HistoryEntry } from "@willwade/aac-processors/analytics"
 import { AACTree, getProcessor } from "@willwade/aac-processors/browser"
+import { OblUtil } from "@willwade/aac-processors/metrics"
 import * as DocumentPicker from "expo-document-picker"
 import { Paths } from "expo-file-system"
 import {
@@ -7,6 +9,7 @@ import {
   launchImageLibraryAsync,
 } from "expo-image-picker"
 import { nanoid } from "nanoid/non-secure"
+import { appName } from "./consts"
 import {
   getAssetData,
   getFileSize,
@@ -122,8 +125,9 @@ export const selectImage = async (
     base64: true,
     exif: false,
   }
-  const result = takePhoto
-    ? await launchCameraAsync(settings)
+  const result =
+    takePhoto ?
+      await launchCameraAsync(settings)
     : await launchImageLibraryAsync(settings)
   const file = result.assets?.at(0)
   if (!file) return undefined
@@ -162,4 +166,17 @@ export const deleteBoard = async (uri: string) => {
 export const exportBoard = async (uri: string, name: string) => {
   const ext = getFileExt(uri)
   await saveAs(uri, `${name}.${ext}`)
+}
+
+export const exportLogs = async (entries: HistoryEntry[]) => {
+  for (const entry of entries) {
+    for (const occurance of entry.occurrences) {
+      occurance.timestamp = new Date(occurance.timestamp)
+    }
+  }
+  const oblObject = OblUtil.fromHistoryEntries(entries, "user", appName)
+  const oblData = new Blob([JSON.stringify(oblObject)], {
+    type: "application/json",
+  })
+  await saveAs(oblData, `${appName}_logs.obl`)
 }

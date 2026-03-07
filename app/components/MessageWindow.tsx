@@ -65,8 +65,12 @@ export default function MessageWindow({
   const editMode = useEditMode()
   const customMessages = useCustomMessages()
   const backButton = useBackButton()
-  const { removeLastMessageButtonId, clearMessageButtonIds, toggleEditMode } =
-    usePagesetActions()
+  const {
+    removeLastMessageButtonId,
+    clearMessageButtonIds,
+    toggleEditMode,
+    logEvent,
+  } = usePagesetActions()
   const speak = useSpeak()
   const { replace } = useRouter()
 
@@ -90,17 +94,19 @@ export default function MessageWindow({
   const copyMessage = async () => {
     const success = await Clipboard.setStringAsync(message)
     if (success) setCopied(true)
+    logEvent({ type: "copy" })
   }
   useEffect(() => setCopied(false), [message])
 
   const playMessage = () =>
-    debounce(() =>
+    debounce(() => {
       speak(message, {
         onDone: () => {
           if (clearMessageOnPlay) clearMessageButtonIds()
         },
-      }),
-    )
+      })
+      logEvent({ type: "sentence", content: message })
+    })
 
   const navigateMenu = () => {
     clearMessageButtonIds()
@@ -131,12 +137,24 @@ export default function MessageWindow({
               </Button>
             )}
             {!isHome && (backButton === "home" || backButton === "both") && (
-              <Button variant="ghost" onPress={navigateHome}>
+              <Button
+                variant="ghost"
+                onPress={() => {
+                  navigateHome()
+                  logEvent({ type: "home" })
+                }}
+              >
                 <Home size={ICON_SIZE.xl} color={theme.onSurface} />
               </Button>
             )}
             {!isHome && (backButton === "back" || backButton === "both") && (
-              <Button variant="ghost" onPress={navigateBack}>
+              <Button
+                variant="ghost"
+                onPress={() => {
+                  navigateBack()
+                  logEvent({ type: "back" })
+                }}
+              >
                 <ArrowLeft size={ICON_SIZE.xl} color={theme.onSurface} />
               </Button>
             )}
@@ -193,22 +211,32 @@ export default function MessageWindow({
                 <>
                   {showShareButton && (
                     <Button variant="ghost" onPress={copyMessage}>
-                      {copied ? (
+                      {copied ?
                         <CopyCheck
                           size={ICON_SIZE.xl}
                           color={theme.onSurface}
                         />
-                      ) : (
-                        <Copy size={ICON_SIZE.xl} color={theme.onSurface} />
-                      )}
+                      : <Copy size={ICON_SIZE.xl} color={theme.onSurface} />}
                     </Button>
                   )}
                   {showBackspace && (
-                    <Button variant="ghost" onPress={removeLastMessageButtonId}>
+                    <Button
+                      variant="ghost"
+                      onPress={() => {
+                        removeLastMessageButtonId()
+                        logEvent({ type: "backspace" })
+                      }}
+                    >
                       <Delete size={ICON_SIZE.xl} color={theme.onSurface} />
                     </Button>
                   )}
-                  <Button variant="ghost" onPress={clearMessageButtonIds}>
+                  <Button
+                    variant="ghost"
+                    onPress={() => {
+                      clearMessageButtonIds()
+                      logEvent({ type: "clear" })
+                    }}
+                  >
                     <X size={ICON_SIZE.xl} color={theme.onSurface} />
                   </Button>
                 </>

@@ -1,5 +1,6 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import { useRouter } from "expo-router"
+import { speak } from "expo-speech"
 import {
   Copy,
   Fullscreen,
@@ -7,10 +8,11 @@ import {
   Pencil,
   Settings,
 } from "lucide-react-native"
-import { nanoid } from "nanoid/non-secure"
 import { useState } from "react"
 import { Platform } from "react-native"
 import { useCurrentPageId, usePagesetActions } from "../stores/boards"
+import { usePlayOnPress } from "../stores/prefs"
+import { generateNewButton } from "../utils/boards"
 import { ICON_SIZE, PADDING, useTheme } from "../utils/theme"
 import DialogRename from "./DialogRename"
 import SheetItem from "./SheetItem"
@@ -25,9 +27,10 @@ export default function PageOptions({
   const theme = useTheme()
   const [showCustomWordDialog, setShowCustomWordDialog] = useState(false)
   const { push } = useRouter()
-  const { toggleEditMode, addCustomMessage, addMessageButtonId } =
+  const { toggleEditMode, addCustomMessage, addMessageButtonId, logEvent } =
     usePagesetActions()
   const currentPageId = useCurrentPageId()
+  const playOnPress = usePlayOnPress()
 
   const requestFullscreen = () => {
     if (Platform.OS !== "web") return
@@ -38,9 +41,17 @@ export default function PageOptions({
 
   const addCustomWord = (word: string | undefined) => {
     if (currentPageId && word) {
-      const id = nanoid()
-      addCustomMessage(id, word)
-      addMessageButtonId({ id, pageId: currentPageId })
+      const button = generateNewButton(currentPageId)
+      button.label = word
+      button.message = word
+      addCustomMessage(button.id, button.message)
+      addMessageButtonId({ id: button.id, pageId: currentPageId })
+      if (playOnPress) speak(word)
+      logEvent({
+        type: "button",
+        button,
+        spoken: playOnPress,
+      })
     }
     setShowCustomWordDialog(false)
   }

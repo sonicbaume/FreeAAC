@@ -50,7 +50,7 @@ export default function Page({
   const goHomeOnPress = useGoHomeOnPress()
   const tileSpacing = useTileSpacing()
   const speak = useSpeak()
-  const { navigateToPage, addMessageButtonId, setSymbolSearchText } =
+  const { navigateToPage, addMessageButtonId, setSymbolSearchText, logEvent } =
     usePagesetActions()
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
@@ -75,6 +75,23 @@ export default function Page({
     [page.id, setSymbolSearchText],
   )
 
+  const logButtonPress = useCallback(
+    (button: BoardButton, spoken: boolean) => {
+      if (!button.semanticAction)
+        return console.error("Button is missing semanticAction")
+      const isLink =
+        button.semanticAction.intent === AACSemanticIntent.NAVIGATE_TO
+      logEvent({
+        type: isLink ? "navigate" : "button",
+        button,
+        spoken,
+        playOnPress,
+        goHomeOnPress: goHomeOnPress ? homePageId : undefined,
+      })
+    },
+    [goHomeOnPress, homePageId, logEvent, playOnPress],
+  )
+
   const onButtonPress = useCallback(
     (button: BoardButton, index: number) => {
       if (!editMode && button.visibility && button.visibility === "Disabled") {
@@ -93,24 +110,27 @@ export default function Page({
         if (playOnPress) speak(button.semanticAction.text ?? button.message)
         addMessageButtonId({ id: button.id, pageId: page.id })
         if (goHomeOnPress && homePageId) navigateToPage(homePageId)
+        logButtonPress(button, playOnPress)
       } else if (
         button.semanticAction?.intent === AACSemanticIntent.NAVIGATE_TO &&
         button.semanticAction.targetId
       ) {
         navigateToPage(button.semanticAction.targetId)
+        logButtonPress(button, false)
       }
     },
     [
-      addMessageButtonId,
       editMode,
+      page.images,
+      page.id,
+      setSymbolSearchText,
+      playOnPress,
+      speak,
+      addMessageButtonId,
       goHomeOnPress,
       homePageId,
-      page.id,
-      page.images,
-      playOnPress,
       navigateToPage,
-      setSymbolSearchText,
-      speak,
+      logButtonPress,
     ],
   )
 

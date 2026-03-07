@@ -8,7 +8,7 @@ import Page from "../components/Page"
 import {
   useBoards,
   useCurrentPageId,
-  usePagesetActions
+  usePagesetActions,
 } from "../stores/boards"
 import { useDebounceTime, useMessageWindowLocation } from "../stores/prefs"
 import { getHomePageId } from "../utils/boards"
@@ -48,8 +48,14 @@ export default function Board() {
   const uri = boards.find((b) => b.id === board)?.uri
   const messageWindowLocation = useMessageWindowLocation()
   const currentPageId = useCurrentPageId()
-  const { navigateToPage, navigateBack } = usePagesetActions()
+  const { navigateToPage, navigateBack, setCurrentBoardId } =
+    usePagesetActions()
   const [tree, setTree] = useState<BoardTree>()
+
+  useEffect(
+    () => setCurrentBoardId(board as string),
+    [board, setCurrentBoardId],
+  )
 
   useEffect(() => {
     ;(async () => {

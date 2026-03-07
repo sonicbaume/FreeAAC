@@ -1,4 +1,4 @@
-import { Text } from "@/app/components/Styled"
+import { Button, Text } from "@/app/components/Styled"
 import {
   FONT_SIZE,
   FONT_WEIGHT,
@@ -33,8 +33,14 @@ interface SettingsItemSelect extends SettingItemBase {
   }[]
 }
 
+interface SettingsItemButton extends SettingItemBase {
+  type: "button"
+  label: string
+  onPress: () => void
+}
+
 export default function SettingsItem(
-  props: SettingsItemToggle | SettingsItemSelect,
+  props: SettingsItemToggle | SettingsItemSelect | SettingsItemButton,
 ) {
   const theme = useTheme()
   const component =
@@ -64,6 +70,10 @@ export default function SettingsItem(
         value={props.value}
         onChange={(item) => props.setValue(item.value)}
       />
+    ) : props.type === "button" ? (
+      <Button variant="secondary" onPress={props.onPress}>
+        <Text style={{ color: theme.onSecondary }}>{props.label}</Text>
+      </Button>
     ) : null
 
   return (
