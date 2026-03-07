@@ -2,6 +2,7 @@ import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import * as Clipboard from "expo-clipboard"
 import { useRouter } from "expo-router"
 import {
+  ArrowLeft,
   Copy,
   CopyCheck,
   Delete,
@@ -20,6 +21,7 @@ import {
   usePagesetActions,
 } from "../stores/boards"
 import {
+  useBackButton,
   useButtonView,
   useClearMessageOnPlay,
   useLabelLocation,
@@ -36,12 +38,14 @@ import TileImage from "./TileImage"
 
 export default function MessageWindow({
   navigateHome,
+  navigateBack,
   buttons,
   isHome,
   pageTitle,
   setPageTitle,
 }: {
   navigateHome: () => void
+  navigateBack: () => void
   buttons: { button: BoardButton; pageId: string }[]
   isHome: boolean
   pageTitle?: string
@@ -60,6 +64,7 @@ export default function MessageWindow({
   const labelLocation = useLabelLocation()
   const editMode = useEditMode()
   const customMessages = useCustomMessages()
+  const backButton = useBackButton()
   const { removeLastMessageButtonId, clearMessageButtonIds, toggleEditMode } =
     usePagesetActions()
   const speak = useSpeak()
@@ -97,13 +102,9 @@ export default function MessageWindow({
       }),
     )
 
-  const handleHomePress = () => {
-    if (isHome) {
-      clearMessageButtonIds()
-      replace("/")
-    } else {
-      navigateHome()
-    }
+  const navigateMenu = () => {
+    clearMessageButtonIds()
+    replace("/")
   }
 
   return (
@@ -117,11 +118,28 @@ export default function MessageWindow({
         }}
       >
         {!editMode && (
-          <View style={{ padding: PADDING.lg }}>
-            <Button variant="ghost" onPress={handleHomePress}>
-              {!isHome && <Home size={ICON_SIZE.xl} color={theme.onSurface} />}
-              {isHome && <Layers size={ICON_SIZE.xl} color={theme.onSurface} />}
-            </Button>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              padding: PADDING.lg,
+            }}
+          >
+            {isHome && (
+              <Button variant="ghost" onPress={navigateMenu}>
+                <Layers size={ICON_SIZE.xl} color={theme.onSurface} />
+              </Button>
+            )}
+            {!isHome && (backButton === "home" || backButton === "both") && (
+              <Button variant="ghost" onPress={navigateHome}>
+                <Home size={ICON_SIZE.xl} color={theme.onSurface} />
+              </Button>
+            )}
+            {!isHome && (backButton === "back" || backButton === "both") && (
+              <Button variant="ghost" onPress={navigateBack}>
+                <ArrowLeft size={ICON_SIZE.xl} color={theme.onSurface} />
+              </Button>
+            )}
           </View>
         )}
         {!editMode && hasMessage && (

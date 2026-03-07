@@ -18,6 +18,7 @@ interface PagesetsState {
   boards: Board[]
   currentBoardId: string | undefined
   currentPageId: string | undefined
+  previousPageIds: string[]
   messageButtonsIds: ButtonId[]
   editMode: boolean
   editButtonId: string | undefined
@@ -26,7 +27,8 @@ interface PagesetsState {
   actions: {
     setLoaded: (loaded: boolean) => void
     setCurrentBoardId: (boardId: string | undefined) => void
-    setCurrentPageId: (pageId: string | undefined) => void
+    navigateToPage: (pageId: string) => void
+    navigateBack: () => void
     addBoard: (boards: Board) => void
     removeBoard: (id: string) => void
     renameBoard: (id: string, name: string) => void
@@ -47,6 +49,7 @@ const useStore = create<PagesetsState>()(
       boards: [],
       currentBoardId: undefined,
       currentPageId: undefined,
+      previousPageIds: [],
       messageButtonsIds: [],
       editMode: false,
       editButtonId: undefined,
@@ -61,10 +64,24 @@ const useStore = create<PagesetsState>()(
           set({
             currentBoardId: boardId,
           }),
-        setCurrentPageId: (pageId) =>
+        navigateToPage: (pageId: string) => {
+          const { previousPageIds, currentPageId } = get()
+          if (currentPageId) previousPageIds.push(currentPageId)
           set({
             currentPageId: pageId,
-          }),
+            previousPageIds,
+          })
+          console.log({ previousPageIds })
+        },
+        navigateBack: () => {
+          const previousPageIds = get().previousPageIds
+          const currentPageId = previousPageIds.pop()
+          set({
+            currentPageId,
+            previousPageIds,
+          })
+          console.log({ previousPageIds })
+        },
         addBoard: (board: Board) =>
           set({
             boards: [...get().boards, board],
@@ -119,7 +136,12 @@ const useStore = create<PagesetsState>()(
         Object.fromEntries(
           Object.entries(state).filter(
             ([key]) =>
-              !["actions", "initialised", "customMessages"].includes(key),
+              ![
+                "actions",
+                "initialised",
+                "customMessages",
+                "previousPageIds",
+              ].includes(key),
           ),
         ),
       onRehydrateStorage: (state) => {

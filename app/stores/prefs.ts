@@ -1,7 +1,11 @@
 import { SpeechOptions as ExpoSpeechOptions } from "expo-speech"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
-import { defaultTileSpacing } from "../utils/consts"
+import {
+  BackButton,
+  defaultBackButton,
+  defaultTileSpacing,
+} from "../utils/consts"
 import { zustandStorage } from "./middleware"
 
 export const buttonViewOptions = ["both", "symbol", "text"] as const
@@ -29,6 +33,7 @@ interface PrefsState {
   showBackspace: boolean
   tileSpacing: number
   debounceTime: number | undefined
+  backButton: BackButton
   actions: {
     togglePlayOnPress: () => void
     setMessageWindowLocation: (location: "top" | "bottom") => void
@@ -41,6 +46,7 @@ interface PrefsState {
     toggleShowBackspace: () => void
     setTileSpacing: (tileSpacing: number) => void
     setDebounceTime: (value: number | undefined) => void
+    setBackButton: (value: BackButton) => void
   }
 }
 
@@ -63,6 +69,7 @@ export const usePrefsStore = create<PrefsState>()(
       showBackspace: true,
       tileSpacing: defaultTileSpacing,
       debounceTime: undefined,
+      backButton: defaultBackButton,
       actions: {
         togglePlayOnPress: () => set({ playOnPress: !get().playOnPress }),
         setMessageWindowLocation: (location: "top" | "bottom") =>
@@ -80,6 +87,7 @@ export const usePrefsStore = create<PrefsState>()(
         toggleShowBackspace: () => set({ showBackspace: !get().showBackspace }),
         setTileSpacing: (tileSpacing: number) => set({ tileSpacing }),
         setDebounceTime: (debounceTime) => set({ debounceTime }),
+        setBackButton: (backButton: BackButton) => set({ backButton }),
       },
     }),
     {
@@ -106,5 +114,6 @@ export const useShowShareButton = () => usePrefsStore((s) => s.showShareButton)
 export const useShowBackspace = () => usePrefsStore((s) => s.showBackspace)
 export const useTileSpacing = () => usePrefsStore((s) => s.tileSpacing)
 export const useDebounceTime = () => usePrefsStore((s) => s.debounceTime)
+export const useBackButton = () => usePrefsStore((s) => s.backButton)
 
 export const usePrefsActions = () => usePrefsStore((s) => s.actions)
