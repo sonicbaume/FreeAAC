@@ -86,9 +86,10 @@ export default function Page({
         button,
         spoken,
         playOnPress,
+        goHomeOnPress: goHomeOnPress ? homePageId : undefined,
       })
     },
-    [logEvent, playOnPress],
+    [goHomeOnPress, homePageId, logEvent, playOnPress],
   )
 
   const onButtonPress = useCallback(

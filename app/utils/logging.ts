@@ -3,6 +3,7 @@ import {
   AACSemanticCategory,
   AACSemanticIntent,
 } from "@willwade/aac-processors/browser"
+import { OblAction } from "@willwade/aac-processors/metrics"
 import { BoardButton } from "./types"
 
 export type LogType =
@@ -27,6 +28,7 @@ export type LogEventButton = {
   button: BoardButton
   spoken: boolean
   playOnPress?: boolean
+  goHomeOnPress?: string
 }
 
 export type LogEventSentence = {
@@ -89,7 +91,6 @@ export const parseLogEvent = (
 ): HistoryOccurrence => {
   const buttonData = parseButtonEvent(event)
   const occurance: HistoryOccurrence = {
-    ...event,
     ...buttonData,
     timestamp: new Date(),
     intent: intentMap[event.type],
@@ -104,10 +105,18 @@ export const parseLogEvent = (
 const parseButtonEvent = (event: LogEvent) => {
   if (event.type !== "button" && event.type !== "navigate") return {}
   const button = event.button
+  const actions: OblAction[] = []
+  if (event.goHomeOnPress) {
+    actions.push({
+      action: ":auto_home",
+      destination_board_id: event.goHomeOnPress,
+    })
+  }
   return {
     vocalization: button.semanticAction?.text,
     buttonId: button.id,
     imageUrl: button.image?.startsWith("http") ? button.image : undefined,
+    actions: actions.length ? actions : undefined,
   }
 }
 
