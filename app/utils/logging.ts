@@ -114,6 +114,6 @@ const parseButtonEvent = (event: LogEvent) => {
 export const parseLogContent = (event: LogEvent) => {
   if (event.type === "sentence") return event.content
   if (event.type === "button" || event.type === "navigate")
-    return event.button.message
+    return event.button.label
   return contentMap[event.type]
 }

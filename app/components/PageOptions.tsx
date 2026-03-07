@@ -8,11 +8,11 @@ import {
   Pencil,
   Settings,
 } from "lucide-react-native"
-import { nanoid } from "nanoid/non-secure"
 import { useState } from "react"
 import { Platform } from "react-native"
 import { useCurrentPageId, usePagesetActions } from "../stores/boards"
 import { usePlayOnPress } from "../stores/prefs"
+import { generateNewButton } from "../utils/boards"
 import { ICON_SIZE, PADDING, useTheme } from "../utils/theme"
 import DialogRename from "./DialogRename"
 import SheetItem from "./SheetItem"
@@ -41,16 +41,16 @@ export default function PageOptions({
 
   const addCustomWord = (word: string | undefined) => {
     if (currentPageId && word) {
-      const id = nanoid()
-      addCustomMessage(id, word)
-      addMessageButtonId({ id, pageId: currentPageId })
+      const button = generateNewButton(currentPageId)
+      button.label = word
+      button.message = word
+      addCustomMessage(button.id, button.message)
+      addMessageButtonId({ id: button.id, pageId: currentPageId })
       if (playOnPress) speak(word)
       logEvent({
         type: "button",
-        content: word,
-        vocalization: word,
+        button,
         spoken: playOnPress,
-        buttonId: id,
       })
     }
     setShowCustomWordDialog(false)
