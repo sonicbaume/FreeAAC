@@ -1,6 +1,22 @@
+import { HistoryEntry } from "@willwade/aac-processors/analytics"
+import { nanoid } from "nanoid/non-secure"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
+import {
+  LogEvent,
+  parseLogContent,
+  parseLogEvent
+} from "../utils/logging"
 import { zustandStorage } from "./middleware"
+
+const generateEntry = (content: string): HistoryEntry => {
+  return {
+    id: nanoid(),
+    content,
+    occurrences: [],
+    source: "OBL",
+  }
+}
 
 interface Board {
   id: string
@@ -24,6 +40,8 @@ interface PagesetsState {
   editButtonId: string | undefined
   symbolSearchText: string
   customMessages: Record<string, string>
+  history: HistoryEntry[]
+  shouldLog: boolean
   actions: {
     setLoaded: (loaded: boolean) => void
     setCurrentBoardId: (boardId: string | undefined) => void
@@ -39,6 +57,9 @@ interface PagesetsState {
     setEditButtonId: (buttonId: string | undefined) => void
     setSymbolSearchText: (text: string) => void
     addCustomMessage: (id: string, text: string) => void
+    logEvent(event: LogEvent): void
+    toggleShouldLog(): void
+    deleteLogs(): void
   }
 }
 
@@ -55,6 +76,8 @@ const useStore = create<PagesetsState>()(
       editButtonId: undefined,
       symbolSearchText: "",
       customMessages: {},
+      history: [],
+      shouldLog: false,
       actions: {
         setLoaded: (loaded) =>
           set({
@@ -127,6 +150,25 @@ const useStore = create<PagesetsState>()(
               [id]: text,
             },
           }),
+        logEvent: (event: LogEvent) => {
+          const { history, shouldLog, currentPageId, currentBoardId } = get()
+          if (!shouldLog) return
+          const content = parseLogContent(event)
+          const entry =
+            history.find((e) => e.content === content) ?? generateEntry(content)
+          const occurance = parseLogEvent(event, currentPageId, currentBoardId)
+          entry.occurrences.push(occurance)
+          set({
+            history: [...history.filter((e) => e.content !== content), entry],
+          })
+          console.log("LOG", occurance)
+        },
+        toggleShouldLog: () => {
+          set({ shouldLog: !get().shouldLog })
+        },
+        deleteLogs: () => {
+          set({ history: [] })
+        },
       },
     }),
     {
@@ -160,5 +202,7 @@ export const useEditMode = () => useStore((s) => s.editMode)
 export const useEditButtonId = () => useStore((s) => s.editButtonId)
 export const useSymbolSearchText = () => useStore((s) => s.symbolSearchText)
 export const useCustomMessages = () => useStore((s) => s.customMessages)
+export const useHistory = () => useStore((s) => s.history)
+export const useShouldLog = () => useStore((s) => s.shouldLog)
 
 export const usePagesetActions = () => useStore((s) => s.actions)

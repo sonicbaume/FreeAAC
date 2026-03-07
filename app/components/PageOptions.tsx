@@ -1,8 +1,4 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
-import {
-  AACSemanticCategory,
-  AACSemanticIntent,
-} from "@willwade/aac-processors/browser"
 import { useRouter } from "expo-router"
 import { speak } from "expo-speech"
 import {
@@ -15,12 +11,7 @@ import {
 import { nanoid } from "nanoid/non-secure"
 import { useState } from "react"
 import { Platform } from "react-native"
-import {
-  useCurrentBoardId,
-  useCurrentPageId,
-  usePagesetActions,
-} from "../stores/boards"
-import { useHistoryActions } from "../stores/history"
+import { useCurrentPageId, usePagesetActions } from "../stores/boards"
 import { usePlayOnPress } from "../stores/prefs"
 import { ICON_SIZE, PADDING, useTheme } from "../utils/theme"
 import DialogRename from "./DialogRename"
@@ -36,12 +27,10 @@ export default function PageOptions({
   const theme = useTheme()
   const [showCustomWordDialog, setShowCustomWordDialog] = useState(false)
   const { push } = useRouter()
-  const { toggleEditMode, addCustomMessage, addMessageButtonId } =
+  const { toggleEditMode, addCustomMessage, addMessageButtonId, logEvent } =
     usePagesetActions()
   const currentPageId = useCurrentPageId()
-  const currentBoardId = useCurrentBoardId()
   const playOnPress = usePlayOnPress()
-  const { logEvent } = useHistoryActions()
 
   const requestFullscreen = () => {
     if (Platform.OS !== "web") return
@@ -56,14 +45,11 @@ export default function PageOptions({
       addCustomMessage(id, word)
       addMessageButtonId({ id, pageId: currentPageId })
       if (playOnPress) speak(word)
-      logEvent(word, {
-        type: "utterance",
-        intent: AACSemanticIntent.SPEAK_TEXT,
-        category: AACSemanticCategory.COMMUNICATION,
+      logEvent({
+        type: "button",
+        content: word,
         vocalization: word,
         spoken: playOnPress,
-        boardId: currentBoardId,
-        pageId: currentPageId,
         buttonId: id,
       })
     }

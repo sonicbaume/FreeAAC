@@ -26,11 +26,7 @@ import PreviewButton from "./components/Settings/PreviewButton"
 import TtsStatus from "./components/Settings/TtsStatus"
 import { Text } from "./components/Styled"
 import { useSpeak } from "./stores/audio"
-import {
-  useHistoryActions,
-  useHistoryEntries,
-  useShouldLog,
-} from "./stores/history"
+import { useHistory, usePagesetActions, useShouldLog } from "./stores/boards"
 import {
   ButtonViewOption,
   buttonViewOptions,
@@ -126,7 +122,7 @@ export default function Settings() {
   const backButton = useBackButton()
   const locales = useLocales()
   const shouldLog = useShouldLog()
-  const logHistory = useHistoryEntries()
+  const logHistory = useHistory()
   const {
     togglePlayOnPress,
     setMessageWindowLocation,
@@ -141,7 +137,7 @@ export default function Settings() {
     setDebounceTime,
     setBackButton,
   } = usePrefsActions()
-  const { toggleShouldLog, deleteLogs } = useHistoryActions()
+  const { toggleShouldLog, deleteLogs } = usePagesetActions()
   const [voices, setVoices] = useState<
     { value: string; label: string; langTag: string }[]
   >([])

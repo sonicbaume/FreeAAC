@@ -8,13 +8,7 @@ import Sortable, {
 } from "react-native-sortables"
 import { EditTile } from "../[board]"
 import { useSpeak } from "../stores/audio"
-import {
-  useCurrentBoardId,
-  useCurrentPageId,
-  useEditMode,
-  usePagesetActions,
-} from "../stores/boards"
-import { useHistoryActions } from "../stores/history"
+import { useEditMode, usePagesetActions } from "../stores/boards"
 import {
   useGoHomeOnPress,
   usePlayOnPress,
@@ -55,12 +49,9 @@ export default function Page({
   const playOnPress = usePlayOnPress()
   const goHomeOnPress = useGoHomeOnPress()
   const tileSpacing = useTileSpacing()
-  const currentPageId = useCurrentPageId()
-  const currentBoardId = useCurrentBoardId()
   const speak = useSpeak()
-  const { navigateToPage, addMessageButtonId, setSymbolSearchText } =
+  const { navigateToPage, addMessageButtonId, setSymbolSearchText, logEvent } =
     usePagesetActions()
-  const { logEvent } = useHistoryActions()
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
   const rowHeight =
@@ -88,21 +79,16 @@ export default function Page({
     (button: BoardButton, spoken: boolean) => {
       if (!button.semanticAction)
         return console.error("Button is missing semanticAction")
-      const type =
-        button.semanticAction.intent === "SPEAK_TEXT" ? "button" : "action"
-      logEvent(button.message, {
-        type,
-        vocalization: button.semanticAction.text,
-        intent: button.semanticAction.intent,
-        category: button.semanticAction.category,
-        buttonId: button.id,
-        boardId: currentBoardId,
-        pageId: currentPageId,
+      const isLink =
+        button.semanticAction.intent === AACSemanticIntent.NAVIGATE_TO
+      logEvent({
+        type: isLink ? "navigate" : "button",
+        button,
         spoken,
-        imageUrl: button.image?.startsWith("http") ? button.image : undefined,
+        playOnPress,
       })
     },
-    [currentBoardId, currentPageId, logEvent],
+    [logEvent, playOnPress],
   )
 
   const onButtonPress = useCallback(
