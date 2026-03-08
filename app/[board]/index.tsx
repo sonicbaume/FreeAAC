@@ -169,6 +169,25 @@ export default function Board() {
     navigateHome()
   }
 
+  const setDefaultPageId = (defaultHomePageId: string) => {
+    if (!uri)
+      return handleError("Could not set default page - file not defined")
+    if (!tree)
+      return handleError("Could not set default page - tree does not exist")
+    if (!(defaultHomePageId in tree.pages))
+      return handleError("Could not set default page - page ID not found")
+    const newTree = {
+      ...tree,
+      metadata: {
+        ...tree.metadata,
+        defaultHomePageId,
+        name: tree.pages[defaultHomePageId].name,
+      },
+    }
+    saveBoard(uri, newTree)
+    setTree(newTree)
+  }
+
   const messageWindow = (
     <MessageWindow
       navigateHome={navigateHome}
@@ -179,6 +198,8 @@ export default function Board() {
       setPageTitle={(name) => page && name && savePage({ ...page, name })}
       openPageNav={() => pageNavSheet.current?.present()}
       deletePage={deletePage}
+      defaultPageId={tree?.metadata.defaultHomePageId}
+      setDefaultPageId={setDefaultPageId}
     />
   )
 
