@@ -1,12 +1,12 @@
 import { useState } from "react"
-import { StyleSheet, TextInput, View } from "react-native"
+import { TextInput, View } from "react-native"
 import {
   colValues,
   defaultColValue,
   defaultRowValue,
   rowValues,
 } from "../utils/consts"
-import { GAP, MAX_WIDTH, PADDING, RADIUS, useTheme } from "../utils/theme"
+import { GAP, PADDING, RADIUS, useTheme } from "../utils/theme"
 import SheetPicker from "./SheetPicker"
 import { Button, Text } from "./Styled"
 
@@ -20,19 +20,14 @@ export default function PageAdd({
   const [cols, setCols] = useState(defaultColValue)
   const [name, setName] = useState("New board")
   return (
-    <View
-      style={{
-        ...styles.container,
-        backgroundColor: theme.surface,
-        paddingBottom: 200,
-      }}
-    >
+    <>
       <Text>Name</Text>
       <TextInput
         value={name}
         onChangeText={setName}
         style={{
-          ...styles.textInput,
+          borderRadius: RADIUS.md,
+          padding: PADDING.lg,
           backgroundColor: theme.surfaceContainer,
           color: theme.onSurface,
           borderColor: theme.outline,
@@ -63,21 +58,6 @@ export default function PageAdd({
       >
         <Text style={{ color: theme.onPrimary }}>Create</Text>
       </Button>
-    </View>
+    </>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: MAX_WIDTH,
-    maxWidth: "100%",
-    padding: PADDING.xl,
-    marginHorizontal: "auto",
-    gap: GAP.lg,
-  },
-  textInput: {
-    borderRadius: RADIUS.md,
-    // borderWidth: 1,
-    padding: PADDING.lg,
-  },
-})

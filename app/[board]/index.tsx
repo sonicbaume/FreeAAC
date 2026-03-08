@@ -6,6 +6,7 @@ import { ActivityIndicator, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import MessageWindow from "../components/MessageWindow"
 import Page from "../components/Page"
+import PageAddSheet from "../components/PageAddSheet"
 import PageNav from "../components/PageNav"
 import {
   useBoards,
@@ -13,7 +14,7 @@ import {
   usePagesetActions,
 } from "../stores/boards"
 import { useDebounceTime, useMessageWindowLocation } from "../stores/prefs"
-import { getHomePageId } from "../utils/boards"
+import { generateNewPage, getHomePageId } from "../utils/boards"
 import { DebounceContext, handleDebounce } from "../utils/debounce"
 import { handleError } from "../utils/error"
 import { loadBoard, saveBoard } from "../utils/file"
@@ -54,6 +55,7 @@ export default function Board() {
     usePagesetActions()
   const [tree, setTree] = useState<BoardTree>()
   const pageNavSheet = useRef<TrueSheet>(null)
+  const pageAddSheet = useRef<TrueSheet>(null)
 
   useEffect(
     () => setCurrentBoardId(board as string),
@@ -200,6 +202,7 @@ export default function Board() {
       deletePage={deletePage}
       defaultPageId={tree?.metadata.defaultHomePageId}
       setDefaultPageId={setDefaultPageId}
+      openAddPage={() => pageAddSheet.current?.present()}
     />
   )
 
@@ -216,6 +219,24 @@ export default function Board() {
       name: page.name,
     }))
   }, [tree])
+
+  const addPage = async (name: string, rows: number, cols: number) => {
+    if (!uri) return handleError("Could not add page - file not defined")
+    if (!tree) return handleError("Could not add page - tree does not exist")
+    if (!currentPageId)
+      return handleError("Could not add page - current page not found")
+    const page = generateNewPage(rows, cols, currentPageId, name)
+    const pages = { ...tree.pages }
+    pages[page.id] = page
+    const newTree = {
+      ...tree,
+      pages,
+    }
+    saveBoard(uri, newTree)
+    setTree(newTree)
+    navigateToPage(page.id)
+    pageAddSheet.current?.dismiss()
+  }
 
   return (
     <DebounceContext value={debounce}>
@@ -242,6 +263,7 @@ export default function Board() {
         {messageWindowLocation === "bottom" && messageWindow}
       </SafeAreaView>
       <PageNav ref={pageNavSheet} pages={pages} />
+      <PageAddSheet ref={pageAddSheet} onAdd={addPage} />
     </DebounceContext>
   )
 }

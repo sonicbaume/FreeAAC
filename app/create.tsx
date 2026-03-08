@@ -1,10 +1,10 @@
 import { useRouter } from "expo-router"
-import { ScrollView } from "react-native"
+import { ScrollView, StyleSheet, View } from "react-native"
 import PageAdd from "./components/PageAdd"
 import { usePagesetActions } from "./stores/boards"
 import { generateNewBoard } from "./utils/boards"
 import { saveBoard } from "./utils/file"
-import { useTheme } from "./utils/theme"
+import { GAP, MAX_WIDTH, PADDING, useTheme } from "./utils/theme"
 import { uuid } from "./utils/uuid"
 
 export default function Create() {
@@ -24,7 +24,25 @@ export default function Create() {
 
   return (
     <ScrollView style={{ backgroundColor: theme.background }}>
-      <PageAdd onPress={createBoard} />
+      <View
+        style={{
+          ...styles.container,
+          backgroundColor: theme.surface,
+          paddingBottom: 200,
+        }}
+      >
+        <PageAdd onPress={createBoard} />
+      </View>
     </ScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    width: MAX_WIDTH,
+    maxWidth: "100%",
+    padding: PADDING.xl,
+    marginHorizontal: "auto",
+    gap: GAP.lg,
+  },
+})

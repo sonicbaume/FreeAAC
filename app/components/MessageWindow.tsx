@@ -10,6 +10,7 @@ import {
   Forward,
   Home,
   LibraryBig,
+  Plus,
   Star,
   Trash2,
   X,
@@ -52,6 +53,7 @@ export default function MessageWindow({
   deletePage,
   defaultPageId,
   setDefaultPageId,
+  openAddPage,
 }: {
   navigateHome: () => void
   navigateBack: () => void
@@ -63,6 +65,7 @@ export default function MessageWindow({
   deletePage: () => void
   defaultPageId?: string
   setDefaultPageId: (id: string) => void
+  openAddPage: () => void
 }) {
   const theme = useTheme()
   const debounce = useDebounce()
@@ -152,6 +155,9 @@ export default function MessageWindow({
         >
           {editMode && (
             <>
+              <Button variant="ghost" onPress={openAddPage}>
+                <Plus size={ICON_SIZE.xl} color={theme.onSurface} />
+              </Button>
               <Button
                 variant="ghost"
                 onPress={() => setShowDeletePageDialog(true)}
