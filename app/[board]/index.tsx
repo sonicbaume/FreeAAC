@@ -78,7 +78,8 @@ export default function Board() {
         handleError(e)
       }
     })()
-  }, [uri, currentPageId, navigateToPage])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uri])
 
   const page = useMemo(() => {
     if (!tree || !currentPageId) return
@@ -118,7 +119,10 @@ export default function Board() {
     }
   }, [tree])
 
-  const navigateHome = () => homePageId && navigateToPage(homePageId)
+  const navigateHome = useCallback(
+    () => homePageId && navigateToPage(homePageId),
+    [homePageId, navigateToPage],
+  )
 
   const buttons = useMemo(() => {
     if (!tree) return []
@@ -143,6 +147,28 @@ export default function Board() {
     }))
   }, [tree])
 
+  const deletePage = () => {
+    if (!uri) return handleError("Could not delete page - file not defined")
+    if (!tree) return handleError("Could not delete page - tree does not exist")
+    if (!currentPageId)
+      return handleError("Could not delete page - ID undefined")
+    if (currentPageId === tree.metadata.defaultHomePageId)
+      return handleError("Cannot delete default page")
+    if (!(currentPageId in tree.pages))
+      return handleError("Could not find page to delete")
+
+    console.log("Deleting page", currentPageId)
+    const { [currentPageId]: _, ...pages } = tree.pages
+    console.log("tree without", pages)
+    const newTree = {
+      ...tree,
+      pages,
+    }
+    saveBoard(uri, newTree)
+    setTree(newTree)
+    navigateHome()
+  }
+
   const messageWindow = (
     <MessageWindow
       navigateHome={navigateHome}
@@ -152,6 +178,7 @@ export default function Board() {
       pageTitle={page?.name}
       setPageTitle={(name) => page && name && savePage({ ...page, name })}
       openPageNav={() => pageNavSheet.current?.present()}
+      deletePage={deletePage}
     />
   )
 

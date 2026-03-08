@@ -7,9 +7,10 @@ import {
   CopyCheck,
   Delete,
   EllipsisVertical,
+  Forward,
   Home,
-  Layers,
   LibraryBig,
+  Trash2,
   X,
 } from "lucide-react-native"
 import { useEffect, useRef, useState } from "react"
@@ -32,6 +33,7 @@ import {
 import { useDebounce } from "../utils/debounce"
 import { HEADER_HEIGHT, ICON_SIZE, PADDING, useTheme } from "../utils/theme"
 import { BoardButton } from "../utils/types"
+import DialogConfirm from "./DialogConfirm"
 import PageOptions from "./PageOptions"
 import PageTitle from "./PageTitle"
 import { Button, Text } from "./Styled"
@@ -45,6 +47,7 @@ export default function MessageWindow({
   pageTitle,
   setPageTitle,
   openPageNav,
+  deletePage,
 }: {
   navigateHome: () => void
   navigateBack: () => void
@@ -53,11 +56,13 @@ export default function MessageWindow({
   pageTitle?: string
   setPageTitle: (title: string | undefined) => void
   openPageNav: () => void
+  deletePage: () => void
 }) {
   const theme = useTheme()
   const debounce = useDebounce()
   const optionsSheet = useRef<TrueSheet>(null)
   const [copied, setCopied] = useState(false)
+  const [showDeletePageDialog, setShowDeletePageDialog] = useState(false)
   const scrollView = useRef<ScrollView>(null)
   const messageButtonsIds = useMessageButtonsIds()
   const clearMessageOnPlay = useClearMessageOnPlay()
@@ -134,9 +139,17 @@ export default function MessageWindow({
           }}
         >
           {editMode && (
-            <Button variant="ghost" onPress={openPageNav}>
-              <Layers size={ICON_SIZE.xl} color={theme.onSurface} />
-            </Button>
+            <>
+              <Button
+                variant="ghost"
+                onPress={() => setShowDeletePageDialog(true)}
+              >
+                <Trash2 size={ICON_SIZE.xl} color={theme.onSurface} />
+              </Button>
+              <Button variant="ghost" onPress={openPageNav}>
+                <Forward size={ICON_SIZE.xl} color={theme.onSurface} />
+              </Button>
+            </>
           )}
           {!editMode && (
             <>
@@ -277,6 +290,15 @@ export default function MessageWindow({
         ref={optionsSheet}
         copyMessage={hasMessage ? copyMessage : undefined}
         openPageNav={openPageNav}
+      />
+      <DialogConfirm
+        visible={showDeletePageDialog}
+        message="Are you sure you want to delete this page?"
+        onCancel={() => setShowDeletePageDialog(false)}
+        onConfirm={() => {
+          deletePage()
+          setShowDeletePageDialog(false)
+        }}
       />
     </>
   )
