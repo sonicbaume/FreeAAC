@@ -59,7 +59,8 @@ import {
   tileSpacingValues,
 } from "./utils/consts"
 import { handleError } from "./utils/error"
-import { exportLogs, importPrefsFile, saveObjectAs } from "./utils/file"
+import { exportLogs, importPrefsFile } from "./utils/file"
+import { saveObjectAs } from "./utils/io"
 import {
   FONT_SIZE,
   GAP,

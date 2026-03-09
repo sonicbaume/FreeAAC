@@ -106,16 +106,7 @@ export const downloadFile = async (
   return { id, fileName }
 }
 
-export const saveAs = async (uri: string | Blob, name: string) => {
-  const opfsRoot = await navigator.storage.getDirectory()
-  let file
-  if (typeof uri === "string") {
-    const opfsFileHandle = await opfsRoot.getFileHandle(uri)
-    file = await opfsFileHandle.getFile()
-  } else {
-    file = uri
-  }
-
+export const shareFile = async (file: File | Blob, name: string) => {
   if ("showSaveFilePicker" in window) {
     //@ts-expect-error Only supported in Chrome
     const localHandle = await window.showSaveFilePicker({ suggestedName: name })
@@ -128,4 +119,21 @@ export const saveAs = async (uri: string | Blob, name: string) => {
     a.download = name
     a.click()
   }
+}
+
+export const saveFileAs = async (uri: string, name: string): Promise<void> => {
+  const opfsRoot = await navigator.storage.getDirectory()
+  const opfsFileHandle = await opfsRoot.getFileHandle(uri)
+  const file = await opfsFileHandle.getFile()
+  await shareFile(file, name)
+}
+
+export const saveObjectAs = async (
+  data: unknown,
+  name: string,
+): Promise<void> => {
+  const file = new Blob([JSON.stringify(data)], {
+    type: "application/json",
+  })
+  shareFile(file, name)
 }

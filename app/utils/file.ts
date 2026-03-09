@@ -20,8 +20,9 @@ import {
   mkTempDir,
   pathExists,
   removePath,
-  saveAs,
   saveFile,
+  saveFileAs,
+  saveObjectAs,
 } from "./io"
 import { BoardTree, TileImage } from "./types"
 import { uuid } from "./uuid"
@@ -96,6 +97,8 @@ export const getFileType = (ext: string): { mimeType: string; UTI: string } => {
       return { mimeType: "application/octet-stream", UTI: "public.data" }
     case "plist":
       return { mimeType: "application/x-plist", UTI: "com.apple.property-list" }
+    case "json":
+      return { mimeType: "application/json", UTI: "public.json" }
     default:
       throw new Error(`Unknown file extension: ${ext}`)
   }
@@ -175,19 +178,9 @@ export const deleteBoard = async (uri: string) => {
   await removePath(uri)
 }
 
-export const saveObjectAs = async (
-  object: unknown,
-  name: string,
-): Promise<void> => {
-  const data = new Blob([JSON.stringify(object)], {
-    type: "application/json",
-  })
-  await saveAs(data, name)
-}
-
 export const exportBoard = async (uri: string, name: string) => {
   const ext = getFileExt(uri)
-  await saveAs(uri, `${name}.${ext}`)
+  await saveFileAs(uri, `${name}.${ext}`)
 }
 
 export const exportLogs = async (entries: HistoryEntry[]) => {

@@ -83,10 +83,40 @@ export const downloadFile = async (
   return { id, fileName }
 }
 
-export const saveAs = async (uri: string, name: string) => {
-  const root = Paths.document
-  const file = new File(root, uri)
-  const ext = getFileExt(uri)
+export const saveAs = async (uri: string | Blob, name: string) => {
+  let file
+  if (typeof uri === "string") {
+    const resolvedPath = Paths.join(Paths.document, uri)
+    file = new File(resolvedPath)
+  } else {
+    file = new File(Paths.cache, name)
+    file.create({ overwrite: true })
+    const data = await uri.bytes()
+    file.write(data)
+  }
+  const ext = getFileExt(name)
   const { mimeType, UTI } = getFileType(ext)
   await shareAsync(file.uri, { mimeType, UTI })
+}
+
+export const shareFile = async (file: File, name: string) => {
+  const ext = getFileExt(name)
+  const { mimeType, UTI } = getFileType(ext)
+  await shareAsync(file.uri, { mimeType, UTI })
+}
+
+export const saveFileAs = async (uri: string, name: string): Promise<void> => {
+  const resolvedPath = Paths.join(Paths.document, uri)
+  const file = new File(resolvedPath)
+  await shareFile(file, name)
+}
+
+export const saveObjectAs = async (
+  data: unknown,
+  name: string,
+): Promise<void> => {
+  const file = new File(Paths.cache, name)
+  file.create({ overwrite: true })
+  file.write(JSON.stringify(data))
+  shareFile(file, name)
 }
