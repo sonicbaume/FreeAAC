@@ -179,6 +179,7 @@ const useStore = create<PagesetsState>()(
                 "initialised",
                 "customMessages",
                 "previousPageIds",
+                "editMode",
               ].includes(key),
           ),
         ),

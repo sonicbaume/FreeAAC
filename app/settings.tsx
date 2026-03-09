@@ -7,11 +7,12 @@ import { getAvailableVoicesAsync } from "expo-speech"
 import {
   Bug,
   Hand,
+  History,
   Info,
   Lightbulb,
-  List,
   LucideIcon,
   Monitor,
+  Save,
   Shield,
   Speech,
 } from "lucide-react-native"
@@ -32,6 +33,7 @@ import {
   buttonViewOptions,
   SpeechEngine,
   speechEngines,
+  useAllPrefs,
   useBackButton,
   useButtonView,
   useClearMessageOnPlay,
@@ -47,6 +49,7 @@ import {
   useTileSpacing,
 } from "./stores/prefs"
 import {
+  appName,
   BackButton,
   backButtonValues,
   debounceValues,
@@ -56,7 +59,8 @@ import {
   tileSpacingValues,
 } from "./utils/consts"
 import { handleError } from "./utils/error"
-import { exportLogs } from "./utils/file"
+import { exportLogs, importPrefsFile } from "./utils/file"
+import { saveObjectAs } from "./utils/io"
 import {
   FONT_SIZE,
   GAP,
@@ -123,6 +127,7 @@ export default function Settings() {
   const locales = useLocales()
   const shouldLog = useShouldLog()
   const logHistory = useHistory()
+  const { actions, ...allPrefs } = useAllPrefs()
   const {
     togglePlayOnPress,
     setMessageWindowLocation,
@@ -136,6 +141,7 @@ export default function Settings() {
     setTileSpacing,
     setDebounceTime,
     setBackButton,
+    importPrefs,
   } = usePrefsActions()
   const { toggleShouldLog, deleteLogs } = usePagesetActions()
   const [voices, setVoices] = useState<
@@ -181,6 +187,11 @@ export default function Settings() {
       }
     })()
   }, [locales, setSpeechOptions, speechOptions.engine, speechOptions.voice])
+
+  const handleImportPrefs = async () => {
+    const prefs = await importPrefsFile()
+    importPrefs(prefs)
+  }
 
   return (
     <>
@@ -332,7 +343,22 @@ export default function Settings() {
               setDebounceTime(value ? parseFloat(value) : undefined)
             }
           />
-          <SettingsHeader title="Logging" icon={List} />
+          <SettingsHeader title="Backup" icon={Save} />
+          <SettingsItem
+            title="Export preferences"
+            description="Save user preferences to a file"
+            type="button"
+            label="Export prefs"
+            onPress={() => saveObjectAs(allPrefs, `${appName}_prefs.json`)}
+          />
+          <SettingsItem
+            title="Import preferences"
+            description="Restore user preferences from a file"
+            type="button"
+            label="Import prefs"
+            onPress={handleImportPrefs}
+          />
+          <SettingsHeader title="Logging" icon={History} />
           <SettingsItem
             title="Log events"
             description="Record a history of interactions"

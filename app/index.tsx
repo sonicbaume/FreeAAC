@@ -1,5 +1,9 @@
 import { Link, useRouter } from "expo-router"
-import { FilePlusCorner, Import, PackageOpen } from "lucide-react-native"
+import {
+  FilePlusCorner,
+  PackageOpen,
+  SquareArrowRightEnter,
+} from "lucide-react-native"
 import { useTransition } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
@@ -7,7 +11,7 @@ import BoardList from "./components/BoardList"
 import { Button, Text } from "./components/Styled"
 import { usePagesetActions } from "./stores/boards"
 import { handleError } from "./utils/error"
-import { loadBoard, selectFile } from "./utils/file"
+import { importBoardFile, loadBoard } from "./utils/file"
 import {
   FONT_SIZE,
   FONT_WEIGHT,
@@ -27,7 +31,7 @@ export default function Index() {
 
   const openFile = async () => {
     try {
-      const file = await selectFile()
+      const file = await importBoardFile()
       if (!file) return
       startLoading(async () => {
         const tree = await loadBoard(file.uri)
@@ -73,7 +77,10 @@ export default function Index() {
                 </Button>
               </Link>
               <Button variant="ghost" onPress={openFile}>
-                <Import size={ICON_SIZE.md} color={theme.onSurface} />
+                <SquareArrowRightEnter
+                  size={ICON_SIZE.md}
+                  color={theme.onSurface}
+                />
               </Button>
             </View>
           </View>

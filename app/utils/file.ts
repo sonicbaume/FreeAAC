@@ -11,7 +11,7 @@ import {
 import { nanoid } from "nanoid/non-secure"
 import { appName } from "./consts"
 import {
-  getAssetData,
+  getFileFromDocument,
   getFileSize,
   isDirectory,
   listDir,
@@ -20,8 +20,9 @@ import {
   mkTempDir,
   pathExists,
   removePath,
-  saveAs,
   saveFile,
+  saveFileAs,
+  saveObjectAs,
 } from "./io"
 import { BoardTree, TileImage } from "./types"
 import { uuid } from "./uuid"
@@ -80,7 +81,9 @@ export const getFileExt = (name: string): string => {
 
 export const getFileType = (ext: string): { mimeType: string; UTI: string } => {
   switch (ext) {
+    case "json":
     case "obf":
+    case "obl":
     case "grd":
       return { mimeType: "application/json", UTI: "public.json" }
     case "obz":
@@ -101,7 +104,7 @@ export const getFileType = (ext: string): { mimeType: string; UTI: string } => {
   }
 }
 
-export const selectFile = async (): Promise<
+export const importBoardFile = async (): Promise<
   { id: string; uri: string } | undefined
 > => {
   const result = await DocumentPicker.getDocumentAsync({
@@ -109,12 +112,24 @@ export const selectFile = async (): Promise<
   })
   const asset = result.assets?.at(0)
   if (!asset) return undefined
-  const data = await getAssetData(asset)
+  const file = getFileFromDocument(asset)
+  const data = await file.bytes()
   const ext = getFileExt(asset.name)
   const id = uuid()
   const fileName = `${id}.${ext}`
   const uri = await saveFile(fileName, data)
   return { id, uri }
+}
+
+export const importPrefsFile = async (): Promise<unknown> => {
+  const result = await DocumentPicker.getDocumentAsync({
+    copyToCacheDirectory: true,
+  })
+  const asset = result.assets?.at(0)
+  if (!asset) return undefined
+  const file = getFileFromDocument(asset)
+  const text = await file.text()
+  return JSON.parse(text)
 }
 
 export const selectImage = async (
@@ -165,7 +180,7 @@ export const deleteBoard = async (uri: string) => {
 
 export const exportBoard = async (uri: string, name: string) => {
   const ext = getFileExt(uri)
-  await saveAs(uri, `${name}.${ext}`)
+  await saveFileAs(uri, `${name}.${ext}`)
 }
 
 export const exportLogs = async (entries: HistoryEntry[]) => {
@@ -175,8 +190,5 @@ export const exportLogs = async (entries: HistoryEntry[]) => {
     }
   }
   const oblObject = OblUtil.fromHistoryEntries(entries, "user", appName)
-  const oblData = new Blob([JSON.stringify(oblObject)], {
-    type: "application/json",
-  })
-  await saveAs(oblData, `${appName}_logs.obl`)
+  await saveObjectAs(oblObject, `${appName}_logs.obl`)
 }
