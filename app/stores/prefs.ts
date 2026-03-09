@@ -34,6 +34,7 @@ interface PrefsState {
   tileSpacing: number
   debounceTime: number | undefined
   backButton: BackButton
+  defaultBoardId: string | undefined
   actions: {
     togglePlayOnPress: () => void
     setMessageWindowLocation: (location: "top" | "bottom") => void
@@ -47,6 +48,7 @@ interface PrefsState {
     setTileSpacing: (tileSpacing: number) => void
     setDebounceTime: (value: number | undefined) => void
     setBackButton: (value: BackButton) => void
+    setDefaultBoardId: (value: string | undefined) => void
     importPrefs: (prefs: unknown) => void
   }
 }
@@ -71,6 +73,7 @@ export const usePrefsStore = create<PrefsState>()(
       tileSpacing: defaultTileSpacing,
       debounceTime: undefined,
       backButton: defaultBackButton,
+      defaultBoardId: undefined,
       actions: {
         togglePlayOnPress: () => set({ playOnPress: !get().playOnPress }),
         setMessageWindowLocation: (location: "top" | "bottom") =>
@@ -89,6 +92,8 @@ export const usePrefsStore = create<PrefsState>()(
         setTileSpacing: (tileSpacing: number) => set({ tileSpacing }),
         setDebounceTime: (debounceTime) => set({ debounceTime }),
         setBackButton: (backButton: BackButton) => set({ backButton }),
+        setDefaultBoardId: (defaultBoardId: string | undefined) =>
+          set({ defaultBoardId }),
         importPrefs: (prefs: unknown) =>
           set(prefs as Partial<Omit<PrefsState, "actions">>),
       },
@@ -119,5 +124,6 @@ export const useShowBackspace = () => usePrefsStore((s) => s.showBackspace)
 export const useTileSpacing = () => usePrefsStore((s) => s.tileSpacing)
 export const useDebounceTime = () => usePrefsStore((s) => s.debounceTime)
 export const useBackButton = () => usePrefsStore((s) => s.backButton)
+export const useDefaultBoardId = () => usePrefsStore((s) => s.defaultBoardId)
 
 export const usePrefsActions = () => usePrefsStore((s) => s.actions)
