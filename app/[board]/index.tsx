@@ -6,6 +6,7 @@ import { ActivityIndicator, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import MessageWindow from "../components/MessageWindow"
 import Page from "../components/Page"
+import PageAddSheet from "../components/PageAddSheet"
 import PageNav from "../components/PageNav"
 import {
   useBoards,
@@ -13,7 +14,7 @@ import {
   usePagesetActions,
 } from "../stores/boards"
 import { useDebounceTime, useMessageWindowLocation } from "../stores/prefs"
-import { getHomePageId } from "../utils/boards"
+import { generateNewPage, getHomePageId } from "../utils/boards"
 import { DebounceContext, handleDebounce } from "../utils/debounce"
 import { handleError } from "../utils/error"
 import { loadBoard, saveBoard } from "../utils/file"
@@ -54,6 +55,7 @@ export default function Board() {
     usePagesetActions()
   const [tree, setTree] = useState<BoardTree>()
   const pageNavSheet = useRef<TrueSheet>(null)
+  const pageAddSheet = useRef<TrueSheet>(null)
 
   useEffect(
     () => setCurrentBoardId(board as string),
@@ -78,7 +80,8 @@ export default function Board() {
         handleError(e)
       }
     })()
-  }, [uri, currentPageId, navigateToPage])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uri])
 
   const page = useMemo(() => {
     if (!tree || !currentPageId) return
@@ -118,7 +121,10 @@ export default function Board() {
     }
   }, [tree])
 
-  const navigateHome = () => homePageId && navigateToPage(homePageId)
+  const navigateHome = useCallback(
+    () => homePageId && navigateToPage(homePageId),
+    [homePageId, navigateToPage],
+  )
 
   const buttons = useMemo(() => {
     if (!tree) return []
@@ -143,6 +149,47 @@ export default function Board() {
     }))
   }, [tree])
 
+  const deletePage = () => {
+    if (!uri) return handleError("Could not delete page - file not defined")
+    if (!tree) return handleError("Could not delete page - tree does not exist")
+    if (!currentPageId)
+      return handleError("Could not delete page - ID undefined")
+    if (currentPageId === tree.metadata.defaultHomePageId)
+      return handleError("Cannot delete default page")
+    if (!(currentPageId in tree.pages))
+      return handleError("Could not find page to delete")
+
+    console.log("Deleting page", currentPageId)
+    const { [currentPageId]: _, ...pages } = tree.pages
+    console.log("tree without", pages)
+    const newTree = {
+      ...tree,
+      pages,
+    }
+    saveBoard(uri, newTree)
+    setTree(newTree)
+    navigateHome()
+  }
+
+  const setDefaultPageId = (defaultHomePageId: string) => {
+    if (!uri)
+      return handleError("Could not set default page - file not defined")
+    if (!tree)
+      return handleError("Could not set default page - tree does not exist")
+    if (!(defaultHomePageId in tree.pages))
+      return handleError("Could not set default page - page ID not found")
+    const newTree = {
+      ...tree,
+      metadata: {
+        ...tree.metadata,
+        defaultHomePageId,
+        name: tree.pages[defaultHomePageId].name,
+      },
+    }
+    saveBoard(uri, newTree)
+    setTree(newTree)
+  }
+
   const messageWindow = (
     <MessageWindow
       navigateHome={navigateHome}
@@ -152,6 +199,10 @@ export default function Board() {
       pageTitle={page?.name}
       setPageTitle={(name) => page && name && savePage({ ...page, name })}
       openPageNav={() => pageNavSheet.current?.present()}
+      deletePage={deletePage}
+      defaultPageId={tree?.metadata.defaultHomePageId}
+      setDefaultPageId={setDefaultPageId}
+      openAddPage={() => pageAddSheet.current?.present()}
     />
   )
 
@@ -168,6 +219,24 @@ export default function Board() {
       name: page.name,
     }))
   }, [tree])
+
+  const addPage = async (name: string, rows: number, cols: number) => {
+    if (!uri) return handleError("Could not add page - file not defined")
+    if (!tree) return handleError("Could not add page - tree does not exist")
+    if (!currentPageId)
+      return handleError("Could not add page - current page not found")
+    const page = generateNewPage(rows, cols, currentPageId, name)
+    const pages = { ...tree.pages }
+    pages[page.id] = page
+    const newTree = {
+      ...tree,
+      pages,
+    }
+    saveBoard(uri, newTree)
+    setTree(newTree)
+    navigateToPage(page.id)
+    pageAddSheet.current?.dismiss()
+  }
 
   return (
     <DebounceContext value={debounce}>
@@ -194,6 +263,7 @@ export default function Board() {
         {messageWindowLocation === "bottom" && messageWindow}
       </SafeAreaView>
       <PageNav ref={pageNavSheet} pages={pages} />
+      <PageAddSheet ref={pageAddSheet} onAdd={addPage} />
     </DebounceContext>
   )
 }

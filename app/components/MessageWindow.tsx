@@ -7,15 +7,19 @@ import {
   CopyCheck,
   Delete,
   EllipsisVertical,
+  Forward,
   Home,
-  Layers,
   LibraryBig,
+  Plus,
+  Star,
+  Trash2,
   X,
 } from "lucide-react-native"
 import { useEffect, useRef, useState } from "react"
 import { Platform, ScrollView, View } from "react-native"
 import { useSpeak } from "../stores/audio"
 import {
+  useCurrentPageId,
   useCustomMessages,
   useEditMode,
   useMessageButtonsIds,
@@ -32,6 +36,7 @@ import {
 import { useDebounce } from "../utils/debounce"
 import { HEADER_HEIGHT, ICON_SIZE, PADDING, useTheme } from "../utils/theme"
 import { BoardButton } from "../utils/types"
+import DialogConfirm from "./DialogConfirm"
 import PageOptions from "./PageOptions"
 import PageTitle from "./PageTitle"
 import { Button, Text } from "./Styled"
@@ -45,6 +50,10 @@ export default function MessageWindow({
   pageTitle,
   setPageTitle,
   openPageNav,
+  deletePage,
+  defaultPageId,
+  setDefaultPageId,
+  openAddPage,
 }: {
   navigateHome: () => void
   navigateBack: () => void
@@ -53,11 +62,18 @@ export default function MessageWindow({
   pageTitle?: string
   setPageTitle: (title: string | undefined) => void
   openPageNav: () => void
+  deletePage: () => void
+  defaultPageId?: string
+  setDefaultPageId: (id: string) => void
+  openAddPage: () => void
 }) {
   const theme = useTheme()
   const debounce = useDebounce()
   const optionsSheet = useRef<TrueSheet>(null)
   const [copied, setCopied] = useState(false)
+  const [showSetDefaultPageDialog, setShowSetDefaultPageDialog] =
+    useState(false)
+  const [showDeletePageDialog, setShowDeletePageDialog] = useState(false)
   const scrollView = useRef<ScrollView>(null)
   const messageButtonsIds = useMessageButtonsIds()
   const clearMessageOnPlay = useClearMessageOnPlay()
@@ -68,6 +84,7 @@ export default function MessageWindow({
   const editMode = useEditMode()
   const customMessages = useCustomMessages()
   const backButton = useBackButton()
+  const currentPageId = useCurrentPageId()
   const {
     removeLastMessageButtonId,
     clearMessageButtonIds,
@@ -76,6 +93,9 @@ export default function MessageWindow({
   } = usePagesetActions()
   const speak = useSpeak()
   const { replace } = useRouter()
+  const isDefaultPage =
+    defaultPageId !== undefined && defaultPageId === currentPageId
+  console.log({ isDefaultPage, defaultPageId, currentPageId })
 
   const hasMessage = messageButtonsIds.length > 0
   const showSymbols = buttonView === "both" || buttonView === "symbol"
@@ -134,9 +154,36 @@ export default function MessageWindow({
           }}
         >
           {editMode && (
-            <Button variant="ghost" onPress={openPageNav}>
-              <Layers size={ICON_SIZE.xl} color={theme.onSurface} />
-            </Button>
+            <>
+              <Button variant="ghost" onPress={openAddPage}>
+                <Plus size={ICON_SIZE.xl} color={theme.onSurface} />
+              </Button>
+              <Button
+                variant="ghost"
+                onPress={() => setShowDeletePageDialog(true)}
+                disabled={isDefaultPage}
+              >
+                <Trash2
+                  size={ICON_SIZE.xl}
+                  color={isDefaultPage ? theme.outline : theme.onSurface}
+                />
+              </Button>
+              <Button
+                variant="ghost"
+                onPress={() => setShowSetDefaultPageDialog(true)}
+                disabled={isDefaultPage}
+              >
+                <Star
+                  size={ICON_SIZE.xl}
+                  color={isDefaultPage ? theme.outline : theme.onSurface}
+                  fill={theme.outline}
+                  fillOpacity={isDefaultPage ? 1 : 0}
+                />
+              </Button>
+              <Button variant="ghost" onPress={openPageNav}>
+                <Forward size={ICON_SIZE.xl} color={theme.onSurface} />
+              </Button>
+            </>
           )}
           {!editMode && (
             <>
@@ -277,6 +324,25 @@ export default function MessageWindow({
         ref={optionsSheet}
         copyMessage={hasMessage ? copyMessage : undefined}
         openPageNav={openPageNav}
+      />
+      <DialogConfirm
+        visible={showSetDefaultPageDialog}
+        message="Are you sure you want to set this as the starting page in this board?"
+        onCancel={() => setShowSetDefaultPageDialog(false)}
+        onConfirm={() => {
+          if (currentPageId) setDefaultPageId(currentPageId)
+          setShowSetDefaultPageDialog(false)
+        }}
+        confirmLabel="Yes"
+      />
+      <DialogConfirm
+        visible={showDeletePageDialog}
+        message="Are you sure you want to delete this page?"
+        onCancel={() => setShowDeletePageDialog(false)}
+        onConfirm={() => {
+          deletePage()
+          setShowDeletePageDialog(false)
+        }}
       />
     </>
   )
