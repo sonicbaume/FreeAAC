@@ -1,5 +1,9 @@
 import { Link, useRouter } from "expo-router"
-import { FilePlusCorner, Import, PackageOpen } from "lucide-react-native"
+import {
+  FilePlusCorner,
+  PackageOpen,
+  SquareArrowRightEnter
+} from "lucide-react-native"
 import { useTransition } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
@@ -73,7 +77,10 @@ export default function Index() {
                 </Button>
               </Link>
               <Button variant="ghost" onPress={openFile}>
-                <Import size={ICON_SIZE.md} color={theme.onSurface} />
+                <SquareArrowRightEnter
+                  size={ICON_SIZE.md}
+                  color={theme.onSurface}
+                />
               </Button>
             </View>
           </View>

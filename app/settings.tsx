@@ -7,11 +7,12 @@ import { getAvailableVoicesAsync } from "expo-speech"
 import {
   Bug,
   Hand,
+  History,
   Info,
   Lightbulb,
-  List,
   LucideIcon,
   Monitor,
+  Save,
   Shield,
   Speech,
 } from "lucide-react-native"
@@ -32,6 +33,7 @@ import {
   buttonViewOptions,
   SpeechEngine,
   speechEngines,
+  useAllPrefs,
   useBackButton,
   useButtonView,
   useClearMessageOnPlay,
@@ -47,6 +49,7 @@ import {
   useTileSpacing,
 } from "./stores/prefs"
 import {
+  appName,
   BackButton,
   backButtonValues,
   debounceValues,
@@ -56,7 +59,7 @@ import {
   tileSpacingValues,
 } from "./utils/consts"
 import { handleError } from "./utils/error"
-import { exportLogs } from "./utils/file"
+import { exportLogs, saveObjectAs } from "./utils/file"
 import {
   FONT_SIZE,
   GAP,
@@ -123,6 +126,7 @@ export default function Settings() {
   const locales = useLocales()
   const shouldLog = useShouldLog()
   const logHistory = useHistory()
+  const { actions, ...allPrefs } = useAllPrefs()
   const {
     togglePlayOnPress,
     setMessageWindowLocation,
@@ -332,7 +336,7 @@ export default function Settings() {
               setDebounceTime(value ? parseFloat(value) : undefined)
             }
           />
-          <SettingsHeader title="Logging" icon={List} />
+          <SettingsHeader title="Logging" icon={History} />
           <SettingsItem
             title="Log events"
             description="Record a history of interactions"
@@ -353,6 +357,21 @@ export default function Settings() {
             type="button"
             label="Delete logs"
             onPress={() => setShowDeleteLogsDialog(true)}
+          />
+          <SettingsHeader title="Backup" icon={Save} />
+          <SettingsItem
+            title="Export preferences"
+            description="Save user preferences to a file"
+            type="button"
+            label="Export prefs"
+            onPress={() => saveObjectAs(allPrefs, `${appName}_prefs.json`)}
+          />
+          <SettingsItem
+            title="Import preferences"
+            description="Restore user preferences from a file"
+            type="button"
+            label="Import prefs"
+            onPress={() => handleError("not yet implemented")}
           />
           <SettingsHeader title="About" icon={Info} />
           <View style={{ padding: PADDING.lg, display: "flex", gap: GAP.lg }}>

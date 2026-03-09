@@ -1,5 +1,9 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
-import { Download, Pencil, Trash2 } from "lucide-react-native"
+import {
+  Pencil,
+  SquareArrowRightExit,
+  Trash2
+} from "lucide-react-native"
 import { useState, useTransition } from "react"
 import { ActivityIndicator } from "react-native"
 import { useBoards, usePagesetActions } from "../stores/boards"
@@ -61,11 +65,12 @@ export default function BoardOptions({
         <SheetItem
           label={`Export as file ${ext ? `(.${ext})` : ""}`}
           icon={
-            isExporting ? (
+            isExporting ?
               <ActivityIndicator size="small" color={theme.onSurface} />
-            ) : (
-              <Download size={ICON_SIZE.lg} color={theme.onSurface} />
-            )
+            : <SquareArrowRightExit
+                size={ICON_SIZE.lg}
+                color={theme.onSurface}
+              />
           }
           onPress={handleExport}
         />

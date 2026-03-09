@@ -163,6 +163,16 @@ export const deleteBoard = async (uri: string) => {
   await removePath(uri)
 }
 
+export const saveObjectAs = async (
+  object: unknown,
+  name: string,
+): Promise<void> => {
+  const data = new Blob([JSON.stringify(object)], {
+    type: "application/json",
+  })
+  await saveAs(data, name)
+}
+
 export const exportBoard = async (uri: string, name: string) => {
   const ext = getFileExt(uri)
   await saveAs(uri, `${name}.${ext}`)
@@ -175,8 +185,5 @@ export const exportLogs = async (entries: HistoryEntry[]) => {
     }
   }
   const oblObject = OblUtil.fromHistoryEntries(entries, "user", appName)
-  const oblData = new Blob([JSON.stringify(oblObject)], {
-    type: "application/json",
-  })
-  await saveAs(oblData, `${appName}_logs.obl`)
+  await saveObjectAs(oblObject, `${appName}_logs.obl`)
 }
