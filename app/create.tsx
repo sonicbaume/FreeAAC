@@ -31,7 +31,7 @@ export default function Create() {
           paddingBottom: 200,
         }}
       >
-        <PageAdd onPress={createBoard} />
+        <PageAdd onPress={createBoard} defaultName="New board" />
       </View>
     </ScrollView>
   )

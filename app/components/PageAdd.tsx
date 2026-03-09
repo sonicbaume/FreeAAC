@@ -12,13 +12,15 @@ import { Button, Text } from "./Styled"
 
 export default function PageAdd({
   onPress,
+  defaultName,
 }: {
   onPress: (name: string, rows: number, cols: number) => Promise<void>
+  defaultName: string
 }) {
   const theme = useTheme()
   const [rows, setRows] = useState(defaultRowValue)
   const [cols, setCols] = useState(defaultColValue)
-  const [name, setName] = useState("New board")
+  const [name, setName] = useState(defaultName)
   return (
     <>
       <Text>Name</Text>

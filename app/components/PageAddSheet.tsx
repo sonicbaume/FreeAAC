@@ -24,7 +24,7 @@ export default function PageAddSheet({
         <Text style={{ fontSize: FONT_SIZE.lg, textAlign: "center" }}>
           Add page
         </Text>
-        <PageAdd onPress={onAdd} />
+        <PageAdd onPress={onAdd} defaultName="New page" />
       </View>
     </TrueSheet>
   )
