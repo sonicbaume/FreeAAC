@@ -2,11 +2,7 @@ import { HistoryEntry } from "@willwade/aac-processors/analytics"
 import { nanoid } from "nanoid/non-secure"
 import { create } from "zustand"
 import { createJSONStorage, persist } from "zustand/middleware"
-import {
-  LogEvent,
-  parseLogContent,
-  parseLogEvent
-} from "../utils/logging"
+import { LogEvent, parseLogContent, parseLogEvent } from "../utils/logging"
 import { zustandStorage } from "./middleware"
 
 const generateEntry = (content: string): HistoryEntry => {
