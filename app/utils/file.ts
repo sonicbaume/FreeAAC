@@ -81,7 +81,9 @@ export const getFileExt = (name: string): string => {
 
 export const getFileType = (ext: string): { mimeType: string; UTI: string } => {
   switch (ext) {
+    case "json":
     case "obf":
+    case "obl":
     case "grd":
       return { mimeType: "application/json", UTI: "public.json" }
     case "obz":
@@ -97,8 +99,6 @@ export const getFileType = (ext: string): { mimeType: string; UTI: string } => {
       return { mimeType: "application/octet-stream", UTI: "public.data" }
     case "plist":
       return { mimeType: "application/x-plist", UTI: "com.apple.property-list" }
-    case "json":
-      return { mimeType: "application/json", UTI: "public.json" }
     default:
       throw new Error(`Unknown file extension: ${ext}`)
   }
