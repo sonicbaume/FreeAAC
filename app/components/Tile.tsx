@@ -3,17 +3,22 @@ import { StyleSheet, View } from "react-native"
 import Sortable from "react-native-sortables"
 import { useButtonView, useLabelLocation } from "../stores/prefs"
 import { useDebounce } from "../utils/debounce"
-import { PADDING, RADIUS } from "../utils/theme"
+import { PADDING, RADIUS, useTheme } from "../utils/theme"
 import { BoardButton } from "../utils/types"
 import { Text } from "./Styled"
 import TileImage from "./TileImage"
 
 const Label = ({ text, style }: { text: string; style?: AACStyle }) => {
+  const theme = useTheme()
+  const color =
+    style?.fontColor ? style?.fontColor
+    : style?.backgroundColor ? "#000"
+    : theme.onSurface
   return (
     <Text
       style={{
         ...styles.label,
-        color: style?.fontColor ?? "#000",
+        color,
         fontSize: style?.fontSize,
       }}
     >
@@ -41,11 +46,9 @@ export default function Tile({
   const isHidden = button.visibility === "Hidden"
   const isLink = button.semanticAction?.targetId !== undefined
   const labelJustify =
-    buttonView === "text"
-      ? "center"
-      : labelLocation === "bottom"
-        ? "flex-end"
-        : "flex-start"
+    buttonView === "text" ? "center"
+    : labelLocation === "bottom" ? "flex-end"
+    : "flex-start"
 
   const handlePress = () => {
     debounce(() => onPress(button, index))
