@@ -47,7 +47,7 @@ interface PrefsState {
     setTileSpacing: (tileSpacing: number) => void
     setDebounceTime: (value: number | undefined) => void
     setBackButton: (value: BackButton) => void
-    importPrefs: (prefs: Partial<Omit<PrefsState, "actions">>) => void
+    importPrefs: (prefs: unknown) => void
   }
 }
 
@@ -89,8 +89,8 @@ export const usePrefsStore = create<PrefsState>()(
         setTileSpacing: (tileSpacing: number) => set({ tileSpacing }),
         setDebounceTime: (debounceTime) => set({ debounceTime }),
         setBackButton: (backButton: BackButton) => set({ backButton }),
-        importPrefs: (prefs: Partial<Omit<PrefsState, "actions">>) =>
-          set(prefs),
+        importPrefs: (prefs: unknown) =>
+          set(prefs as Partial<Omit<PrefsState, "actions">>),
       },
     }),
     {

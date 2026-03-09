@@ -59,7 +59,7 @@ import {
   tileSpacingValues,
 } from "./utils/consts"
 import { handleError } from "./utils/error"
-import { exportLogs, saveObjectAs } from "./utils/file"
+import { exportLogs, importPrefsFile, saveObjectAs } from "./utils/file"
 import {
   FONT_SIZE,
   GAP,
@@ -140,6 +140,7 @@ export default function Settings() {
     setTileSpacing,
     setDebounceTime,
     setBackButton,
+    importPrefs,
   } = usePrefsActions()
   const { toggleShouldLog, deleteLogs } = usePagesetActions()
   const [voices, setVoices] = useState<
@@ -185,6 +186,11 @@ export default function Settings() {
       }
     })()
   }, [locales, setSpeechOptions, speechOptions.engine, speechOptions.voice])
+
+  const handleImportPrefs = async () => {
+    const prefs = await importPrefsFile()
+    importPrefs(prefs)
+  }
 
   return (
     <>
@@ -336,6 +342,21 @@ export default function Settings() {
               setDebounceTime(value ? parseFloat(value) : undefined)
             }
           />
+          <SettingsHeader title="Backup" icon={Save} />
+          <SettingsItem
+            title="Export preferences"
+            description="Save user preferences to a file"
+            type="button"
+            label="Export prefs"
+            onPress={() => saveObjectAs(allPrefs, `${appName}_prefs.json`)}
+          />
+          <SettingsItem
+            title="Import preferences"
+            description="Restore user preferences from a file"
+            type="button"
+            label="Import prefs"
+            onPress={handleImportPrefs}
+          />
           <SettingsHeader title="Logging" icon={History} />
           <SettingsItem
             title="Log events"
@@ -357,21 +378,6 @@ export default function Settings() {
             type="button"
             label="Delete logs"
             onPress={() => setShowDeleteLogsDialog(true)}
-          />
-          <SettingsHeader title="Backup" icon={Save} />
-          <SettingsItem
-            title="Export preferences"
-            description="Save user preferences to a file"
-            type="button"
-            label="Export prefs"
-            onPress={() => saveObjectAs(allPrefs, `${appName}_prefs.json`)}
-          />
-          <SettingsItem
-            title="Import preferences"
-            description="Restore user preferences from a file"
-            type="button"
-            label="Import prefs"
-            onPress={() => handleError("not yet implemented")}
           />
           <SettingsHeader title="About" icon={Info} />
           <View style={{ padding: PADDING.lg, display: "flex", gap: GAP.lg }}>

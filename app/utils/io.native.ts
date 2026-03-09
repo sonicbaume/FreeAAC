@@ -48,12 +48,10 @@ export const mkTempDir = async (prefix: string): Promise<string> => {
   return tempDir.name
 }
 
-export const getAssetData = async (
-  asset: DocumentPickerAsset,
-): Promise<Uint8Array> => {
+export const getFileFromDocument = (asset: DocumentPickerAsset): File => {
   const file = new File(asset.uri)
   if (!file) throw new Error("Could not read file")
-  return await file.bytes()
+  return file
 }
 
 export const saveFile = async (

@@ -11,7 +11,7 @@ import {
 import { nanoid } from "nanoid/non-secure"
 import { appName } from "./consts"
 import {
-  getAssetData,
+  getFileFromDocument,
   getFileSize,
   isDirectory,
   listDir,
@@ -101,7 +101,7 @@ export const getFileType = (ext: string): { mimeType: string; UTI: string } => {
   }
 }
 
-export const selectFile = async (): Promise<
+export const importBoardFile = async (): Promise<
   { id: string; uri: string } | undefined
 > => {
   const result = await DocumentPicker.getDocumentAsync({
@@ -109,12 +109,24 @@ export const selectFile = async (): Promise<
   })
   const asset = result.assets?.at(0)
   if (!asset) return undefined
-  const data = await getAssetData(asset)
+  const file = getFileFromDocument(asset)
+  const data = await file.bytes()
   const ext = getFileExt(asset.name)
   const id = uuid()
   const fileName = `${id}.${ext}`
   const uri = await saveFile(fileName, data)
   return { id, uri }
+}
+
+export const importPrefsFile = async (): Promise<unknown> => {
+  const result = await DocumentPicker.getDocumentAsync({
+    copyToCacheDirectory: true,
+  })
+  const asset = result.assets?.at(0)
+  if (!asset) return undefined
+  const file = getFileFromDocument(asset)
+  const text = await file.text()
+  return JSON.parse(text)
 }
 
 export const selectImage = async (
