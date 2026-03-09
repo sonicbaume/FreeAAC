@@ -1,9 +1,9 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import { RefObject } from "react"
 import { View } from "react-native"
-import { FONT_SIZE, GAP, PADDING, useTheme } from "../utils/theme"
+import { FONT_SIZE, GAP, PADDING, useTheme } from "../../utils/theme"
+import { Text } from "../Styled"
 import PageAdd from "./PageAdd"
-import { Text } from "./Styled"
 
 export default function PageAddSheet({
   ref,

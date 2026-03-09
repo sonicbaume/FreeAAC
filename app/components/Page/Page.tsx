@@ -6,22 +6,21 @@ import Sortable, {
   SortableGridDragEndCallback,
   type SortableGridRenderItem,
 } from "react-native-sortables"
-import { EditTile } from "../[board]"
-import { useSpeak } from "../stores/audio"
-import { useEditMode, usePagesetActions } from "../stores/boards"
+import { EditTile } from "../../[board]"
+import { useSpeak } from "../../stores/audio"
+import { useEditMode, usePagesetActions } from "../../stores/boards"
 import {
   useGoHomeOnPress,
   usePlayOnPress,
   useTileSpacing,
-} from "../stores/prefs"
-import { generateNewButton } from "../utils/boards"
-import { GAP, useTheme } from "../utils/theme"
-import { BoardButton, BoardPage } from "../utils/types"
-import { uuid } from "../utils/uuid"
-import Tile from "./Tile"
-import TileAdd from "./TileAdd"
-import TileEditor from "./TileEditor"
-
+} from "../../stores/prefs"
+import { generateNewButton } from "../../utils/boards"
+import { GAP, useTheme } from "../../utils/theme"
+import { BoardButton, BoardPage } from "../../utils/types"
+import { uuid } from "../../utils/uuid"
+import Tile from "../Tile/Tile"
+import TileAdd from "../Tile/TileAdd"
+import TileEditor from "../Tile/TileEditor"
 const getGridPosition = (index: number, rows: number, cols: number) => {
   const row = Math.floor(index / cols)
   const col = index - row * cols

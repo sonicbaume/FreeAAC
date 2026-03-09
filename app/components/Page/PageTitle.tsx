@@ -1,9 +1,9 @@
 import { useState } from "react"
 import { Pressable, StyleSheet } from "react-native"
-import { useEditMode } from "../stores/boards"
-import { FONT_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme"
-import DialogRename from "./DialogRename"
-import { Text } from "./Styled"
+import { useEditMode } from "../../stores/boards"
+import { FONT_SIZE, PADDING, RADIUS, useTheme } from "../../utils/theme"
+import DialogRename from "../DialogRename"
+import { Text } from "../Styled"
 
 export default function PageTitle({
   title,

@@ -7,7 +7,7 @@ import {
 import { useTransition } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import BoardList from "./components/BoardList"
+import BoardList from "./components/Board/BoardList"
 import { Button, Text } from "./components/Styled"
 import { usePagesetActions } from "./stores/boards"
 import { handleError } from "./utils/error"

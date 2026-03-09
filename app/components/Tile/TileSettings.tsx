@@ -3,12 +3,12 @@ import {
   AACSemanticIntent,
 } from "@willwade/aac-processors/browser"
 import { ScrollView, StyleSheet, TextInput, View } from "react-native"
-import { ButtonVisibility, buttonVisibilityValues } from "../utils/consts"
-import { FONT_SIZE, PADDING, RADIUS, useTheme } from "../utils/theme"
-import { BoardButton } from "../utils/types"
-import ColorPicker from "./ColorPicker"
-import SheetPicker from "./SheetPicker"
-import { Text } from "./Styled"
+import { ButtonVisibility, buttonVisibilityValues } from "../../utils/consts"
+import { FONT_SIZE, PADDING, RADIUS, useTheme } from "../../utils/theme"
+import { BoardButton } from "../../utils/types"
+import ColorPicker from "../ColorPicker"
+import SheetPicker from "../SheetPicker"
+import { Text } from "../Styled"
 import TileDelete from "./TileDelete"
 
 type PageName = {
@@ -33,8 +33,9 @@ export default function TileSettings({
     setButton({
       ...button,
       message,
-      semanticAction: button.semanticAction
-        ? { ...button.semanticAction, text: message }
+      semanticAction:
+        button.semanticAction ?
+          { ...button.semanticAction, text: message }
         : undefined,
     })
   }

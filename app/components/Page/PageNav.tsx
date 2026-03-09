@@ -1,9 +1,9 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import { RefObject } from "react"
 import { ScrollView } from "react-native"
-import { usePagesetActions } from "../stores/boards"
-import { PADDING, useTheme } from "../utils/theme"
-import SheetItem from "./SheetItem"
+import { usePagesetActions } from "../../stores/boards"
+import { PADDING, useTheme } from "../../utils/theme"
+import SheetItem from "../SheetItem"
 
 export default function PageNav({
   ref,

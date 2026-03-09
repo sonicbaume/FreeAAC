@@ -5,10 +5,10 @@ import {
   defaultColValue,
   defaultRowValue,
   rowValues,
-} from "../utils/consts"
-import { GAP, PADDING, RADIUS, useTheme } from "../utils/theme"
-import SheetPicker from "./SheetPicker"
-import { Button, Text } from "./Styled"
+} from "../../utils/consts"
+import { GAP, PADDING, RADIUS, useTheme } from "../../utils/theme"
+import SheetPicker from "../SheetPicker"
+import { Button, Text } from "../Styled"
 
 export default function PageAdd({
   onPress,

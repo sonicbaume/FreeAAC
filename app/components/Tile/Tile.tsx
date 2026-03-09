@@ -1,11 +1,11 @@
+import { useButtonView, useLabelLocation } from "@/app/stores/prefs"
+import { useDebounce } from "@/app/utils/debounce"
+import { PADDING, RADIUS, useTheme } from "@/app/utils/theme"
+import { BoardButton } from "@/app/utils/types"
 import { AACButton, AACStyle } from "@willwade/aac-processors/browser"
 import { StyleSheet, View } from "react-native"
 import Sortable from "react-native-sortables"
-import { useButtonView, useLabelLocation } from "../stores/prefs"
-import { useDebounce } from "../utils/debounce"
-import { PADDING, RADIUS, useTheme } from "../utils/theme"
-import { BoardButton } from "../utils/types"
-import { Text } from "./Styled"
+import { Text } from "../Styled"
 import TileImage from "./TileImage"
 
 const Label = ({ text, style }: { text: string; style?: AACStyle }) => {

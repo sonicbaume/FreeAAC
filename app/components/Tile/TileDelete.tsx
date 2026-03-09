@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { useTheme } from "../utils/theme"
-import DialogConfirm from "./DialogConfirm"
-import { Button, Text } from "./Styled"
+import { useTheme } from "../../utils/theme"
+import DialogConfirm from "../DialogConfirm"
+import { Button, Text } from "../Styled"
 
 export default function TileDelete({ onPress }: { onPress: () => void }) {
   const theme = useTheme()

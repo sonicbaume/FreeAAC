@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, View } from "react-native"
 import Sortable, { SortableGridRenderItem } from "react-native-sortables"
-import BoardCard from "./components/BoardCard"
+import BoardCard from "./components/Board/BoardCard"
 import { BoardTemplate, templates } from "./utils/consts"
 import { GAP, MAX_WIDTH, PADDING, useTheme } from "./utils/theme"
 

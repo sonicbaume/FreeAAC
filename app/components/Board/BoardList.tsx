@@ -3,10 +3,10 @@ import { useRouter } from "expo-router"
 import { Ellipsis } from "lucide-react-native"
 import { useRef, useState } from "react"
 import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native"
-import { useBoards, useBoardsLoaded } from "../stores/boards"
-import { FONT_SIZE, GAP, ICON_SIZE, useTheme } from "../utils/theme"
+import { useBoards, useBoardsLoaded } from "../../stores/boards"
+import { FONT_SIZE, GAP, ICON_SIZE, useTheme } from "../../utils/theme"
+import { Button, Text } from "../Styled"
 import BoardOptions from "./BoardOptions"
-import { Button, Text } from "./Styled"
 
 export default function BoardList() {
   const sheetRef = useRef<TrueSheet>(null)

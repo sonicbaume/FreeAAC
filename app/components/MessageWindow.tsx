@@ -37,10 +37,10 @@ import { useDebounce } from "../utils/debounce"
 import { HEADER_HEIGHT, ICON_SIZE, PADDING, useTheme } from "../utils/theme"
 import { BoardButton } from "../utils/types"
 import DialogConfirm from "./DialogConfirm"
-import PageOptions from "./PageOptions"
-import PageTitle from "./PageTitle"
+import PageOptions from "./Page/PageOptions"
+import PageTitle from "./Page/PageTitle"
 import { Button, Text } from "./Styled"
-import TileImage from "./TileImage"
+import TileImage from "./Tile/TileImage"
 
 export default function MessageWindow({
   navigateHome,

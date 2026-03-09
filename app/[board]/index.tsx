@@ -5,9 +5,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { ActivityIndicator, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import MessageWindow from "../components/MessageWindow"
-import Page from "../components/Page"
-import PageAddSheet from "../components/PageAddSheet"
-import PageNav from "../components/PageNav"
+import Page from "../components/Page/Page"
+import PageAddSheet from "../components/Page/PageAddSheet"
+import PageNav from "../components/Page/PageNav"
 import {
   useBoards,
   useCurrentPageId,

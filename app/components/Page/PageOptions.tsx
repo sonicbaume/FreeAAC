@@ -11,12 +11,12 @@ import {
 } from "lucide-react-native"
 import { useState } from "react"
 import { Platform } from "react-native"
-import { useCurrentPageId, usePagesetActions } from "../stores/boards"
-import { usePlayOnPress } from "../stores/prefs"
-import { generateNewButton } from "../utils/boards"
-import { ICON_SIZE, PADDING, useTheme } from "../utils/theme"
-import DialogRename from "./DialogRename"
-import SheetItem from "./SheetItem"
+import { useCurrentPageId, usePagesetActions } from "../../stores/boards"
+import { usePlayOnPress } from "../../stores/prefs"
+import { generateNewButton } from "../../utils/boards"
+import { ICON_SIZE, PADDING, useTheme } from "../../utils/theme"
+import DialogRename from "../DialogRename"
+import SheetItem from "../SheetItem"
 
 export default function PageOptions({
   ref,

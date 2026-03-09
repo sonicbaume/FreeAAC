@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react-native"
 import { Pressable, StyleSheet } from "react-native"
-import { ICON_SIZE, RADIUS, useTheme } from "../utils/theme"
+import { ICON_SIZE, RADIUS, useTheme } from "../../utils/theme"
 
 export default function TileAdd({
   onPress,

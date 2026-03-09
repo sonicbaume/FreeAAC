@@ -4,11 +4,15 @@ import { Link, useRouter } from "expo-router"
 import { Download } from "lucide-react-native"
 import { useTransition } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
-import { usePagesetActions } from "../stores/boards"
-import { BoardTemplate, licenseImageMap, licenseLinkMap } from "../utils/consts"
-import { downloadFile } from "../utils/io"
-import { FONT_SIZE, GAP, MAX_WIDTH, RADIUS, useTheme } from "../utils/theme"
-import { Button, Text } from "./Styled"
+import { usePagesetActions } from "../../stores/boards"
+import {
+  BoardTemplate,
+  licenseImageMap,
+  licenseLinkMap,
+} from "../../utils/consts"
+import { downloadFile } from "../../utils/io"
+import { FONT_SIZE, GAP, MAX_WIDTH, RADIUS, useTheme } from "../../utils/theme"
+import { Button, Text } from "../Styled"
 
 export default function BoardCard({ board }: { board: BoardTemplate }) {
   const theme = useTheme()

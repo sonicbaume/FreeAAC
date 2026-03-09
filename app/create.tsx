@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router"
 import { ScrollView, StyleSheet, View } from "react-native"
-import PageAdd from "./components/PageAdd"
+import PageAdd from "./components/Page/PageAdd"
 import { usePagesetActions } from "./stores/boards"
 import { generateNewBoard } from "./utils/boards"
 import { saveBoard } from "./utils/file"

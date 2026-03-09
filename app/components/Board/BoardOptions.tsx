@@ -1,18 +1,14 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
-import {
-  Pencil,
-  SquareArrowRightExit,
-  Trash2
-} from "lucide-react-native"
+import { Pencil, SquareArrowRightExit, Trash2 } from "lucide-react-native"
 import { useState, useTransition } from "react"
 import { ActivityIndicator } from "react-native"
-import { useBoards, usePagesetActions } from "../stores/boards"
-import { handleError } from "../utils/error"
-import { deleteBoard, exportBoard, getFileExt } from "../utils/file"
-import { ICON_SIZE, PADDING, useTheme } from "../utils/theme"
-import DialogConfirm from "./DialogConfirm"
-import DialogRename from "./DialogRename"
-import SheetItem from "./SheetItem"
+import { useBoards, usePagesetActions } from "../../stores/boards"
+import { handleError } from "../../utils/error"
+import { deleteBoard, exportBoard, getFileExt } from "../../utils/file"
+import { ICON_SIZE, PADDING, useTheme } from "../../utils/theme"
+import DialogConfirm from "../DialogConfirm"
+import DialogRename from "../DialogRename"
+import SheetItem from "../SheetItem"
 
 export default function BoardOptions({
   ref,
