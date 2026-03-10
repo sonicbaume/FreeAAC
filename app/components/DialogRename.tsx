@@ -60,11 +60,11 @@ export default function DialogRename({
               <Text>{cancelLabel}</Text>
             </Button>
             <Button
-              variant="destructive"
+              variant="secondary"
               onPress={() => onConfirm(text)}
               style={{ flex: 1 }}
             >
-              <Text style={{ color: theme.onError }}>{confirmLabel}</Text>
+              <Text style={{ color: theme.onSecondary }}>{confirmLabel}</Text>
             </Button>
           </View>
         </View>
