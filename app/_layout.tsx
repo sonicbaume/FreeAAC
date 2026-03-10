@@ -2,12 +2,14 @@ import { TrueSheetProvider } from "@lodev09/react-native-true-sheet"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useAssets } from "expo-asset"
 import { Image } from "expo-image"
-import { Stack } from "expo-router"
+import { Stack, useFocusEffect, useRouter } from "expo-router"
 import Head from "expo-router/head"
+import { useState } from "react"
 import { Platform, StyleSheet, useColorScheme, View } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import AudioController from "./components/AudioController"
 import SettingsButton from "./components/Settings/Button"
+import { useDefaultBoardId } from "./stores/prefs"
 import { appDescription, appName } from "./utils/consts"
 import { ICON_SIZE, ThemeContext, themes } from "./utils/theme"
 
@@ -20,6 +22,17 @@ export default function RootLayout() {
   const queryClient = new QueryClient()
   const themeId = useColorScheme() ?? "light"
   const theme = themes[themeId]
+  const router = useRouter()
+  const defaultBoardId = useDefaultBoardId()
+  const [firstLaunch, setFirstLaunch] = useState(true)
+
+  useFocusEffect(() => {
+    if (firstLaunch && defaultBoardId) {
+      console.log("redirecting to ", defaultBoardId)
+      router.push({ pathname: "/[board]", params: { board: defaultBoardId } })
+    }
+    setFirstLaunch(false)
+  })
 
   const styles = StyleSheet.create({
     header: {

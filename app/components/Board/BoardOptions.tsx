@@ -1,5 +1,6 @@
+import { useDefaultBoardId, usePrefsActions } from "@/app/stores/prefs"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
-import { Pencil, SquareArrowRightExit, Trash2 } from "lucide-react-native"
+import { Pencil, SquareArrowRightExit, Star, Trash2 } from "lucide-react-native"
 import { useState, useTransition } from "react"
 import { ActivityIndicator } from "react-native"
 import { useBoards, usePagesetActions } from "../../stores/boards"
@@ -20,6 +21,9 @@ export default function BoardOptions({
   const theme = useTheme()
   const boards = useBoards()
   const { removeBoard, renameBoard } = usePagesetActions()
+  const { setDefaultBoardId } = usePrefsActions()
+  const defaultBoardId = useDefaultBoardId()
+  const isDefaultBoard = defaultBoardId === boardId
   const [showRenameDialog, setShowRenameDialog] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [isExporting, startExporting] = useTransition()
@@ -58,6 +62,22 @@ export default function BoardOptions({
         backgroundColor={theme.surfaceContainer}
         style={{ padding: PADDING.xl }}
       >
+        <SheetItem
+          label="Open on app launch"
+          icon={
+            <Star
+              size={ICON_SIZE.lg}
+              color={theme.onSurface}
+              fill={theme.onSurface}
+              fillOpacity={isDefaultBoard ? 1 : 0}
+            />
+          }
+          onPress={() => {
+            if (isDefaultBoard) setDefaultBoardId(undefined)
+            else setDefaultBoardId(boardId)
+            ref.current?.dismiss()
+          }}
+        />
         <SheetItem
           label={`Export as file ${ext ? `(.${ext})` : ""}`}
           icon={
