@@ -5,11 +5,12 @@ import { Image } from "expo-image"
 import { Stack, useFocusEffect, useRouter } from "expo-router"
 import Head from "expo-router/head"
 import { useState } from "react"
-import { Platform, StyleSheet, useColorScheme, View } from "react-native"
+import { Platform, StyleSheet, View } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import AudioController from "./components/AudioController"
 import SettingsButton from "./components/Settings/Button"
 import { useDefaultBoardId } from "./stores/prefs"
+import { useColorScheme } from "./utils/colorScheme"
 import { appDescription, appName } from "./utils/consts"
 import { ICON_SIZE, ThemeContext, themes } from "./utils/theme"
 
@@ -20,7 +21,7 @@ export const unstable_settings = {
 export default function RootLayout() {
   const [assets] = useAssets([require("../assets/images/icon-64x64.png")])
   const queryClient = new QueryClient()
-  const themeId = useColorScheme() ?? "light"
+  const themeId = useColorScheme()
   const theme = themes[themeId]
   const router = useRouter()
   const defaultBoardId = useDefaultBoardId()
