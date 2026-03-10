@@ -1,3 +1,4 @@
+import { handleError } from "@/app/utils/error"
 import { useAssets } from "expo-asset"
 import { Image } from "expo-image"
 import { Link, useRouter } from "expo-router"
@@ -24,9 +25,14 @@ export default function BoardCard({ board }: { board: BoardTemplate }) {
 
   const load = () => {
     startLoading(async () => {
-      const { fileName, id } = await downloadFile(board.url)
-      addBoard({ id, uri: fileName, name: board.name })
-      replace({ pathname: "/[board]", params: { board: id } })
+      try {
+        const { fileName, id } = await downloadFile(board.url)
+        addBoard({ id, uri: fileName, name: board.name })
+        replace({ pathname: "/[board]", params: { board: id } })
+      } catch (e) {
+        console.error(e)
+        handleError("Unable to download file")
+      }
     })
   }
 
