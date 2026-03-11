@@ -120,7 +120,7 @@ export default function TileEditor({
   return (
     <TrueSheet
       ref={ref}
-      detents={Platform.OS === "web" ? [0.75] : [0.5, 0.75]}
+      detents={Platform.OS === "web" ? [0.75] : [0.5, 0.75, 1]}
       onWillDismiss={onClose}
       backgroundColor={theme.surface}
       scrollable
