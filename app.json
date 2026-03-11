@@ -2,8 +2,8 @@
   "expo": {
     "name": "FreeAAC",
     "slug": "FreeAAC",
-    "version": "0.1.0",
-    "orientation": "portrait",
+    "version": "0.2.0",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "freeaac",
     "userInterfaceStyle": "automatic",
