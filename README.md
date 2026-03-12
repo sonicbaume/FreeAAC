@@ -49,6 +49,8 @@ To achieve this, we plan to use:
 
 - 💬 [Offer feedback and suggestions](https://github.com/sonicbaume/FreeAAC/discussions) by up-voting, commenting on a discussion topic, or starting a discussion.
 
+- 💰 [Sponsor us](https://github.com/sponsors/sonicbaume) to financially support further development.
+
 ### AAC users can:
 
 - 🧪 Test our [iOS](https://testflight.apple.com/join/rAEtsbD6), [Android](https://play.google.com/store/apps/details?id=org.freeaac), and [web](https://free-aac.org) apps, report problems and offer feedback.
