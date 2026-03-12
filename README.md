@@ -1,14 +1,11 @@
-<img align="left" src="assets/images/icon-64x64.png" />
-
-# FreeAAC
+<p align="center">
+  <img src="assets/images/icon-64x64.png" />
+  <h1 align="center">FreeAAC</h1>
+</p>
 
 A free and open-source Augmentative and Alternative Communication (AAC) app for Android, iOS and web, built using React Native.
 
-### 🚀 Try our alpha release: **[Web](https://free-aac.org)** | **[Android](https://play.google.com/store/apps/details?id=org.freeaac)** | **[iOS](https://testflight.apple.com/join/rAEtsbD6)**
-
-### 🗺 [Project roadmap](https://github.com/orgs/sonicbaume/projects/4/views/1)
-
-> 💡 We are in the very early stages of development - please say hello and **[let us know what you think](https://github.com/sonicbaume/FreeAAC/discussions)** to help guide the project in the right direction.
+<h3 align="center">Try our beta release:<br/><a href="https://free-aac.org">Web</a> | <a href="https://play.google.com/store/apps/details?id=org.freeaac">Android</a> | <a href="https://testflight.apple.com/join/rAEtsbD6">iOS</a></h3>
 
 ## Introduction
 
@@ -39,10 +36,36 @@ Our ambition is to develop an AAC app that:
 
 To achieve this, we plan to use:
 
-- **[React Native](https://reactnative.dev/)**, for serving Android, iOS and web from a single Javascript codebase. (_It is technically possible to run AI models in a browser (e.g. using [tfjs](https://github.com/tensorflow/tfjs)), but being able to run local models natively brings performance and reliability benefits._)
-- **[Open Board Format](https://www.openboardformat.org/) (OBF)**, with [adapters](https://github.com/willwade/AACProcessors-nodejs) for interoperability with other AAC apps.
+- **[React Native](https://reactnative.dev/)**, for serving Android, iOS and web from a single Javascript codebase.
+- **[AAC-Processors](https://github.com/willwade/AACProcessors-nodejs)** for interoperability with other AAC apps.
 - **[Kokoro](https://github.com/hexgrad/kokoro)**, for rendering natural sounding speech on the user’s device.
 - **[AAC-GPT2](https://huggingface.co/IntelLabs/aac_gpt2)**, for near-real-time conversations by predicting utterances or sentences.
+
+## How to contribute
+
+### You can:
+
+- ⭐️ Star this repository to improve its visibility.
+
+- 💬 [Offer feedback and suggestions](https://github.com/sonicbaume/FreeAAC/discussions) by up-voting, commenting on a discussion topic, or starting a discussion.
+
+### AAC users can:
+
+- 🧪 Test our [iOS](https://testflight.apple.com/join/rAEtsbD6), [Android](https://play.google.com/store/apps/details?id=org.freeaac), and [web](https://free-aac.org) apps, report problems and offer feedback.
+
+- 📝 [Request a feature](https://github.com/sonicbaume/FreeAAC/issues/new?type=feature) by writing a user story.
+
+- 🐛 [Report a bug](https://github.com/sonicbaume/FreeAAC/issues/new?type=bug) so we're aware of any problems you're having.
+
+- 💬 [Contribute to our roadmap](https://github.com/orgs/sonicbaume/projects/4/views/1) by commenting on tasks.
+
+### Developers can:
+
+- 🗺 Build a feature [from our roadmap](https://github.com/orgs/sonicbaume/projects/4/views/1) that is ready to be picked up.
+
+- 🔧 [Fix a bug that has been found](https://github.com/sonicbaume/FreeAAC/issues?q=is%3Aissue%20state%3Aopen%20type%3ABug) and submitting a Pull Request.
+
+- 🔍 Find and suggest libraries or models that could be used to improve or extend the app.
 
 ## Existing open software
 
@@ -84,32 +107,6 @@ We want to build on the shoulders of those who came before by combining the best
 | Prediction       | [pictoBERT](https://github.com/jayralencar/pictoBERT)                                                                   | Pictogram Prediction using Transformers                 | MIT                                                                                                                  |
 | Prediction       | [Pictalk_PrAACT](https://github.com/LucasMagnana/Pictalk_PrAACT)                                                        | Implementation of the PrAACT method                     | ⚠️ None                                                                                                              |
 
-## How to contribute
-
-### You can:
-
-- ⭐️ Star this repository to improve its visibility.
-
-- 💬 [Offer feedback and suggestions](https://github.com/sonicbaume/FreeAAC/discussions) by up-voting, commenting on a discussion topic, or starting a discussion.
-
-### AAC users can:
-
-- ✋ Sign up to test our [iOS](https://testflight.apple.com/join/rAEtsbD6) or [Android](https://play.google.com/store/apps/details?id=org.freeaac) apps, report problems and offer feedback.
-
-- 📝 [Request a feature](https://github.com/sonicbaume/FreeAAC/issues/new?type=feature) by writing a user story.
-
-- 🐛 [Report a bug](https://github.com/sonicbaume/FreeAAC/issues/new?type=bug) so we're aware of any problems you're having.
-
-- 💬 [Contribute to our roadmap](https://github.com/orgs/sonicbaume/projects/4/views/1) by commenting on tasks.
-
-### Developers can:
-
-- 🗺 Build a feature [from our roadmap](https://github.com/orgs/sonicbaume/projects/4/views/1) that is ready to be picked up.
-
-- 🔧 [Fix a bug that has been found](https://github.com/sonicbaume/FreeAAC/issues?q=is%3Aissue%20state%3Aopen%20type%3ABug) and submitting a Pull Request.
-
-- 🔍 Find and suggest libraries or models that could be used to improve or extend the app.
-
 ## Development
 
 To run locally with live reloading:
@@ -121,6 +118,6 @@ npx expo run android
 npx expo run ios
 ```
 
-## Authors
+## Created and maintained by Sonic Baume
 
-- [Chris Baume](https://sonic.bau.me/about) is a software engineer, researcher, and SEN parent with expertise in audio and AI.
+We've spent over 15 years working at the intersection of audio, AI, and accessibility. If you're building something meaningful, we'd love to be part of it. [Click here](https://sonic.bau.me) to learn more about what we do.
