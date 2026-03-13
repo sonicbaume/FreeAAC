@@ -108,6 +108,8 @@ We want to build on the shoulders of those who came before by combining the best
 | Prediction       | [Dynamic AAC](https://github.com/AI-AAC/Dynamic-Augmentative-and-Alternative-Communication)                             | Board generation research                               | GPLv3                                                                                                                |
 | Prediction       | [pictoBERT](https://github.com/jayralencar/pictoBERT)                                                                   | Pictogram Prediction using Transformers                 | MIT                                                                                                                  |
 | Prediction       | [Pictalk_PrAACT](https://github.com/LucasMagnana/Pictalk_PrAACT)                                                        | Implementation of the PrAACT method                     | ⚠️ None                                                                                                              |
+| Prediction       | [AAC Text](https://www.aactext.org/)                                                                                    | Datasets for training/testing                           | CC-BY                                                                                                                |
+| Prediction       | [PPM Predictor](https://github.com/willwade/ppmpredictor)                                                               | Word and letter prediction                              | MIT                                                                                                                  |
 
 ## Development
 
@@ -115,9 +117,21 @@ To run locally with live reloading:
 
 ```
 npm install
-npx expo start --web
-npx expo run android
-npx expo run ios
+npm run web
+npm run android
+npm run ios
+```
+
+To build an Android .apk package:
+
+```
+eas build -p android --profile preview --local
+```
+
+To build and publish to Play Store / TestFlight (using EAS)
+
+```
+eas build --platform all --auto-submit
 ```
 
 ## Created and maintained by Sonic Baume
