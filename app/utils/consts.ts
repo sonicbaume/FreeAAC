@@ -322,3 +322,13 @@ export const backButtonValues: { value: BackButton; label: string }[] = [
   { value: "back", label: "Back" },
   { value: "both", label: "Home and back" },
 ]
+
+export const llmModels = [
+  {
+    name: "AAC-GPT2",
+    modelSource: "https://data.free-aac.org/models/aac_gpt2/model.pte",
+    tokenizerSource: "https://data.free-aac.org/models/aac_gpt2/tokenizer.json",
+    tokenizerConfigSource:
+      "https://data.free-aac.org/models/aac_gpt2/tokenizer_config_with_template.json",
+  },
+]

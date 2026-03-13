@@ -46,3 +46,5 @@ app-example
 *.aab
 *.apk
 *.apk.zip
+
+app/models/*

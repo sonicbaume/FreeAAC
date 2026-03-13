@@ -16,4 +16,12 @@ config.resolver.resolveRequest = (context, moduleName, platform) => {
   return context.resolveRequest(context, moduleName, platform)
 }
 
+// Treat these extensions as file assets
+config.resolver.assetExts.push("pte", "json", "bin")
+
+// Don't parse these as JS
+config.resolver.sourceExts = config.resolver.sourceExts.filter(
+  (ext) => ext !== "json",
+)
+
 module.exports = config
