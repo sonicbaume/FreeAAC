@@ -47,4 +47,4 @@ app-example
 *.apk
 *.apk.zip
 
-app/models/*
+public/temp/*
