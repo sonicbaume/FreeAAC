@@ -69,10 +69,10 @@ export default function Page({
       (pageSize.height - tileSpacing * 2 - tileSpacing * (rows - 1)) / rows
     : 0
 
+  const grid = page.grid.flat()
+
   const handleLayout = (event: LayoutChangeEvent) =>
     setPageSize(event.nativeEvent.layout)
-
-  const grid = page.grid.flat() as (BoardButton | null)[]
 
   const addButton = useCallback(
     (index: number) => {
@@ -216,6 +216,7 @@ export default function Page({
         {editMode && (
           <DndProvider>
             <DraggableGrid
+              key={grid.map((item) => item?.id ?? "null").join(",")}
               direction="row"
               size={cols}
               gap={tileSpacing}

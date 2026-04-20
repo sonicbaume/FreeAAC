@@ -95,7 +95,6 @@ export default function MessageWindow({
   const { replace } = useRouter()
   const isDefaultPage =
     defaultPageId !== undefined && defaultPageId === currentPageId
-  console.log({ isDefaultPage, defaultPageId, currentPageId })
 
   const hasMessage = messageButtonsIds.length > 0
   const showSymbols = buttonView === "both" || buttonView === "symbol"
