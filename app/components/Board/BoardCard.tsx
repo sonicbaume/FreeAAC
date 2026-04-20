@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   card: {
     display: "flex",
     justifyContent: "flex-end",
-    width: MAX_WIDTH / 2,
+    width: MAX_WIDTH / 2 - GAP.xl * 2,
     maxWidth: "90%",
     borderRadius: RADIUS.xl,
     overflow: "hidden",
