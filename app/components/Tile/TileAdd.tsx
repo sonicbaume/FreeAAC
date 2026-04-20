@@ -2,17 +2,11 @@ import { Plus } from "lucide-react-native"
 import { Pressable, StyleSheet } from "react-native"
 import { ICON_SIZE, RADIUS, useTheme } from "../../utils/theme"
 
-export default function TileAdd({
-  onPress,
-  height,
-}: {
-  onPress: () => void
-  height: number
-}) {
+export default function TileAdd({ onPress }: { onPress: () => void }) {
   const theme = useTheme()
   return (
     <Pressable
-      style={{ ...styles.tile, height, borderColor: theme.outline }}
+      style={{ ...styles.tile, borderColor: theme.outline }}
       onPress={onPress}
     >
       <Plus size={ICON_SIZE.xl} color={theme.onSurface} />
@@ -22,7 +16,7 @@ export default function TileAdd({
 
 const styles = StyleSheet.create({
   tile: {
-    display: "flex",
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,

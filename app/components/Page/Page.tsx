@@ -1,8 +1,18 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
-import { DndProvider, Draggable, DraggableGrid } from "@mgcrea/react-native-dnd"
+import {
+  DndProvider,
+  Draggable,
+  DraggableGrid,
+  UniqueIdentifier,
+} from "@mgcrea/react-native-dnd"
 import { AACSemanticIntent } from "@willwade/aac-processors/browser"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { LayoutChangeEvent, StyleSheet, View } from "react-native"
+import {
+  LayoutChangeEvent,
+  LayoutRectangle,
+  StyleSheet,
+  View,
+} from "react-native"
 import { EditTile } from "../../[board]"
 import { useSpeak } from "../../stores/audio"
 import { useEditMode, usePagesetActions } from "../../stores/boards"
@@ -14,6 +24,7 @@ import {
 import { generateNewButton } from "../../utils/boards"
 import { GAP, useTheme } from "../../utils/theme"
 import { BoardButton, BoardPage } from "../../utils/types"
+import Tile from "../Tile/Tile"
 import TileAdd from "../Tile/TileAdd"
 import TileEditor from "../Tile/TileEditor"
 
@@ -36,7 +47,7 @@ export default function Page({
 }) {
   const theme = useTheme()
   const editSheet = useRef<TrueSheet>(null)
-  const [pageHeight, setPageHeight] = useState(0)
+  const [pageSize, setPageSize] = useState<LayoutRectangle>()
   const [editTile, setEditTile] = useState<EditTile | undefined>()
   const editTileRef = useRef<EditTile | undefined>(editTile)
   const pageRef = useRef<BoardPage>(page)
@@ -49,11 +60,17 @@ export default function Page({
     usePagesetActions()
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
+  const colWidth =
+    pageSize && cols ?
+      (pageSize.width - tileSpacing * 2 - tileSpacing * (cols - 1)) / cols
+    : 0
   const rowHeight =
-    (pageHeight - tileSpacing * 2 - tileSpacing * (rows - 1)) / rows
+    pageSize ?
+      (pageSize.height - tileSpacing * 2 - tileSpacing * (rows - 1)) / rows
+    : 0
 
   const handleLayout = (event: LayoutChangeEvent) =>
-    setPageHeight(event.nativeEvent.layout.height)
+    setPageSize(event.nativeEvent.layout)
 
   const grid = page.grid.flat() as (BoardButton | null)[]
 
@@ -133,30 +150,20 @@ export default function Page({
     ({ item, index }: { item: BoardButton | null; index: number }) => {
       const isHidden = item && item.visibility && item.visibility === "Hidden"
       if (item && (editMode || !isHidden))
-        return (
-          <View></View>
-          // <Tile
-          //   button={item}
-          //   onPress={onButtonPress}
-          //   height={rowHeight}
-          //   index={index}
-          // />
-        )
-      if (editMode)
-        return <TileAdd height={rowHeight} onPress={() => addButton(index)} />
-      return <View style={{ height: rowHeight }} />
+        return <Tile button={item} onPress={onButtonPress} index={index} />
+      if (editMode && item === null)
+        return <TileAdd onPress={() => addButton(index)} />
+      return <View style={{ flex: 1 }} />
     },
-    [editMode, onButtonPress, rowHeight, addButton],
+    [editMode, onButtonPress, addButton],
   )
 
-  // const handleDragEnd: SortableGridDragEndCallback<BoardButton | null> = (
-  //   result,
-  // ) => {
-  //   const flatGrid = result.data
-  //   const grid = []
-  //   while (flatGrid.length) grid.push(flatGrid.splice(0, cols))
-  //   savePage({ ...page, grid })
-  // }
+  const handleOrderChange = (order: UniqueIdentifier[]) => {
+    const flatGrid = order.map((id) => grid[parseInt(id as string)])
+    const newGrid = []
+    while (flatGrid.length) newGrid.push(flatGrid.splice(0, cols))
+    savePage({ ...page, grid: newGrid })
+  }
 
   useEffect(() => {
     editTileRef.current = editTile
@@ -192,7 +199,6 @@ export default function Page({
   }
 
   if (!rows || !cols) return <></>
-  console.log({ rows, cols })
   return (
     <>
       <View
@@ -207,44 +213,46 @@ export default function Page({
         ]}
         onLayout={handleLayout}
       >
-        <DndProvider>
-          <DraggableGrid
-            direction="row"
-            size={cols}
-            gap={tileSpacing}
-            // style={styles.grid}
-            // onOrderChange={onGridOrderChange}
-          >
-            {grid.map((item, index) => (
-              <Draggable
-                key={index}
-                id={index.toString()}
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderWidth: 1,
-                  borderColor: "red",
-                }}
-              >
-                {renderButton({ item, index })}
-              </Draggable>
-            ))}
-          </DraggableGrid>
-        </DndProvider>
-        {/* <Sortable.Grid
-          key={page.id}
-          columns={cols}
-          data={grid}
-          renderItem={renderButton}
-          rowGap={tileSpacing}
-          columnGap={tileSpacing}
-          sortEnabled={editMode}
-          keyExtractor={(item) => item?.id ?? uuid()}
-          onDragEnd={handleDragEnd}
-          itemsLayoutTransitionMode="reorder"
-          itemEntering={null}
-          itemExiting={null}
-        /> */}
+        {editMode && (
+          <DndProvider>
+            <DraggableGrid
+              direction="row"
+              size={cols}
+              gap={tileSpacing}
+              onOrderChange={handleOrderChange}
+            >
+              {grid.map((item, index) => (
+                <Draggable
+                  key={index}
+                  id={index.toString()}
+                  style={{
+                    width: colWidth,
+                    height: rowHeight,
+                  }}
+                >
+                  {renderButton({ item, index })}
+                </Draggable>
+              ))}
+            </DraggableGrid>
+          </DndProvider>
+        )}
+        {!editMode &&
+          Array.from({ length: rows }).map((_, row) => (
+            <View
+              key={row}
+              style={{ flexDirection: "row", gap: tileSpacing, flex: 1 }}
+            >
+              {Array.from({ length: cols }).map((_, col) => {
+                const index = row * cols + col
+                const item = grid[index]
+                return (
+                  <View key={index} style={{ flex: 1 }}>
+                    {renderButton({ item, index })}
+                  </View>
+                )
+              })}
+            </View>
+          ))}
       </View>
       <TileEditor
         ref={editSheet}

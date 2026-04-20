@@ -3,7 +3,8 @@ import { useDebounce } from "@/app/utils/debounce"
 import { PADDING, RADIUS, useTheme } from "@/app/utils/theme"
 import { BoardButton } from "@/app/utils/types"
 import { AACButton, AACStyle } from "@willwade/aac-processors/browser"
-import { StyleSheet, TouchableOpacity, View } from "react-native"
+import { StyleSheet } from "react-native"
+import { Pressable } from "react-native-gesture-handler"
 import { Text } from "../Styled"
 import TileImage from "./TileImage"
 
@@ -28,12 +29,10 @@ const Label = ({ text, style }: { text: string; style?: AACStyle }) => {
 export default function Tile({
   button,
   onPress,
-  height,
   index,
 }: {
   button: BoardButton
   onPress: (button: AACButton, index: number) => void
-  height: number
   index: number
 }) {
   const debounce = useDebounce()
@@ -54,29 +53,26 @@ export default function Tile({
   }
 
   return (
-    <View style={{ height }}>
-      <TouchableOpacity
-        onPress={handlePress}
-        style={{
-          ...styles.container,
-          ...button.style,
-          height,
-          borderTopRightRadius: isLink ? 50 : undefined,
-          justifyContent: labelJustify,
-          borderStyle: isHidden ? "dashed" : "solid",
-        }}
-      >
-        {showText && labelLocation === "top" && (
-          <Label text={button.label} style={button.style} />
-        )}
-        {showSymbol && button.image && (
-          <TileImage uri={button.image} style={styles.symbol} />
-        )}
-        {showText && labelLocation === "bottom" && (
-          <Label text={button.label} style={button.style} />
-        )}
-      </TouchableOpacity>
-    </View>
+    <Pressable
+      onPress={handlePress}
+      style={{
+        ...styles.container,
+        ...button.style,
+        borderTopRightRadius: isLink ? 50 : undefined,
+        justifyContent: labelJustify,
+        borderStyle: isHidden ? "dashed" : "solid",
+      }}
+    >
+      {showText && labelLocation === "top" && (
+        <Label text={button.label} style={button.style} />
+      )}
+      {showSymbol && button.image && (
+        <TileImage uri={button.image} style={styles.symbol} />
+      )}
+      {showText && labelLocation === "bottom" && (
+        <Label text={button.label} style={button.style} />
+      )}
+    </Pressable>
   )
 }
 
