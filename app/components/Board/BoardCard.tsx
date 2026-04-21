@@ -1,4 +1,5 @@
 import { handleError } from "@/app/utils/error"
+import { importBoard } from "@/app/utils/file"
 import { useAssets } from "expo-asset"
 import { Image } from "expo-image"
 import { Link, useRouter } from "expo-router"
@@ -11,7 +12,6 @@ import {
   licenseImageMap,
   licenseLinkMap,
 } from "../../utils/consts"
-import { importBoard } from "../../utils/io"
 import { FONT_SIZE, GAP, MAX_WIDTH, RADIUS, useTheme } from "../../utils/theme"
 import { Button, Text } from "../Styled"
 

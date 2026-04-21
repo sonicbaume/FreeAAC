@@ -1,7 +1,5 @@
 import { DocumentPickerAsset } from "expo-document-picker"
 import { Paths } from "expo-file-system"
-import { getFileExt, loadBoardData, saveBoard } from "./file"
-import { uuid } from "./uuid"
 
 export const pathExists = async (path: string): Promise<boolean> => {
   const root = await navigator.storage.getDirectory()
@@ -109,16 +107,6 @@ export const loadFile = async (fileName: string): Promise<Uint8Array> => {
   const fileHandle = await dir.getFileHandle(baseName)
   const file = await fileHandle.getFile()
   return await file.bytes()
-}
-
-export const importBoard = async (url: string): Promise<{ id: string }> => {
-  const ext = getFileExt(url.split("/").slice(-1)[0])
-  const id = uuid()
-  const response = await fetch(url)
-  const data = await response.bytes()
-  const tree = await loadBoardData(data, ext)
-  await saveBoard(id, tree)
-  return { id }
 }
 
 export const shareFile = async (file: File | Blob, name: string) => {

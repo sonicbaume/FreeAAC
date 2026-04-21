@@ -3,7 +3,6 @@ import { Directory, File, Paths } from "expo-file-system"
 import { shareAsync } from "expo-sharing"
 import { nanoid } from "nanoid/non-secure"
 import { getFileExt, getFileType } from "./file"
-import { uuid } from "./uuid"
 
 export const pathExists = async (path: string): Promise<boolean> => {
   return Paths.info(Paths.join(Paths.document, path)).exists
@@ -21,13 +20,13 @@ export const mkDir = async (
   path: string,
   options?: { recursive?: boolean },
 ): Promise<void> => {
-  new Directory(path).create({
+  new Directory(Paths.document, path).create({
     intermediates: options?.recursive ?? false,
   })
 }
 
 export const listDir = async (path: string): Promise<string[]> => {
-  return new Directory(path).list().map((item) => item.name)
+  return new Directory(Paths.document, path).list().map((item) => item.name)
 }
 
 export const removePath = async (
@@ -70,33 +69,6 @@ export const loadFile = async (fileName: string): Promise<Uint8Array> => {
   const root = Paths.document
   const file = new File(root, fileName)
   return await file.bytes()
-}
-
-export const downloadFile = async (
-  url: string,
-): Promise<{ id: string; fileName: string }> => {
-  const ext = getFileExt(url.split("/").slice(-1)[0])
-  const id = uuid()
-  const fileName = `${id}.${ext}`
-  const destination = new File(Paths.document, fileName)
-  await File.downloadFileAsync(url, destination)
-  return { id, fileName }
-}
-
-export const saveAs = async (uri: string | Blob, name: string) => {
-  let file
-  if (typeof uri === "string") {
-    const resolvedPath = Paths.join(Paths.document, uri)
-    file = new File(resolvedPath)
-  } else {
-    file = new File(Paths.cache, name)
-    file.create({ overwrite: true })
-    const data = await uri.bytes()
-    file.write(data)
-  }
-  const ext = getFileExt(name)
-  const { mimeType, UTI } = getFileType(ext)
-  await shareAsync(file.uri, { mimeType, UTI })
 }
 
 export const shareFile = async (file: File, name: string) => {

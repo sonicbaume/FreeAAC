@@ -12,6 +12,7 @@ import {
   launchCameraAsync,
   launchImageLibraryAsync,
 } from "expo-image-picker"
+import { fetch } from "expo/fetch"
 import { nanoid } from "nanoid/non-secure"
 import { appName } from "./consts"
 import {
@@ -127,6 +128,16 @@ export const importBoardFile = async (): Promise<{
   const name = tree.metadata.name ?? "Untitled board"
   await saveBoard(id, tree)
   return { id, name }
+}
+
+export const importBoard = async (url: string): Promise<{ id: string }> => {
+  const ext = getFileExt(url.split("/").slice(-1)[0])
+  const id = uuid()
+  const response = await fetch(url)
+  const data = await response.bytes()
+  const tree = await loadBoardData(data, ext)
+  await saveBoard(id, tree)
+  return { id }
 }
 
 export const importPrefsFile = async (): Promise<unknown> => {

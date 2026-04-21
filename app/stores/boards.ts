@@ -89,7 +89,6 @@ const useStore = create<PagesetsState>()(
             currentPageId: pageId,
             previousPageIds,
           })
-          console.log({ previousPageIds })
         },
         navigateBack: () => {
           const previousPageIds = get().previousPageIds
