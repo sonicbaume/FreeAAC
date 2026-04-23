@@ -22,21 +22,6 @@ export type EditTile = {
   index: number
 }
 
-// const prefetchImages = (tree: BoardTree) => {
-//   Image.prefetch(
-//     Object.values(tree.pages)
-//       .map((page) => page.images)
-//       .flat()
-//       .filter((image) => image !== undefined)
-//       .map((image) => {
-//         if (image.path || image.data) return undefined
-//         if (image.data_url?.startsWith("http")) return image.data_url
-//         return image.url
-//       })
-//       .filter((image) => image !== undefined),
-//   )
-// }
-
 export default function Board() {
   const theme = useTheme()
   const debounceTime = useDebounceTime()
@@ -82,13 +67,6 @@ export default function Board() {
     })()
   }, [id, navigateToPage])
 
-  // const page = useMemo(() => {
-  //   if (!tree || !currentPageId) return
-  //
-  //     return handleError("Could not find page in tree")
-  //   return tree.pages[currentPageId]
-  // }, [currentPageId, tree])
-
   const savePage = (page: BoardPage) => {
     if (!tree) return handleError("Could not save page - tree does not exist")
     if (!currentPageId) return handleError("Could not save page - ID undefined")
@@ -110,14 +88,6 @@ export default function Board() {
     saveBoard(id, newTree)
     setTree(newTree)
   }
-
-  // const homePageId = useMemo(() => {
-  //   try {
-  //     if (tree) return getHomePageId(tree)
-  //   } catch (e) {
-  //     handleError(e)
-  //   }
-  // }, [tree])
 
   const navigateHome = useCallback(
     () => rootPageId && navigateToPage(rootPageId),
