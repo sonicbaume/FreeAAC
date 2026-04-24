@@ -246,15 +246,13 @@ export const saveBoardPage = async (
   pageId: string,
   page: BoardPage,
 ) => {
-  console.log(`Saving page ${pageId} on board ${boardId}`)
-  const processor = new ObfProcessor({ fileAdapter })
   const tree = {
     metadata: {},
     pages: {
       [pageId]: page,
     },
-  }
-  await processor.saveFromTree(tree as AACTree, `${boardId}/${pageId}`, true)
+  } as BoardTree
+  await saveBoard(`${boardId}/${pageId}`, tree)
 }
 
 export const deleteBoard = async (id: string) => {
