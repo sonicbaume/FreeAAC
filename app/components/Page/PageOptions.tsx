@@ -1,5 +1,5 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
-import { useRouter } from "expo-router"
+import { useLocalSearchParams, useRouter } from "expo-router"
 import { speak } from "expo-speech"
 import {
   Copy,
@@ -11,7 +11,7 @@ import {
 } from "lucide-react-native"
 import { useState } from "react"
 import { Platform } from "react-native"
-import { useCurrentPageId, usePagesetActions } from "../../stores/boards"
+import { usePagesetActions } from "../../stores/boards"
 import { usePlayOnPress } from "../../stores/prefs"
 import { generateNewButton } from "../../utils/boards"
 import { ICON_SIZE, PADDING, useTheme } from "../../utils/theme"
@@ -32,7 +32,7 @@ export default function PageOptions({
   const { push } = useRouter()
   const { toggleEditMode, addCustomMessage, addMessageButton, logEvent } =
     usePagesetActions()
-  const currentPageId = useCurrentPageId()
+  const { pageId } = useLocalSearchParams()
   const playOnPress = usePlayOnPress()
 
   const requestFullscreen = () => {
@@ -43,8 +43,8 @@ export default function PageOptions({
   }
 
   const addCustomWord = (word: string | undefined) => {
-    if (currentPageId && word) {
-      const button = generateNewButton(currentPageId)
+    if (pageId && word) {
+      const button = generateNewButton(pageId as string)
       button.label = word
       button.message = word
       addCustomMessage(button.id, button.message)
@@ -71,8 +71,7 @@ export default function PageOptions({
           label="Type word"
           icon={<Keyboard size={ICON_SIZE.lg} color={theme.onSurface} />}
           onPress={() => {
-            if (!currentPageId)
-              return console.error("Could not find currentPageId")
+            if (!pageId) return console.error("Could not find pageId")
             setShowCustomWordDialog(true)
             ref.current?.dismiss()
           }}

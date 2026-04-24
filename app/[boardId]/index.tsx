@@ -1,10 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { useEffect } from "react"
-import { usePagesetActions } from "../stores/boards"
 import { handleError } from "../utils/error"
-import {
-  getRootPageId
-} from "../utils/file"
+import { getRootPageId } from "../utils/file"
 import { BoardButton, TileImage } from "../utils/types"
 
 export type EditTile = {
@@ -16,7 +13,6 @@ export type EditTile = {
 export default function Board() {
   const { boardId } = useLocalSearchParams()
   const id = boardId as string
-  const { navigateToPage } = usePagesetActions()
   const { replace } = useRouter()
 
   useEffect(() => {
@@ -28,7 +24,7 @@ export default function Board() {
         handleError(e)
       }
     })()
-  }, [boardId, id, navigateToPage, replace])
+  }, [boardId, id, replace])
 
   return <></>
 }

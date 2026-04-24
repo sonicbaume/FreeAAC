@@ -1,6 +1,6 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import * as Clipboard from "expo-clipboard"
-import { useRouter } from "expo-router"
+import { useLocalSearchParams, useRouter } from "expo-router"
 import {
   ArrowLeft,
   Copy,
@@ -19,10 +19,9 @@ import { useEffect, useRef, useState } from "react"
 import { Platform, ScrollView, View } from "react-native"
 import { useSpeak } from "../stores/audio"
 import {
-  useCurrentPageId,
   useEditMode,
   useMessageButtons,
-  usePagesetActions
+  usePagesetActions,
 } from "../stores/boards"
 import {
   useBackButton,
@@ -79,7 +78,7 @@ export default function MessageWindow({
   const labelLocation = useLabelLocation()
   const editMode = useEditMode()
   const backButton = useBackButton()
-  const currentPageId = useCurrentPageId()
+  const { pageId } = useLocalSearchParams()
   const {
     removeLastMessageButton,
     clearMessageButtons,
@@ -88,8 +87,7 @@ export default function MessageWindow({
   } = usePagesetActions()
   const speak = useSpeak()
   const { replace } = useRouter()
-  const isDefaultPage =
-    defaultPageId !== undefined && defaultPageId === currentPageId
+  const isDefaultPage = defaultPageId !== undefined && defaultPageId === pageId
 
   const hasMessage = messageButtons.length > 0
   const showSymbols = buttonView === "both" || buttonView === "symbol"
@@ -313,7 +311,7 @@ export default function MessageWindow({
         message="Are you sure you want to set this as the starting page in this board?"
         onCancel={() => setShowSetDefaultPageDialog(false)}
         onConfirm={() => {
-          if (currentPageId) setDefaultPageId(currentPageId)
+          if (pageId) setDefaultPageId(pageId as string)
           setShowSetDefaultPageDialog(false)
         }}
         confirmLabel="Yes"

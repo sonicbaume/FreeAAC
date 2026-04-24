@@ -23,9 +23,6 @@ interface Board {
 interface PagesetsState {
   loaded: boolean
   boards: Board[]
-  currentBoardId: string | undefined
-  currentPageId: string | undefined
-  previousPageIds: string[]
   messageButtons: BoardButton[]
   editMode: boolean
   editButtonId: string | undefined
@@ -35,9 +32,6 @@ interface PagesetsState {
   shouldLog: boolean
   actions: {
     setLoaded: (loaded: boolean) => void
-    setCurrentBoardId: (boardId: string | undefined) => void
-    navigateToPage: (pageId: string) => void
-    navigateBack: () => void
     addBoard: (boards: Board) => void
     removeBoard: (id: string) => void
     renameBoard: (id: string, name: string) => void
@@ -48,7 +42,7 @@ interface PagesetsState {
     setEditButtonId: (buttonId: string | undefined) => void
     setSymbolSearchText: (text: string) => void
     addCustomMessage: (id: string, text: string) => void
-    logEvent(event: LogEvent): void
+    logEvent(event: LogEvent, pageId: string, boardId: string): void
     toggleShouldLog(): void
     deleteLogs(): void
   }
@@ -59,9 +53,6 @@ const useStore = create<PagesetsState>()(
     (set, get) => ({
       loaded: false,
       boards: [],
-      currentBoardId: undefined,
-      currentPageId: undefined,
-      previousPageIds: [],
       messageButtons: [],
       editMode: false,
       editButtonId: undefined,
@@ -74,26 +65,6 @@ const useStore = create<PagesetsState>()(
           set({
             loaded,
           }),
-        setCurrentBoardId: (boardId) =>
-          set({
-            currentBoardId: boardId,
-          }),
-        navigateToPage: (pageId: string) => {
-          const { previousPageIds, currentPageId } = get()
-          if (currentPageId) previousPageIds.push(currentPageId)
-          set({
-            currentPageId: pageId,
-            previousPageIds,
-          })
-        },
-        navigateBack: () => {
-          const previousPageIds = get().previousPageIds
-          const currentPageId = previousPageIds.pop()
-          set({
-            currentPageId,
-            previousPageIds,
-          })
-        },
         addBoard: (board: Board) =>
           set({
             boards: [...get().boards, board],
@@ -139,13 +110,13 @@ const useStore = create<PagesetsState>()(
               [id]: text,
             },
           }),
-        logEvent: (event: LogEvent) => {
-          const { history, shouldLog, currentPageId, currentBoardId } = get()
+        logEvent: (event: LogEvent, pageId: string, boardId: string) => {
+          const { history, shouldLog } = get()
           if (!shouldLog) return
           const content = parseLogContent(event)
           const entry =
             history.find((e) => e.content === content) ?? generateEntry(content)
-          const occurance = parseLogEvent(event, currentPageId, currentBoardId)
+          const occurance = parseLogEvent(event, pageId, boardId)
           entry.occurrences.push(occurance)
           set({
             history: [...history.filter((e) => e.content !== content), entry],
@@ -185,8 +156,6 @@ const useStore = create<PagesetsState>()(
 
 export const useBoardsLoaded = () => useStore((s) => s.loaded)
 export const useBoards = () => useStore((s) => s.boards)
-export const useCurrentBoardId = () => useStore((s) => s.currentBoardId)
-export const useCurrentPageId = () => useStore((s) => s.currentPageId)
 export const useMessageButtons = () => useStore((s) => s.messageButtons)
 export const useEditMode = () => useStore((s) => s.editMode)
 export const useEditButtonId = () => useStore((s) => s.editButtonId)

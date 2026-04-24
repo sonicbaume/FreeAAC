@@ -6,6 +6,7 @@ import {
   UniqueIdentifier,
 } from "@mgcrea/react-native-dnd"
 import { AACSemanticIntent } from "@willwade/aac-processors/browser"
+import { useLocalSearchParams } from "expo-router"
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
   LayoutChangeEvent,
@@ -39,14 +40,17 @@ export default function Page({
   savePage,
   homePageId,
   pageNames,
+  navigateToPage,
 }: {
   page: BoardPage
   savePage: (page: BoardPage) => void
   homePageId?: string
   pageNames: { value: string; label: string }[]
+  navigateToPage: (pageId: string) => void
 }) {
   const theme = useTheme()
   const editSheet = useRef<TrueSheet>(null)
+  const { boardId, pageId } = useLocalSearchParams()
   const [pageSize, setPageSize] = useState<LayoutRectangle>()
   const [editTile, setEditTile] = useState<EditTile | undefined>()
   const editTileRef = useRef<EditTile | undefined>(editTile)
@@ -56,7 +60,7 @@ export default function Page({
   const goHomeOnPress = useGoHomeOnPress()
   const tileSpacing = useTileSpacing()
   const speak = useSpeak()
-  const { navigateToPage, addMessageButton, setSymbolSearchText, logEvent } =
+  const { addMessageButton, setSymbolSearchText, logEvent } =
     usePagesetActions()
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
@@ -93,15 +97,19 @@ export default function Page({
         return console.error("Button is missing semanticAction")
       const isLink =
         button.semanticAction.intent === AACSemanticIntent.NAVIGATE_TO
-      logEvent({
-        type: isLink ? "navigate" : "button",
-        button,
-        spoken,
-        playOnPress,
-        goHomeOnPress: goHomeOnPress ? homePageId : undefined,
-      })
+      logEvent(
+        {
+          type: isLink ? "navigate" : "button",
+          button,
+          spoken,
+          playOnPress,
+          goHomeOnPress: goHomeOnPress ? homePageId : undefined,
+        },
+        pageId as string,
+        boardId as string,
+      )
     },
-    [goHomeOnPress, homePageId, logEvent, playOnPress],
+    [boardId, goHomeOnPress, homePageId, logEvent, pageId, playOnPress],
   )
 
   const onButtonPress = useCallback(

@@ -2,14 +2,12 @@ import MessageWindow from "@/app/components/MessageWindow"
 import Page from "@/app/components/Page/Page"
 import PageAddSheet from "@/app/components/Page/PageAddSheet"
 import PageNav from "@/app/components/Page/PageNav"
-import { usePagesetActions } from "@/app/stores/boards"
 import { useDebounceTime, useMessageWindowLocation } from "@/app/stores/prefs"
 import { generateNewPage } from "@/app/utils/boards"
 import { DebounceContext, handleDebounce } from "@/app/utils/debounce"
 import { handleError } from "@/app/utils/error"
 import {
   deleteBoardPage,
-  getRootPageId,
   loadPage,
   saveBoardPage,
   saveRootPageId,
@@ -17,7 +15,7 @@ import {
 import { useTheme } from "@/app/utils/theme"
 import { BoardButton, BoardPage, TileImage } from "@/app/utils/types"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
-import { Stack, useLocalSearchParams } from "expo-router"
+import { Stack, useLocalSearchParams, useRouter } from "expo-router"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { ActivityIndicator, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
@@ -36,18 +34,11 @@ export default function PageRoute() {
   const id = boardId as string
   const currentPageId = pageId as string
   const messageWindowLocation = useMessageWindowLocation()
-  // const currentPageId = useCurrentPageId()
-  const { navigateToPage, navigateBack, setCurrentBoardId } =
-    usePagesetActions()
   const pageNavSheet = useRef<TrueSheet>(null)
   const pageAddSheet = useRef<TrueSheet>(null)
   const [page, setPage] = useState<BoardPage>()
   const [rootPageId, setRootPageId] = useState<string>()
-
-  useEffect(
-    () => setCurrentBoardId(boardId as string),
-    [boardId, setCurrentBoardId],
-  )
+  const { push, replace, back } = useRouter()
 
   useEffect(() => {
     ;(async () => {
@@ -61,18 +52,6 @@ export default function PageRoute() {
     })()
   }, [currentPageId, id])
 
-  useEffect(() => {
-    ;(async () => {
-      try {
-        const pageId = await getRootPageId(id)
-        navigateToPage(pageId)
-        setRootPageId(pageId)
-      } catch (e) {
-        handleError(e)
-      }
-    })()
-  }, [id, navigateToPage])
-
   const savePage = async (page: BoardPage) => {
     if (!currentPageId) return handleError("Could not save page - ID undefined")
     console.log("Saving page", page)
@@ -81,8 +60,8 @@ export default function PageRoute() {
   }
 
   const navigateHome = useCallback(
-    () => rootPageId && navigateToPage(rootPageId),
-    [navigateToPage, rootPageId],
+    () => rootPageId && replace(`/${boardId}/${rootPageId}`),
+    [boardId, replace, rootPageId],
   )
 
   // TODO implement pageNames
@@ -113,7 +92,7 @@ export default function PageRoute() {
   const messageWindow = (
     <MessageWindow
       navigateHome={navigateHome}
-      navigateBack={navigateBack}
+      navigateBack={back}
       isHome={rootPageId === page?.id}
       pageTitle={page?.name}
       setPageTitle={(name) => page && name && savePage({ ...page, name })}
@@ -136,7 +115,7 @@ export default function PageRoute() {
       return handleError("Could not add page - current page not found")
     const page = generateNewPage(rows, cols, currentPageId, name)
     await saveBoardPage(id, page.id, page)
-    navigateToPage(page.id)
+    push(`/${boardId}/${page.id}`)
     pageAddSheet.current?.dismiss()
   }
 
@@ -158,13 +137,18 @@ export default function PageRoute() {
               savePage={savePage}
               homePageId={rootPageId}
               pageNames={pageNames}
+              navigateToPage={(pageId) => push(`/${boardId}/${pageId}`)}
             />
           )}
           {!page && <ActivityIndicator size="large" color={theme.onSurface} />}
         </View>
         {messageWindowLocation === "bottom" && messageWindow}
       </SafeAreaView>
-      <PageNav ref={pageNavSheet} pages={pages} />
+      <PageNav
+        ref={pageNavSheet}
+        pages={pages}
+        navigateToPage={(pageId) => push(`/${boardId}/${pageId}`)}
+      />
       <PageAddSheet ref={pageAddSheet} onAdd={addPage} />
     </DebounceContext>
   )
