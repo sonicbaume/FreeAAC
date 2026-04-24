@@ -59,7 +59,10 @@ export const removePath = async (
   options?: { recursive?: boolean; force?: boolean },
 ): Promise<void> => {
   const root = await navigator.storage.getDirectory()
-  await root.removeEntry(path, options)
+  const dirname = Paths.dirname(path)
+  const basename = Paths.basename(path)
+  const dir = dirname === "." ? root : await root.getDirectoryHandle(dirname)
+  await dir.removeEntry(basename, options)
 }
 
 export const mkTempDir = async (prefix: string): Promise<string> => {

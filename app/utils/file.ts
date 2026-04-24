@@ -32,6 +32,16 @@ import {
 import { BoardPage, BoardTree, TileImage } from "./types"
 import { uuid } from "./uuid"
 
+type ObfManifest = {
+  format?: string
+  root?: string
+  paths?: {
+    boards?: { [key: string]: string }
+    images?: { [key: string]: string }
+    sounds?: { [key: string]: string }
+  }
+}
+
 const fileAdapter = {
   readBinaryFromInput: async (
     input: string | Buffer | ArrayBuffer | Uint8Array,
@@ -177,9 +187,17 @@ export const selectImage = async (
   }
 }
 
-export const getRootPageId = async (id: string): Promise<string> => {
+export const loadManifest = async (id: string): Promise<ObfManifest> => {
   const data = await fileAdapter.readTextFromInput(`${id}/manifest.json`)
-  const manifest = JSON.parse(data) as { root: string }
+  return JSON.parse(data)
+}
+
+export const saveManifest = async (id: string, manifest: ObfManifest) => {
+  fileAdapter.writeTextToPath(`${id}/manifest.json`, JSON.stringify(manifest))
+}
+
+export const getRootPageId = async (id: string): Promise<string> => {
+  const manifest = await loadManifest(id)
   if (!manifest.root) throw new Error("Could not load manifest - no root found")
   return manifest.root
 }
@@ -232,6 +250,19 @@ export const saveBoardPage = async (
 
 export const deleteBoard = async (id: string) => {
   await removePath(id, { recursive: true })
+}
+
+export const deleteBoardPage = async (boardId: string, pageId: string) => {
+  const manifest = await loadManifest(boardId)
+  if (!manifest.paths?.boards) throw new Error("Could not load manifest")
+  if (!(pageId in manifest.paths.boards))
+    throw new Error("Could not find page to delete")
+
+  console.log(`Deleting page ${pageId} in board ${boardId}`)
+  delete manifest.paths.boards[pageId]
+  saveManifest(boardId, manifest)
+  console.log(`${boardId}/${pageId}`)
+  await removePath(`${boardId}/${pageId}`)
 }
 
 export const exportBoard = async (id: string, name: string, ext: string) => {

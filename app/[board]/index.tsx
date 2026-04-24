@@ -13,10 +13,11 @@ import { generateNewPage } from "../utils/boards"
 import { DebounceContext, handleDebounce } from "../utils/debounce"
 import { handleError } from "../utils/error"
 import {
+  deleteBoardPage,
   getRootPageId,
   loadPage,
   saveBoard,
-  saveBoardPage,
+  saveBoardPage
 } from "../utils/file"
 import { useTheme } from "../utils/theme"
 import { BoardButton, BoardPage, BoardTree, TileImage } from "../utils/types"
@@ -107,24 +108,14 @@ export default function Board() {
     }))
   }, [tree])
 
-  const deletePage = () => {
-    if (!tree) return handleError("Could not delete page - tree does not exist")
+  const deletePage = async () => {
     if (!currentPageId)
       return handleError("Could not delete page - ID undefined")
-    if (currentPageId === tree.metadata.defaultHomePageId)
-      return handleError("Cannot delete default page")
-    if (!(currentPageId in tree.pages))
-      return handleError("Could not find page to delete")
-
-    console.log("Deleting page", currentPageId)
-    const { [currentPageId]: _, ...pages } = tree.pages
-    console.log("tree without", pages)
-    const newTree = {
-      ...tree,
-      pages,
+    try {
+      await deleteBoardPage(id, currentPageId)
+    } catch (e) {
+      handleError(e)
     }
-    saveBoard(id, newTree)
-    setTree(newTree)
     navigateHome()
   }
 
