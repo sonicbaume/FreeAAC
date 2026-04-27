@@ -46,7 +46,10 @@ export const generateNewPage = (
 export const generateNewBoard = (
   rows: number,
   cols: number,
-): { tree: BoardTree; pageNames: Record<string, string> } => {
+): {
+  tree: BoardTree
+  pages: Record<string, { name: string; path: string }>
+} => {
   const page = generateNewPage(rows, cols, null)
   const tree: BoardTree = {
     pages: {
@@ -61,8 +64,11 @@ export const generateNewBoard = (
   }
   return {
     tree,
-    pageNames: {
-      [page.id]: page.name,
+    pages: {
+      [page.id]: {
+        name: page.name,
+        path: `${page.id}.obf`,
+      },
     },
   }
 }

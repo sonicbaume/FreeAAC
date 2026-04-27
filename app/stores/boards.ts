@@ -18,7 +18,13 @@ const generateEntry = (content: string): HistoryEntry => {
 interface Board {
   id: string
   name: string
-  pageNames?: Record<string, string>
+  pages?: Record<
+    string,
+    {
+      name: string
+      path: string
+    }
+  >
 }
 
 interface PagesetsState {

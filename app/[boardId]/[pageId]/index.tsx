@@ -35,12 +35,18 @@ export default function PageRoute() {
   const lastTimeRef = useRef(0)
   const { boardId, pageId } = useLocalSearchParams()
   const id = boardId as string
+  const board = boards.find((b) => b.id === id)
   const currentPageId = pageId as string
   const messageWindowLocation = useMessageWindowLocation()
   const pageNavSheet = useRef<TrueSheet>(null)
   const pageAddSheet = useRef<TrueSheet>(null)
   const [page, setPage] = useState<BoardPage>()
-  const [pages, setPages] = useState<{ name: string; id: string }[]>([])
+  const pages =
+    board?.pages ?
+      Object.entries(board.pages).map(([id, page]) => {
+        return { ...page, id }
+      })
+    : []
   const [rootPageId, setRootPageId] = useState<string>()
   const { push, replace, back } = useRouter()
 
@@ -59,21 +65,8 @@ export default function PageRoute() {
   useEffect(() => {
     ;(async () => {
       try {
-        const board = boards.find((b) => b.id === id)
-        if (!board) throw new Error("Could not find board metadata")
         const manifest = await loadManifest(id)
         setRootPageId(manifest.root)
-        const pages = Object.entries(manifest.paths!.boards!).flatMap(
-          ([id, path]) => {
-            return [
-              {
-                name: board.pageNames ? board.pageNames[id] : id,
-                id,
-              },
-            ]
-          },
-        )
-        setPages(pages)
       } catch (e) {
         handleError(e)
       }

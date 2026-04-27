@@ -122,7 +122,7 @@ export const getFileType = (ext: string): { mimeType: string; UTI: string } => {
 export const importBoardFile = async (): Promise<{
   id: string
   name: string
-  pageNames: Record<string, string>
+  pages: Record<string, { name: string; path: string }>
 }> => {
   const result = await DocumentPicker.getDocumentAsync({
     copyToCacheDirectory: true,
@@ -137,29 +137,35 @@ export const importBoardFile = async (): Promise<{
   await saveFile(fileName, data)
   const tree = await loadBoard(fileName)
   const name = tree.metadata.name ?? "Untitled board"
-  const pageNames: Record<string, string> = {}
-  for (const [id, page] of Object.entries(tree.pages)) {
-    pageNames[id] = page.name
-  }
   await saveBoard(id, tree)
-  return { id, name, pageNames }
+  const manifest = await loadManifest(id)
+  if (!manifest.paths?.boards) throw new Error("No boards in manifest")
+  const pages: Record<string, { name: string; path: string }> = {}
+  for (const [id, page] of Object.entries(tree.pages)) {
+    pages[id] = { name: page.name, path: manifest.paths.boards[id] }
+  }
+  return { id, name, pages }
 }
 
 export const importBoard = async (
   url: string,
-): Promise<{ id: string; pageNames: Record<string, string> }> => {
+): Promise<{
+  id: string
+  pages: Record<string, { name: string; path: string }>
+}> => {
   const ext = getFileExt(url.split("/").slice(-1)[0])
   const id = uuid()
   const response = await fetch(url)
   const data = await response.bytes()
   const tree = await loadBoardData(data, ext)
-  const pageNames: Record<string, string> = {}
-  for (const [id, page] of Object.entries(tree.pages)) {
-    pageNames[id] = page.name
-  }
-  console.log({ pageNames })
   await saveBoard(id, tree)
-  return { id, pageNames }
+  const manifest = await loadManifest(id)
+  if (!manifest.paths?.boards) throw new Error("No boards in manifest")
+  const pages: Record<string, { name: string; path: string }> = {}
+  for (const [id, page] of Object.entries(tree.pages)) {
+    pages[id] = { name: page.name, path: manifest.paths.boards[id] }
+  }
+  return { id, pages }
 }
 
 export const importPrefsFile = async (): Promise<unknown> => {
@@ -227,8 +233,11 @@ export const loadPage = async (
   boardId: string,
   pageId: string,
 ): Promise<BoardPage> => {
+  const manifest = await loadManifest(boardId)
+  if (!manifest.paths?.boards) throw new Error("No boards listed in manifest")
+  const path = manifest.paths.boards[pageId]
   const processor = new ObfProcessor({ fileAdapter })
-  const tree = await processor.loadIntoTree(`${boardId}/${pageId}`)
+  const tree = await processor.loadIntoTree(`${boardId}/${path}`)
   return tree.pages[pageId] as BoardPage
 }
 
