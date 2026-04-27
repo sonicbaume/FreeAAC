@@ -39,13 +39,13 @@ export default function Page({
   page,
   savePage,
   homePageId,
-  pageNames,
+  pages,
   navigateToPage,
 }: {
   page: BoardPage
   savePage: (page: BoardPage) => void
   homePageId?: string
-  pageNames: { value: string; label: string }[]
+  pages: { id: string; name: string }[]
   navigateToPage: (pageId: string) => void
 }) {
   const theme = useTheme()
@@ -267,7 +267,7 @@ export default function Page({
         tile={editTile}
         setTile={setEditTile}
         onClose={saveEditTile}
-        pageNames={pageNames}
+        pages={pages}
       />
     </>
   )

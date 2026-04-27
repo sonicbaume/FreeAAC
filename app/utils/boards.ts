@@ -33,7 +33,7 @@ export const generateNewPage = (
     .fill(null)
     .map(() => Array(cols).fill(undefined))
   return {
-    id: `${nanoid()}.obf`,
+    id: nanoid(),
     name,
     grid,
     parentId,
@@ -43,9 +43,12 @@ export const generateNewPage = (
   }
 }
 
-export const generateNewBoard = (rows: number, cols: number): BoardTree => {
+export const generateNewBoard = (
+  rows: number,
+  cols: number,
+): { tree: BoardTree; pageNames: Record<string, string> } => {
   const page = generateNewPage(rows, cols, null)
-  return {
+  const tree: BoardTree = {
     pages: {
       [page.id]: page,
     },
@@ -55,5 +58,11 @@ export const generateNewBoard = (rows: number, cols: number): BoardTree => {
     rootId: null,
     toolbarId: null,
     dashboardId: page.id,
+  }
+  return {
+    tree,
+    pageNames: {
+      [page.id]: page.name,
+    },
   }
 }

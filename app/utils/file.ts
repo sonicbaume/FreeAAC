@@ -122,6 +122,7 @@ export const getFileType = (ext: string): { mimeType: string; UTI: string } => {
 export const importBoardFile = async (): Promise<{
   id: string
   name: string
+  pageNames: Record<string, string>
 }> => {
   const result = await DocumentPicker.getDocumentAsync({
     copyToCacheDirectory: true,
@@ -136,18 +137,29 @@ export const importBoardFile = async (): Promise<{
   await saveFile(fileName, data)
   const tree = await loadBoard(fileName)
   const name = tree.metadata.name ?? "Untitled board"
+  const pageNames: Record<string, string> = {}
+  for (const [id, page] of Object.entries(tree.pages)) {
+    pageNames[id] = page.name
+  }
   await saveBoard(id, tree)
-  return { id, name }
+  return { id, name, pageNames }
 }
 
-export const importBoard = async (url: string): Promise<{ id: string }> => {
+export const importBoard = async (
+  url: string,
+): Promise<{ id: string; pageNames: Record<string, string> }> => {
   const ext = getFileExt(url.split("/").slice(-1)[0])
   const id = uuid()
   const response = await fetch(url)
   const data = await response.bytes()
   const tree = await loadBoardData(data, ext)
+  const pageNames: Record<string, string> = {}
+  for (const [id, page] of Object.entries(tree.pages)) {
+    pageNames[id] = page.name
+  }
+  console.log({ pageNames })
   await saveBoard(id, tree)
-  return { id }
+  return { id, pageNames }
 }
 
 export const importPrefsFile = async (): Promise<unknown> => {
@@ -189,18 +201,18 @@ export const selectImage = async (
 
 export const loadManifest = async (id: string): Promise<ObfManifest> => {
   const data = await fileAdapter.readTextFromInput(`${id}/manifest.json`)
-  return JSON.parse(data)
+  const manifest = JSON.parse(data) as ObfManifest
+  if (!manifest.root) throw new Error("Could not find root in manifest")
+  if (!manifest.paths) throw new Error("Could not find paths in manifest")
+  if (!manifest.paths.boards)
+    throw new Error("Could not find boards in manifest")
+  return manifest
 }
 
 export const saveManifest = async (id: string, manifest: ObfManifest) => {
   fileAdapter.writeTextToPath(`${id}/manifest.json`, JSON.stringify(manifest))
 }
 
-export const getRootPageId = async (boardId: string): Promise<string> => {
-  const manifest = await loadManifest(boardId)
-  if (!manifest.root) throw new Error("Could not load manifest - no root found")
-  return manifest.root
-}
 export const saveRootPageId = async (boardId: string, pageId: string) => {
   const manifest = await loadManifest(boardId)
   if (!manifest.paths?.boards)

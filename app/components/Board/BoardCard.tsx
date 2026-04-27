@@ -26,8 +26,8 @@ export default function BoardCard({ board }: { board: BoardTemplate }) {
   const load = () => {
     startLoading(async () => {
       try {
-        const { id } = await importBoard(board.url)
-        addBoard({ id, name: board.name })
+        const { id, pageNames } = await importBoard(board.url)
+        addBoard({ id, name: board.name, pageNames })
         replace({ pathname: "/[boardId]", params: { boardId: id } })
       } catch (e) {
         console.error(e)

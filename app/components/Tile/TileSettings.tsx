@@ -11,23 +11,24 @@ import SheetPicker from "../SheetPicker"
 import { Text } from "../Styled"
 import TileDelete from "./TileDelete"
 
-type PageName = {
-  value: string | undefined
-  label: string
-}
+type Page = { id: string; name: string }
+type PageItem = { value: string | undefined; label: string }
 
 export default function TileSettings({
   button,
   setButton,
-  pageNames,
+  pages,
   deleteTile,
 }: {
   button: BoardButton
   setButton: (button: BoardButton) => void
-  pageNames: PageName[]
+  pages: Page[]
   deleteTile: () => void
 }) {
   const theme = useTheme()
+  const pageNames = pages.map((p): PageItem => {
+    return { value: p.id, label: p.name }
+  })
 
   const setVocalization = (message: string) => {
     setButton({
@@ -39,7 +40,7 @@ export default function TileSettings({
         : undefined,
     })
   }
-  const setNavigation = (item: PageName) => {
+  const setNavigation = (item: PageItem) => {
     if (item.value === undefined) {
       setButton({
         ...button,

@@ -2,13 +2,14 @@ import MessageWindow from "@/app/components/MessageWindow"
 import Page from "@/app/components/Page/Page"
 import PageAddSheet from "@/app/components/Page/PageAddSheet"
 import PageNav from "@/app/components/Page/PageNav"
+import { useBoards } from "@/app/stores/boards"
 import { useDebounceTime, useMessageWindowLocation } from "@/app/stores/prefs"
 import { generateNewPage } from "@/app/utils/boards"
 import { DebounceContext, handleDebounce } from "@/app/utils/debounce"
 import { handleError } from "@/app/utils/error"
 import {
   deleteBoardPage,
-  getRootPageId,
+  loadManifest,
   loadPage,
   saveBoardPage,
   saveRootPageId,
@@ -29,6 +30,7 @@ export type EditTile = {
 
 export default function PageRoute() {
   const theme = useTheme()
+  const boards = useBoards()
   const debounceTime = useDebounceTime()
   const lastTimeRef = useRef(0)
   const { boardId, pageId } = useLocalSearchParams()
@@ -38,6 +40,7 @@ export default function PageRoute() {
   const pageNavSheet = useRef<TrueSheet>(null)
   const pageAddSheet = useRef<TrueSheet>(null)
   const [page, setPage] = useState<BoardPage>()
+  const [pages, setPages] = useState<{ name: string; id: string }[]>([])
   const [rootPageId, setRootPageId] = useState<string>()
   const { push, replace, back } = useRouter()
 
@@ -56,12 +59,26 @@ export default function PageRoute() {
   useEffect(() => {
     ;(async () => {
       try {
-        setRootPageId(await getRootPageId(id))
+        const board = boards.find((b) => b.id === id)
+        if (!board) throw new Error("Could not find board metadata")
+        const manifest = await loadManifest(id)
+        setRootPageId(manifest.root)
+        const pages = Object.entries(manifest.paths!.boards!).flatMap(
+          ([id, path]) => {
+            return [
+              {
+                name: board.pageNames ? board.pageNames[id] : id,
+                id,
+              },
+            ]
+          },
+        )
+        setPages(pages)
       } catch (e) {
         handleError(e)
       }
     })()
-  }, [id])
+  }, [boards, id])
 
   const savePage = async (page: BoardPage) => {
     if (!currentPageId) return handleError("Could not save page - ID undefined")
@@ -73,11 +90,6 @@ export default function PageRoute() {
   const navigateHome = () => {
     if (rootPageId) replace(`/${boardId}/${rootPageId}`)
   }
-
-  // TODO implement pageNames
-  const pageNames: { value: string; label: string }[] = []
-  // TODO implement pages
-  const pages: { name: string; id: string }[] = []
 
   const deletePage = async () => {
     if (!currentPageId)
@@ -146,7 +158,7 @@ export default function PageRoute() {
               page={page}
               savePage={savePage}
               homePageId={rootPageId}
-              pageNames={pageNames}
+              pages={pages}
               navigateToPage={(pageId) => push(`/${boardId}/${pageId}`)}
             />
           )}

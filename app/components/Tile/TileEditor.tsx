@@ -7,12 +7,12 @@ import { usePagesetActions } from "../../stores/boards"
 import { handleError } from "../../utils/error"
 import { selectImage } from "../../utils/file"
 import {
-    FONT_SIZE,
-    GAP,
-    ICON_SIZE,
-    PADDING,
-    RADIUS,
-    useTheme,
+  FONT_SIZE,
+  GAP,
+  ICON_SIZE,
+  PADDING,
+  RADIUS,
+  useTheme,
 } from "../../utils/theme"
 import { BoardButton, TileImage } from "../../utils/types"
 import { Text } from "../Styled"
@@ -77,13 +77,13 @@ export default function TileEditor({
   tile,
   setTile,
   onClose,
-  pageNames,
+  pages,
 }: {
   ref: React.RefObject<TrueSheet | null>
   tile: EditTile | undefined
   setTile: (tile: EditTile) => void
   onClose: () => void
-  pageNames: { value: string; label: string }[]
+  pages: { id: string; name: string }[]
 }) {
   const theme = useTheme()
   const { setSymbolSearchText } = usePagesetActions()
@@ -177,7 +177,7 @@ export default function TileEditor({
             <TileSettings
               button={button}
               setButton={(newButton) => setButton(newButton, image)}
-              pageNames={pageNames}
+              pages={pages}
               deleteTile={deleteTile}
             />
           )}

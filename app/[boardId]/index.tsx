@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { useEffect } from "react"
 import { handleError } from "../utils/error"
-import { getRootPageId } from "../utils/file"
+import { loadManifest } from "../utils/file"
 import { BoardButton, TileImage } from "../utils/types"
 
 export type EditTile = {
@@ -18,8 +18,8 @@ export default function Board() {
   useEffect(() => {
     ;(async () => {
       try {
-        const pageId = await getRootPageId(id)
-        replace(`/${boardId}/${pageId}`)
+        const manifest = await loadManifest(id)
+        replace(`/${boardId}/${manifest.root}`)
       } catch (e) {
         handleError(e)
       }
