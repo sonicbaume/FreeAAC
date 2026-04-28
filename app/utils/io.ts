@@ -113,7 +113,7 @@ export const loadFile = async (path: string): Promise<Uint8Array> => {
   return await file.bytes()
 }
 
-export const shareFile = async (file: File | Blob, name: string) => {
+export const shareFile = async (file: File, name: string) => {
   if ("showSaveFilePicker" in window) {
     //@ts-expect-error Only supported in Chrome
     const localHandle = await window.showSaveFilePicker({ suggestedName: name })
@@ -139,7 +139,7 @@ export const saveObjectAs = async (
   data: unknown,
   name: string,
 ): Promise<void> => {
-  const file = new Blob([JSON.stringify(data)], {
+  const file = new File([JSON.stringify(data)], name, {
     type: "application/json",
   })
   shareFile(file, name)
