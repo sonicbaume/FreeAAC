@@ -45,7 +45,7 @@ export default function PageRoute() {
   const [rootPageState, setRootPageState] = useState<string | undefined>(
     board?.rootPage,
   )
-  const { push, replace, back } = useRouter()
+  const { push, dismissTo, back } = useRouter()
   const { updateBoard } = usePagesetActions()
   const path = pages.find((p) => p.id === pageId)?.path
 
@@ -87,7 +87,7 @@ export default function PageRoute() {
   }
 
   const navigateHome = () => {
-    if (rootPageState) replace(`/${boardId}/${rootPageState}`)
+    if (rootPageState) dismissTo(`/${boardId}/${rootPageState}`)
   }
 
   const deletePage = async () => {
