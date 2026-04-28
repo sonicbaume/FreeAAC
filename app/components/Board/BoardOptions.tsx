@@ -20,7 +20,7 @@ export default function BoardOptions({
 }) {
   const theme = useTheme()
   const boards = useBoards()
-  const { removeBoard, renameBoard } = usePagesetActions()
+  const { removeBoard, updateBoard } = usePagesetActions()
   const { setDefaultBoardId } = usePrefsActions()
   const defaultBoardId = useDefaultBoardId()
   const isDefaultBoard = defaultBoardId === boardId
@@ -40,7 +40,7 @@ export default function BoardOptions({
   const handleRename = (name: string | undefined) => {
     if (!board) return handleError("No board found")
     if (!name) return handleError("No name provided")
-    renameBoard(board.id, name)
+    updateBoard(board.id, { name })
     setShowRenameDialog(false)
     ref.current?.dismiss()
   }

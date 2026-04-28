@@ -42,7 +42,7 @@ interface PagesetsState {
     setLoaded: (loaded: boolean) => void
     addBoard: (boards: Board) => void
     removeBoard: (id: string) => void
-    renameBoard: (id: string, name: string) => void
+    updateBoard: (id: string, changes: Partial<Board>) => void
     addMessageButton: (button: BoardButton) => void
     removeLastMessageButton: () => void
     clearMessageButtons: () => void
@@ -53,7 +53,6 @@ interface PagesetsState {
     logEvent(event: LogEvent, pageId: string, boardId: string): void
     toggleShouldLog(): void
     deleteLogs(): void
-    setRootPage: (boardId: string, rootPage: string) => void
   }
 }
 
@@ -82,10 +81,12 @@ const useStore = create<PagesetsState>()(
           set({
             boards: get().boards.filter((board) => board.id !== id),
           }),
-        renameBoard: (id: string, name: string) => {
+        updateBoard: (id: string, changes: Partial<Board>) => {
           const boards = [...get().boards]
-          const board = boards.find((b) => b.id === id)
-          if (board) board.name = name
+          const boardIndex = boards.findIndex((b) => b.id === id)
+          if (boardIndex === -1) return
+          const board = boards[boardIndex]
+          boards[boardIndex] = { ...board, ...changes }
           set({ boards })
         },
         addMessageButton: (button: BoardButton) =>
@@ -137,12 +138,6 @@ const useStore = create<PagesetsState>()(
         },
         deleteLogs: () => {
           set({ history: [] })
-        },
-        setRootPage: (boardId: string, rootPage: string) => {
-          const boards = [...get().boards]
-          const board = boards.find((b) => b.id === boardId)
-          if (board) board.rootPage = rootPage
-          set({ boards })
         },
       },
     }),

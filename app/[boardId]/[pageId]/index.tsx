@@ -51,7 +51,7 @@ export default function PageRoute() {
     board?.rootPage,
   )
   const { push, replace, back } = useRouter()
-  const { setRootPage } = usePagesetActions()
+  const { updateBoard } = usePagesetActions()
 
   // Load page from .obf file
   useEffect(() => {
@@ -73,19 +73,22 @@ export default function PageRoute() {
       try {
         const manifest = await loadManifest(id)
         if (!manifest.root) return handleError("No root in manifest")
-        setRootPage(id, manifest.root)
+        updateBoard(id, { rootPage: manifest.root })
         setRootPageState(manifest.root)
       } catch (e) {
         handleError(e)
       }
     })()
-  }, [boards, id, rootPageState, setRootPage])
+  }, [boards, id, rootPageState, updateBoard])
 
   const savePage = async (page: BoardPage) => {
+    if (!board?.pages)
+      return handleError("Could not save page - board undefined")
     if (!currentPageId) return handleError("Could not save page - ID undefined")
     console.log("Saving page", page)
     setPage(page)
-    await saveBoardPage(id, currentPageId, page)
+    const path = board.pages[page.id].path
+    await saveBoardPage(id, currentPageId, page, path)
   }
 
   const navigateHome = () => {
@@ -108,7 +111,7 @@ export default function PageRoute() {
       const manifest = await loadManifest(id)
       manifest.root = defaultHomePageId
       await saveManifest(id, manifest)
-      setRootPage(id, defaultHomePageId)
+      updateBoard(id, { rootPage: defaultHomePageId })
       setRootPageState(defaultHomePageId)
     } catch (e) {
       handleError(e)
@@ -137,10 +140,17 @@ export default function PageRoute() {
   )
 
   const addPage = async (name: string, rows: number, cols: number) => {
+    if (!board?.pages)
+      return handleError("Could not add page - board undefined")
     if (!currentPageId)
       return handleError("Could not add page - current page not found")
     const page = generateNewPage(rows, cols, currentPageId, name)
-    await saveBoardPage(id, page.id, page)
+    const path = `${page.id}.obf`
+    updateBoard(id, {
+      ...board,
+      pages: { ...board.pages, [page.id]: { name: page.name, path } },
+    })
+    await saveBoardPage(id, page.id, page, path)
     push(`/${boardId}/${page.id}`)
     pageAddSheet.current?.dismiss()
   }

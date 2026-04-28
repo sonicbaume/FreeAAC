@@ -14,20 +14,20 @@ export type EditTile = {
 export default function Board() {
   const { boardId } = useLocalSearchParams()
   const { replace } = useRouter()
-  const { setRootPage } = usePagesetActions()
+  const { updateBoard } = usePagesetActions()
 
   useEffect(() => {
     ;(async () => {
       try {
         const manifest = await loadManifest(boardId as string)
         if (!manifest.root) return handleError("Root not found in manifest")
-        setRootPage(boardId as string, manifest.root)
+        updateBoard(boardId as string, { rootPage: manifest.root })
         replace(`/${boardId}/${manifest.root}`)
       } catch (e) {
         handleError(e)
       }
     })()
-  }, [boardId, replace, setRootPage])
+  }, [boardId, replace, updateBoard])
 
   return <></>
 }

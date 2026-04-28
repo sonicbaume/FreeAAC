@@ -277,6 +277,7 @@ export const saveBoardPage = async (
   boardId: string,
   pageId: string,
   page: BoardPage,
+  path: string,
 ) => {
   const tree = {
     metadata: {},
@@ -284,7 +285,7 @@ export const saveBoardPage = async (
       [pageId]: page,
     },
   } as BoardTree
-  await saveBoard(`${boardId}/${pageId}`, tree)
+  await saveBoard(`${boardId}/${path}`, tree)
 }
 
 export const deleteBoard = async (id: string) => {
