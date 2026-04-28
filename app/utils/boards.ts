@@ -1,5 +1,6 @@
 import { AACSemanticIntent } from "@willwade/aac-processors/browser"
 import { nanoid } from "nanoid/non-secure"
+import { PageItem } from "../stores/boards"
 import { BoardButton, BoardPage, BoardTree } from "./types"
 
 export const getHomePageId = (tree: BoardTree): string => {
@@ -48,7 +49,7 @@ export const generateNewBoard = (
   cols: number,
 ): {
   tree: BoardTree
-  pages: Record<string, { name: string; path: string }>
+  pages: PageItem[]
 } => {
   const page = generateNewPage(rows, cols, null)
   const tree: BoardTree = {
@@ -64,11 +65,12 @@ export const generateNewBoard = (
   }
   return {
     tree,
-    pages: {
-      [page.id]: {
+    pages: [
+      {
+        id: page.id,
         name: page.name,
         path: `${page.id}.obf`,
       },
-    },
+    ],
   }
 }

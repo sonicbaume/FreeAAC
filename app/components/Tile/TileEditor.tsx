@@ -77,13 +77,11 @@ export default function TileEditor({
   tile,
   setTile,
   onClose,
-  pages,
 }: {
   ref: React.RefObject<TrueSheet | null>
   tile: EditTile | undefined
   setTile: (tile: EditTile) => void
   onClose: () => void
-  pages: { id: string; name: string }[]
 }) {
   const theme = useTheme()
   const { setSymbolSearchText } = usePagesetActions()
@@ -177,7 +175,6 @@ export default function TileEditor({
             <TileSettings
               button={button}
               setButton={(newButton) => setButton(newButton, image)}
-              pages={pages}
               deleteTile={deleteTile}
             />
           )}

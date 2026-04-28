@@ -41,12 +41,7 @@ export default function PageRoute() {
   const pageNavSheet = useRef<TrueSheet>(null)
   const pageAddSheet = useRef<TrueSheet>(null)
   const [page, setPage] = useState<BoardPage>()
-  const pages =
-    board?.pages ?
-      Object.entries(board.pages).map(([id, page]) => {
-        return { ...page, id }
-      })
-    : []
+  const pages = board?.pages ?? []
   const [rootPageState, setRootPageState] = useState<string | undefined>(
     board?.rootPage,
   )
@@ -82,12 +77,11 @@ export default function PageRoute() {
   }, [boards, id, rootPageState, updateBoard])
 
   const savePage = async (page: BoardPage) => {
-    if (!board?.pages)
-      return handleError("Could not save page - board undefined")
     if (!currentPageId) return handleError("Could not save page - ID undefined")
     console.log("Saving page", page)
     setPage(page)
-    const path = board.pages[page.id].path
+    const path = pages.find((p) => p.id === page.id)?.path
+    if (!path) return handleError("Could not save page - no path found")
     await saveBoardPage(id, currentPageId, page, path)
   }
 
@@ -140,15 +134,13 @@ export default function PageRoute() {
   )
 
   const addPage = async (name: string, rows: number, cols: number) => {
-    if (!board?.pages)
-      return handleError("Could not add page - board undefined")
     if (!currentPageId)
       return handleError("Could not add page - current page not found")
     const page = generateNewPage(rows, cols, currentPageId, name)
     const path = `${page.id}.obf`
     updateBoard(id, {
       ...board,
-      pages: { ...board.pages, [page.id]: { name: page.name, path } },
+      pages: [...pages, { ...page, path }],
     })
     await saveBoardPage(id, page.id, page, path)
     push(`/${boardId}/${page.id}`)
@@ -172,7 +164,6 @@ export default function PageRoute() {
               page={page}
               savePage={savePage}
               homePageId={rootPageState}
-              pages={pages}
               navigateToPage={(pageId) => push(`/${boardId}/${pageId}`)}
             />
           )}
@@ -182,7 +173,6 @@ export default function PageRoute() {
       </SafeAreaView>
       <PageNav
         ref={pageNavSheet}
-        pages={pages}
         navigateToPage={(pageId) => push(`/${boardId}/${pageId}`)}
       />
       <PageAddSheet ref={pageAddSheet} onAdd={addPage} />

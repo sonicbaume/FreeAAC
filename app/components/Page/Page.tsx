@@ -17,7 +17,7 @@ import {
 } from "react-native"
 import { EditTile } from "../../[boardId]"
 import { useSpeak } from "../../stores/audio"
-import { useEditMode, usePagesetActions } from "../../stores/boards"
+import { useBoards, useEditMode, usePagesetActions } from "../../stores/boards"
 import {
   useGoHomeOnPress,
   usePlayOnPress,
@@ -40,18 +40,18 @@ export default function Page({
   page,
   savePage,
   homePageId,
-  pages,
   navigateToPage,
 }: {
   page: BoardPage
   savePage: (page: BoardPage) => void
   homePageId?: string
-  pages: { id: string; name: string; path: string }[]
   navigateToPage: (pageId: string) => void
 }) {
   const theme = useTheme()
   const editSheet = useRef<TrueSheet>(null)
   const { boardId, pageId } = useLocalSearchParams()
+  const boards = useBoards()
+  const board = boards.find((b) => b.id === boardId)
   const [pageSize, setPageSize] = useState<LayoutRectangle>()
   const [editTile, setEditTile] = useState<EditTile | undefined>()
   const editTileRef = useRef<EditTile | undefined>(editTile)
@@ -136,7 +136,7 @@ export default function Page({
         button.semanticAction?.intent === AACSemanticIntent.NAVIGATE_TO &&
         button.semanticAction.targetId
       ) {
-        const targetPage = pages.find(
+        const targetPage = board?.pages?.find(
           (p) => p.path === button.semanticAction?.targetId,
         )
         if (!targetPage) {
@@ -158,7 +158,7 @@ export default function Page({
       homePageId,
       navigateToPage,
       logButtonPress,
-      pages,
+      board?.pages,
     ],
   )
 
@@ -276,7 +276,6 @@ export default function Page({
         tile={editTile}
         setTile={setEditTile}
         onClose={saveEditTile}
-        pages={pages}
       />
     </>
   )

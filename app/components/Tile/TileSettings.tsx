@@ -1,7 +1,9 @@
+import { useBoards } from "@/app/stores/boards"
 import {
   AACSemanticCategory,
   AACSemanticIntent,
 } from "@willwade/aac-processors/browser"
+import { useLocalSearchParams } from "expo-router"
 import { ScrollView, StyleSheet, TextInput, View } from "react-native"
 import { ButtonVisibility, buttonVisibilityValues } from "../../utils/consts"
 import { FONT_SIZE, PADDING, RADIUS, useTheme } from "../../utils/theme"
@@ -11,22 +13,22 @@ import SheetPicker from "../SheetPicker"
 import { Text } from "../Styled"
 import TileDelete from "./TileDelete"
 
-type Page = { id: string; name: string }
-type PageItem = { value: string | undefined; label: string }
+type PageOption = { value: string | undefined; label: string }
 
 export default function TileSettings({
   button,
   setButton,
-  pages,
   deleteTile,
 }: {
   button: BoardButton
   setButton: (button: BoardButton) => void
-  pages: Page[]
   deleteTile: () => void
 }) {
   const theme = useTheme()
-  const pageNames = pages.map((p): PageItem => {
+  const { boardId } = useLocalSearchParams()
+  const boards = useBoards()
+  const pages = boards.find((b) => b.id === boardId)?.pages ?? []
+  const pageNames = pages.map((p): PageOption => {
     return { value: p.id, label: p.name }
   })
 
@@ -40,7 +42,7 @@ export default function TileSettings({
         : undefined,
     })
   }
-  const setNavigation = (item: PageItem) => {
+  const setNavigation = (item: PageOption) => {
     if (item.value === undefined) {
       setButton({
         ...button,

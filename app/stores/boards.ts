@@ -15,17 +15,17 @@ const generateEntry = (content: string): HistoryEntry => {
   }
 }
 
+export interface PageItem {
+  id: string
+  name: string
+  path: string
+}
+
 interface Board {
   id: string
   name: string
   rootPage?: string
-  pages?: Record<
-    string,
-    {
-      name: string
-      path: string
-    }
-  >
+  pages?: PageItem[]
 }
 
 interface PagesetsState {

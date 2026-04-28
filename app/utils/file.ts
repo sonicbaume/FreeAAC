@@ -14,6 +14,7 @@ import {
 } from "expo-image-picker"
 import { fetch } from "expo/fetch"
 import { nanoid } from "nanoid/non-secure"
+import { PageItem } from "../stores/boards"
 import { appName } from "./consts"
 import {
   getFileFromDocument,
@@ -122,7 +123,7 @@ export const getFileType = (ext: string): { mimeType: string; UTI: string } => {
 type ProcessedBoard = {
   id: string
   name: string
-  pages: Record<string, { name: string; path: string }>
+  pages: PageItem[]
   rootPage: string
 }
 
@@ -131,18 +132,18 @@ const processImportedBoard = async (tree: AACTree): Promise<ProcessedBoard> => {
   await saveBoard(id, tree)
 
   const manifest = await loadManifest(id)
-
-  if (!manifest.paths?.boards) throw new Error("No boards in manifest")
   if (!manifest.root) throw new Error("No root page in manifest")
-
-  const pages: Record<string, { name: string; path: string }> = {}
-
-  for (const [pageId, page] of Object.entries<BoardPage>(tree.pages)) {
-    pages[pageId] = { name: page.name, path: manifest.paths.boards[pageId] }
-  }
-
-  const rootPage = manifest.root
   const name = tree.metadata?.name ?? "Untitled board"
+  const rootPage = manifest.root
+
+  const pages = Object.entries<BoardPage>(tree.pages).map(([id, page]) => {
+    if (!manifest.paths?.boards) throw new Error("No boards in manifest")
+    return {
+      id,
+      name: page.name,
+      path: manifest.paths.boards[id],
+    }
+  })
 
   return { id, name, pages, rootPage }
 }
@@ -236,9 +237,10 @@ export const saveRootPageId = async (boardId: string, pageId: string) => {
 export const loadPage = async (
   boardId: string,
   pageId: string,
-  pages: Record<string, { path: string }>,
+  pages: PageItem[],
 ): Promise<BoardPage> => {
-  const path = pages[pageId].path
+  const path = pages.find((p) => p.id === pageId)?.path
+  if (!path) throw new Error(`Could not find page path for ${pageId}`)
   const processor = new ObfProcessor({ fileAdapter })
   const tree = await processor.loadIntoTree(`${boardId}/${path}`)
   return tree.pages[pageId] as BoardPage
