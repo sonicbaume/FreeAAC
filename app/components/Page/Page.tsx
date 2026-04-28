@@ -139,7 +139,10 @@ export default function Page({
         const targetPage = pages.find(
           (p) => p.path === button.semanticAction?.targetId,
         )
-        if (!targetPage) return handleError("Could not find page ID")
+        if (!targetPage) {
+          console.error("Could not find page ID", targetPage)
+          return handleError("Could not find page ID")
+        }
         navigateToPage(targetPage.id)
         logButtonPress(button, false)
       }
