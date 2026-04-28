@@ -1,17 +1,17 @@
 import { DocumentPickerAsset } from "expo-document-picker";
-import { Paths } from "expo-file-system";
 
 const parsePath = async (
   path: string,
   options?: { create: boolean },
 ): Promise<{ dir: FileSystemDirectoryHandle; filename: string }> => {
-  const root = await navigator.storage.getDirectory()
-  const dirname = Paths.dirname(path)
-  const basename = Paths.basename(path)
-  console.log({ path, dirname, basename })
-  const dir =
-    dirname === "." ? root : await root.getDirectoryHandle(dirname, options)
-  return { dir, filename: basename }
+  let dir = await navigator.storage.getDirectory()
+  const pathParts = path.split("/").filter((part) => part.length > 0)
+  const filename = pathParts.pop()
+  if (!filename) throw new Error("Invalid filepath")
+  for (const folderName of pathParts) {
+    dir = await dir.getDirectoryHandle(folderName, options)
+  }
+  return { dir, filename }
 }
 
 export const pathExists = async (path: string): Promise<boolean> => {
