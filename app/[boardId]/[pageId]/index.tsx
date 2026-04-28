@@ -161,7 +161,7 @@ export default function PageRoute() {
             <Page
               page={page}
               savePage={savePage}
-              homePageId={rootPageId}
+              homePageId={rootPageState}
               pages={pages}
               navigateToPage={(pageId) => push(`/${boardId}/${pageId}`)}
             />
