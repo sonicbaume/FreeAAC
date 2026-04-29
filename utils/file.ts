@@ -43,6 +43,8 @@ type ObfManifest = {
   }
 }
 
+const cachedPages: Record<string, BoardPage> = {}
+
 const fileAdapter = {
   readBinaryFromInput: async (
     input: string | Buffer | ArrayBuffer | Uint8Array,
@@ -239,8 +241,11 @@ export const loadPage = async (
   pageId: string,
   path: string,
 ): Promise<BoardPage> => {
+  const cacheName = `${boardId}/${pageId}`
+  if (cacheName in cachedPages) return cachedPages[cacheName]
   const processor = new ObfProcessor({ fileAdapter })
   const tree = await processor.loadIntoTree(`${boardId}/${path}`)
+  cachedPages[cacheName] = tree.pages[pageId]
   return tree.pages[pageId] as BoardPage
 }
 
@@ -265,6 +270,8 @@ export const saveBoardPage = async (
   page: BoardPage,
   path: string,
 ) => {
+  const cacheName = `${boardId}/${pageId}`
+  delete cachedPages[cacheName]
   const tree = {
     metadata: {},
     pages: {
