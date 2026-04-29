@@ -155,7 +155,6 @@ export default function Settings() {
       maxWidth: "100%",
       padding: PADDING.xl,
       marginHorizontal: "auto",
-      backgroundColor: theme.surface,
     },
   })
 

@@ -43,7 +43,7 @@ export default function Index() {
 
   return (
     <View style={{ ...styles.container }}>
-      <ScrollView style={{ paddingVertical: PADDING.xxl }}>
+      <ScrollView>
         <Text
           style={{
             fontSize: FONT_SIZE.md,

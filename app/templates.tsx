@@ -1,15 +1,11 @@
 import { ScrollView, StyleSheet, View } from "react-native"
 import BoardCard from "../components/Board/BoardCard"
 import { templates } from "../utils/consts"
-import { GAP, MAX_WIDTH, PADDING, useTheme } from "../utils/theme"
+import { GAP, MAX_WIDTH, PADDING } from "../utils/theme"
 
 export default function Templates() {
-  const theme = useTheme()
   return (
-    <ScrollView
-      style={{ backgroundColor: theme.background }}
-      contentContainerStyle={styles.container}
-    >
+    <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.list}>
         {templates.map((template, i) => (
           <BoardCard key={i} board={template} />

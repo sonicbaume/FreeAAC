@@ -76,11 +76,10 @@ export default function RootLayout() {
         <ThemeContext value={theme}>
           <TrueSheetProvider>
             <GestureHandlerRootView>
-              <SafeAreaView
-                style={{ flex: 1, backgroundColor: theme.background }}
-              >
+              <SafeAreaView style={{ flex: 1 }}>
                 <Stack
                   screenOptions={{
+                    contentStyle: { backgroundColor: theme.surface },
                     headerShown: false,
                     animation: "simple_push",
                     headerBackButtonDisplayMode: "minimal",

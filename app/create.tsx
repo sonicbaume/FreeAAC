@@ -4,11 +4,10 @@ import PageAdd from "../components/Page/PageAdd"
 import { usePagesetActions } from "../stores/boards"
 import { generateNewBoard } from "../utils/boards"
 import { saveBoard } from "../utils/file"
-import { GAP, MAX_WIDTH, PADDING, useTheme } from "../utils/theme"
+import { GAP, MAX_WIDTH, PADDING } from "../utils/theme"
 import { uuid } from "../utils/uuid"
 
 export default function Create() {
-  const theme = useTheme()
   const { addBoard, toggleEditMode } = usePagesetActions()
   const { replace } = useRouter()
 
@@ -22,11 +21,10 @@ export default function Create() {
   }
 
   return (
-    <ScrollView style={{ backgroundColor: theme.background }}>
+    <ScrollView>
       <View
         style={{
           ...styles.container,
-          backgroundColor: theme.surface,
           paddingBottom: 200,
         }}
       >

@@ -21,7 +21,6 @@ export default function Privacy() {
       maxWidth: MAX_WIDTH,
       paddingHorizontal: PADDING.xl,
       paddingBottom: 200,
-      backgroundColor: theme.surface,
     },
     body: {
       fontSize: FONT_SIZE.md,
