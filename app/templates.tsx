@@ -1,34 +1,19 @@
 import { ScrollView, StyleSheet, View } from "react-native"
-import Sortable, { SortableGridRenderItem } from "react-native-sortables"
-import BoardCard from "./components/Board/BoardCard"
-import { BoardTemplate, templates } from "./utils/consts"
-import { GAP, MAX_WIDTH, PADDING, useTheme } from "./utils/theme"
+import BoardCard from "../components/Board/BoardCard"
+import { templates } from "../utils/consts"
+import { GAP, MAX_WIDTH, PADDING, useTheme } from "../utils/theme"
 
 export default function Templates() {
   const theme = useTheme()
-  const renderTemplate: SortableGridRenderItem<BoardTemplate> = (item) => (
-    <BoardCard board={item.item} />
-  )
   return (
     <ScrollView
       style={{ backgroundColor: theme.background }}
       contentContainerStyle={styles.container}
     >
-      <View
-        style={{
-          width: "100%",
-          maxWidth: MAX_WIDTH,
-          paddingHorizontal: PADDING.xxl,
-        }}
-      >
-        <Sortable.Grid
-          data={templates}
-          renderItem={renderTemplate}
-          columns={2}
-          sortEnabled={false}
-          rowGap={30}
-          keyExtractor={(item) => item.url}
-        />
+      <View style={styles.list}>
+        {templates.map((template, i) => (
+          <BoardCard key={i} board={template} />
+        ))}
       </View>
     </ScrollView>
   )
@@ -40,5 +25,14 @@ const styles = StyleSheet.create({
     paddingVertical: PADDING.xl,
     gap: GAP.xl,
     paddingBottom: 200,
+  },
+  list: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    maxWidth: MAX_WIDTH,
+    paddingHorizontal: PADDING.xxl,
+    gap: GAP.xl,
   },
 })

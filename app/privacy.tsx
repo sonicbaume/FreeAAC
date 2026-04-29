@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, View } from "react-native"
-import { Text } from "./components/Styled"
+import { Text } from "../components/Styled"
 import {
   FONT_SIZE,
   FONT_WEIGHT,
@@ -7,7 +7,7 @@ import {
   MAX_WIDTH,
   PADDING,
   useTheme,
-} from "./utils/theme"
+} from "../utils/theme"
 
 export default function Privacy() {
   const theme = useTheme()
