@@ -7,11 +7,11 @@ import {
 import { useTransition } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
-import BoardList from "./components/Board/BoardList"
-import { Button, Text } from "./components/Styled"
-import { usePagesetActions } from "./stores/boards"
-import { handleError } from "./utils/error"
-import { importBoardFile, loadBoard } from "./utils/file"
+import BoardList from "../components/Board/BoardList"
+import { Button, Text } from "../components/Styled"
+import { usePagesetActions } from "../stores/boards"
+import { handleError } from "../utils/error"
+import { importBoardFile } from "../utils/file"
 import {
   FONT_SIZE,
   FONT_WEIGHT,
@@ -20,7 +20,7 @@ import {
   MAX_WIDTH,
   PADDING,
   useTheme,
-} from "./utils/theme"
+} from "../utils/theme"
 
 export default function Index() {
   const theme = useTheme()
@@ -31,16 +31,11 @@ export default function Index() {
 
   const openFile = async () => {
     try {
-      const file = await importBoardFile()
-      if (!file) return
       startLoading(async () => {
-        const tree = await loadBoard(file.uri)
-        addBoard({
-          id: file.id,
-          uri: file.uri,
-          name: tree.metadata.name || "Untitled board",
-        })
-        router.push({ pathname: "/[board]", params: { board: file.id } })
+        const board = await importBoardFile()
+        if (!board) return
+        addBoard(board)
+        router.push({ pathname: "/[boardId]", params: { boardId: board.id } })
       })
     } catch (e) {
       handleError(e)

@@ -6,7 +6,6 @@
     "icon": "./assets/images/icon.png",
     "scheme": "freeaac",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "org.freeaac",
@@ -16,7 +15,6 @@
       }
     },
     "android": {
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "org.freeaac",
       "permissions": [
@@ -50,7 +48,11 @@
       "expo-localization",
       "expo-asset",
       "react-native-audio-api",
-      "expo-image-picker"
+      "expo-image-picker",
+      "expo-font",
+      "expo-image",
+      "expo-sharing",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
