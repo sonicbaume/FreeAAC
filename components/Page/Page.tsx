@@ -1,27 +1,27 @@
-import { handleError } from "@/app/utils/error"
+import { handleError } from "@/utils/error"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import {
-  DndProvider,
-  Draggable,
-  DraggableGrid,
-  UniqueIdentifier,
+    DndProvider,
+    Draggable,
+    DraggableGrid,
+    UniqueIdentifier,
 } from "@mgcrea/react-native-dnd"
 import { AACSemanticIntent } from "@willwade/aac-processors/browser"
 import { useLocalSearchParams } from "expo-router"
 import { useCallback, useEffect, useRef, useState } from "react"
 import {
-  LayoutChangeEvent,
-  LayoutRectangle,
-  StyleSheet,
-  View,
+    LayoutChangeEvent,
+    LayoutRectangle,
+    StyleSheet,
+    View,
 } from "react-native"
-import { EditTile } from "../../[boardId]"
+import { EditTile } from "../../app/[boardId]"
 import { useSpeak } from "../../stores/audio"
 import { useBoards, useEditMode, usePagesetActions } from "../../stores/boards"
 import {
-  useGoHomeOnPress,
-  usePlayOnPress,
-  useTileSpacing,
+    useGoHomeOnPress,
+    usePlayOnPress,
+    useTileSpacing,
 } from "../../stores/prefs"
 import { generateNewButton } from "../../utils/boards"
 import { GAP, useTheme } from "../../utils/theme"

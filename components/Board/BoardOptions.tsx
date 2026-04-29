@@ -1,4 +1,4 @@
-import { useDefaultBoardId, usePrefsActions } from "@/app/stores/prefs"
+import { useDefaultBoardId, usePrefsActions } from "@/stores/prefs"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import { Pencil, SquareArrowRightExit, Star, Trash2 } from "lucide-react-native"
 import { useState, useTransition } from "react"

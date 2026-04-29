@@ -7,12 +7,12 @@ import Head from "expo-router/head"
 import { useState } from "react"
 import { Platform, StyleSheet, View } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
-import AudioController from "./components/AudioController"
-import SettingsButton from "./components/Settings/Button"
-import { useDefaultBoardId } from "./stores/prefs"
-import { useColorScheme } from "./utils/colorScheme"
-import { appDescription, appName } from "./utils/consts"
-import { ICON_SIZE, ThemeContext, themes } from "./utils/theme"
+import AudioController from "../components/AudioController"
+import SettingsButton from "../components/Settings/Button"
+import { useDefaultBoardId } from "../stores/prefs"
+import { useColorScheme } from "../utils/colorScheme"
+import { appDescription, appName } from "../utils/consts"
+import { ICON_SIZE, ThemeContext, themes } from "../utils/theme"
 
 export const unstable_settings = {
   initialRouteName: "index",

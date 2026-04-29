@@ -1,7 +1,7 @@
-import { useBoards } from "@/app/stores/boards"
+import { useBoards } from "@/stores/boards"
 import {
-  AACSemanticCategory,
-  AACSemanticIntent,
+    AACSemanticCategory,
+    AACSemanticIntent,
 } from "@willwade/aac-processors/browser"
 import { useLocalSearchParams } from "expo-router"
 import { ScrollView, StyleSheet, TextInput, View } from "react-native"

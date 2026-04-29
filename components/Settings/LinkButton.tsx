@@ -1,4 +1,4 @@
-import { FONT_SIZE, ICON_SIZE, useTheme } from "@/app/utils/theme"
+import { FONT_SIZE, ICON_SIZE, useTheme } from "@/utils/theme"
 import { Href, Link } from "expo-router"
 import { LucideIcon } from "lucide-react-native"
 import { Button, Text } from "../Styled"

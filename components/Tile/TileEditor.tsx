@@ -2,17 +2,17 @@ import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import { Check } from "lucide-react-native"
 import { useState } from "react"
 import { Platform, Pressable, StyleSheet, TextInput, View } from "react-native"
-import { EditTile } from "../../[boardId]"
+import { EditTile } from "../../app/[boardId]"
 import { usePagesetActions } from "../../stores/boards"
 import { handleError } from "../../utils/error"
 import { selectImage } from "../../utils/file"
 import {
-  FONT_SIZE,
-  GAP,
-  ICON_SIZE,
-  PADDING,
-  RADIUS,
-  useTheme,
+    FONT_SIZE,
+    GAP,
+    ICON_SIZE,
+    PADDING,
+    RADIUS,
+    useTheme,
 } from "../../utils/theme"
 import { BoardButton, TileImage } from "../../utils/types"
 import { Text } from "../Styled"

@@ -1,11 +1,5 @@
-import { Button, Text } from "@/app/components/Styled"
-import {
-  FONT_SIZE,
-  FONT_WEIGHT,
-  GAP,
-  PADDING,
-  useTheme,
-} from "@/app/utils/theme"
+import { Button, Text } from "@/components/Styled"
+import { FONT_SIZE, FONT_WEIGHT, GAP, PADDING, useTheme } from "@/utils/theme"
 import { JSX } from "react"
 import { StyleSheet, Switch, View } from "react-native"
 import SheetPicker from "../SheetPicker"
@@ -44,7 +38,7 @@ export default function SettingsItem(
 ) {
   const theme = useTheme()
   const component =
-    props.type === "toggle" ? (
+    props.type === "toggle" ?
       <View style={{ display: "flex", alignItems: "center" }}>
         <Switch
           value={props.value}
@@ -64,17 +58,17 @@ export default function SettingsItem(
           </Text>
         )}
       </View>
-    ) : props.type === "select" ? (
+    : props.type === "select" ?
       <SheetPicker
         items={props.items}
         value={props.value}
         onChange={(item) => props.setValue(item.value)}
       />
-    ) : props.type === "button" ? (
+    : props.type === "button" ?
       <Button variant="secondary" onPress={props.onPress}>
         <Text style={{ color: theme.onSecondary }}>{props.label}</Text>
       </Button>
-    ) : null
+    : null
 
   return (
     <View style={styles.container}>

@@ -174,20 +174,20 @@ export const licenseImageMap: {
   dark: Record<string, number>
 } = {
   light: {
-    "CC-BY": require("../../assets/images/cc/light/by.png"),
-    "CC-BY-NC": require("../../assets/images/cc/light/by-nc.png"),
-    "CC-BY-NC-SA": require("../../assets/images/cc/light/by-nc-sa.png"),
-    "CC-BY-ND": require("../../assets/images/cc/light/by-nd.png"),
-    "CC-BY-SA": require("../../assets/images/cc/light/by-sa.png"),
-    "CC-BY-NC-ND": require("../../assets/images/cc/light/by-nc-nd.png"),
+    "CC-BY": require("../assets/images/cc/light/by.png"),
+    "CC-BY-NC": require("../assets/images/cc/light/by-nc.png"),
+    "CC-BY-NC-SA": require("../assets/images/cc/light/by-nc-sa.png"),
+    "CC-BY-ND": require("../assets/images/cc/light/by-nd.png"),
+    "CC-BY-SA": require("../assets/images/cc/light/by-sa.png"),
+    "CC-BY-NC-ND": require("../assets/images/cc/light/by-nc-nd.png"),
   },
   dark: {
-    "CC-BY": require("../../assets/images/cc/dark/by.png"),
-    "CC-BY-NC": require("../../assets/images/cc/dark/by-nc.png"),
-    "CC-BY-NC-SA": require("../../assets/images/cc/dark/by-nc-sa.png"),
-    "CC-BY-ND": require("../../assets/images/cc/dark/by-nd.png"),
-    "CC-BY-SA": require("../../assets/images/cc/dark/by-sa.png"),
-    "CC-BY-NC-ND": require("../../assets/images/cc/dark/by-nc-nd.png"),
+    "CC-BY": require("../assets/images/cc/dark/by.png"),
+    "CC-BY-NC": require("../assets/images/cc/dark/by-nc.png"),
+    "CC-BY-NC-SA": require("../assets/images/cc/dark/by-nc-sa.png"),
+    "CC-BY-ND": require("../assets/images/cc/dark/by-nd.png"),
+    "CC-BY-SA": require("../assets/images/cc/dark/by-sa.png"),
+    "CC-BY-NC-ND": require("../assets/images/cc/dark/by-nc-nd.png"),
   },
 }
 

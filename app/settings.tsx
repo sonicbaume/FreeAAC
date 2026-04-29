@@ -18,16 +18,16 @@ import {
 } from "lucide-react-native"
 import { useEffect, useState } from "react"
 import { Platform, ScrollView, StyleSheet, View } from "react-native"
-import DialogConfirm from "./components/DialogConfirm"
-import GithubIcon from "./components/Icons/Github"
-import SettingsHeader from "./components/Settings/Header"
-import SettingsItem from "./components/Settings/Item"
-import LinkButton from "./components/Settings/LinkButton"
-import PreviewButton from "./components/Settings/PreviewButton"
-import TtsStatus from "./components/Settings/TtsStatus"
-import { Text } from "./components/Styled"
-import { useSpeak } from "./stores/audio"
-import { useHistory, usePagesetActions, useShouldLog } from "./stores/boards"
+import DialogConfirm from "../components/DialogConfirm"
+import GithubIcon from "../components/Icons/Github"
+import SettingsHeader from "../components/Settings/Header"
+import SettingsItem from "../components/Settings/Item"
+import LinkButton from "../components/Settings/LinkButton"
+import PreviewButton from "../components/Settings/PreviewButton"
+import TtsStatus from "../components/Settings/TtsStatus"
+import { Text } from "../components/Styled"
+import { useSpeak } from "../stores/audio"
+import { useHistory, usePagesetActions, useShouldLog } from "../stores/boards"
 import {
   ButtonViewOption,
   buttonViewOptions,
@@ -47,7 +47,7 @@ import {
   useShowShareButton,
   useSpeechOptions,
   useTileSpacing,
-} from "./stores/prefs"
+} from "../stores/prefs"
 import {
   appName,
   BackButton,
@@ -57,10 +57,10 @@ import {
   speechPitchValues,
   speechRateValues,
   tileSpacingValues,
-} from "./utils/consts"
-import { handleError } from "./utils/error"
-import { exportLogs, importPrefsFile } from "./utils/file"
-import { saveObjectAs } from "./utils/io"
+} from "../utils/consts"
+import { handleError } from "../utils/error"
+import { exportLogs, importPrefsFile } from "../utils/file"
+import { saveObjectAs } from "../utils/io"
 import {
   FONT_SIZE,
   GAP,
@@ -68,7 +68,7 @@ import {
   MAX_WIDTH,
   PADDING,
   useTheme,
-} from "./utils/theme"
+} from "../utils/theme"
 
 const tagToCode = (langTag: string) => langTag.split(/[-_]+/)[0]
 const harmoniseTag = (langTag: string) => langTag.replace("_", "-")

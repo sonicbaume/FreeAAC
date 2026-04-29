@@ -1,9 +1,9 @@
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { useEffect } from "react"
-import { usePagesetActions } from "../stores/boards"
-import { handleError } from "../utils/error"
-import { loadManifest } from "../utils/file"
-import { BoardButton, TileImage } from "../utils/types"
+import { usePagesetActions } from "../../stores/boards"
+import { handleError } from "../../utils/error"
+import { loadManifest } from "../../utils/file"
+import { BoardButton, TileImage } from "../../utils/types"
 
 export type EditTile = {
   button: BoardButton | undefined

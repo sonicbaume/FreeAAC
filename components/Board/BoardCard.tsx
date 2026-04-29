@@ -1,5 +1,5 @@
-import { handleError } from "@/app/utils/error"
-import { importBoard } from "@/app/utils/file"
+import { handleError } from "@/utils/error"
+import { importBoard } from "@/utils/file"
 import { useAssets } from "expo-asset"
 import { Image } from "expo-image"
 import { Link, useRouter } from "expo-router"
@@ -8,9 +8,9 @@ import { useTransition } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 import { usePagesetActions } from "../../stores/boards"
 import {
-  BoardTemplate,
-  licenseImageMap,
-  licenseLinkMap,
+    BoardTemplate,
+    licenseImageMap,
+    licenseLinkMap,
 } from "../../utils/consts"
 import { FONT_SIZE, GAP, MAX_WIDTH, RADIUS, useTheme } from "../../utils/theme"
 import { Button, Text } from "../Styled"

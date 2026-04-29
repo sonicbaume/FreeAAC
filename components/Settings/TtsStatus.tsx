@@ -1,4 +1,4 @@
-import { FONT_SIZE, GAP, ICON_SIZE, PADDING, useTheme } from "@/app/utils/theme"
+import { FONT_SIZE, GAP, ICON_SIZE, PADDING, useTheme } from "@/utils/theme"
 import { CheckCircleIcon } from "lucide-react-native"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 import { useTtsStatus } from "../../stores/audio"

@@ -1,5 +1,5 @@
-import { Text } from "@/app/components/Styled"
-import { FONT_SIZE, GAP, ICON_SIZE, PADDING, useTheme } from "@/app/utils/theme"
+import { Text } from "@/components/Styled"
+import { FONT_SIZE, GAP, ICON_SIZE, PADDING, useTheme } from "@/utils/theme"
 import { LucideIcon } from "lucide-react-native"
 import { StyleSheet, View } from "react-native"
 

@@ -1,4 +1,4 @@
-import { useBoards } from "@/app/stores/boards"
+import { useBoards } from "@/stores/boards"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import { useLocalSearchParams } from "expo-router"
 import { RefObject } from "react"

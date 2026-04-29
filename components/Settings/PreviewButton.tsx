@@ -1,6 +1,6 @@
-import { useTtsStatus } from "@/app/stores/audio"
-import { useSpeechOptions } from "@/app/stores/prefs"
-import { ICON_SIZE, useTheme } from "@/app/utils/theme"
+import { useTtsStatus } from "@/stores/audio"
+import { useSpeechOptions } from "@/stores/prefs"
+import { ICON_SIZE, useTheme } from "@/utils/theme"
 import { LucideIcon, Volume2 } from "lucide-react-native"
 import { Button } from "../Styled"
 
