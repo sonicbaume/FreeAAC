@@ -150,13 +150,15 @@ const processImportedBoard = async (tree: AACTree): Promise<ProcessedBoard> => {
   return { id, name, pages, rootPage }
 }
 
-export const importBoardFile = async (): Promise<ProcessedBoard> => {
+export const importBoardFile = async (): Promise<
+  ProcessedBoard | undefined
+> => {
   const result = await DocumentPicker.getDocumentAsync({
     copyToCacheDirectory: true,
   })
 
   const asset = result.assets?.at(0)
-  if (!asset) throw "No file selected"
+  if (!asset) return undefined
 
   const file = getFileFromDocument(asset)
   const data = await file.bytes()

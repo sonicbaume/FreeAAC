@@ -33,6 +33,7 @@ export default function Index() {
     try {
       startLoading(async () => {
         const board = await importBoardFile()
+        if (!board) return
         addBoard(board)
         router.push({ pathname: "/[boardId]", params: { boardId: board.id } })
       })
