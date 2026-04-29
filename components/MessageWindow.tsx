@@ -86,7 +86,7 @@ export default function MessageWindow({
     logEvent,
   } = usePagesetActions()
   const speak = useSpeak()
-  const { replace } = useRouter()
+  const { dismissTo } = useRouter()
   const isRootPage = rootPage !== undefined && rootPage === pageId
 
   const hasMessage = messageButtons.length > 0
@@ -118,7 +118,7 @@ export default function MessageWindow({
 
   const navigateMenu = () => {
     clearMessageButtons()
-    replace("/")
+    dismissTo("/")
   }
 
   return (
