@@ -43,7 +43,7 @@ export default function Index() {
 
   return (
     <View style={{ ...styles.container }}>
-      <ScrollView>
+      <ScrollView style={{ flexGrow: 0 }}>
         <Text
           style={{
             fontSize: FONT_SIZE.md,
@@ -84,10 +84,11 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     marginHorizontal: "auto",
     width: "100%",
     maxWidth: MAX_WIDTH,
     padding: PADDING.xl,
+    gap: GAP.xxl,
   },
 })
