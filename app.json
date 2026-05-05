@@ -2,7 +2,7 @@
   "expo": {
     "name": "FreeAAC",
     "slug": "FreeAAC",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "icon": "./assets/images/icon.png",
     "scheme": "freeaac",
     "userInterfaceStyle": "automatic",
