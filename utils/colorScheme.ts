@@ -2,7 +2,9 @@ import { useEffect, useState } from "react"
 import { Platform, useColorScheme as useRNColorScheme } from "react-native"
 
 export function useColorScheme() {
-  const nativeColorScheme = useRNColorScheme() ?? "light"
+  const rnColorScheme = useRNColorScheme()
+  const nativeColorScheme =
+    rnColorScheme === "unspecified" ? "light" : rnColorScheme
   const [webColorScheme, setWebColorScheme] = useState<"light" | "dark">(() => {
     if (Platform.OS === "web" && typeof window !== "undefined") {
       return window.matchMedia("(prefers-color-scheme: dark)").matches ?
