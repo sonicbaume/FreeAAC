@@ -1,3 +1,4 @@
+import BoardList from "@/components/Board/BoardList"
 import { Link, useRouter } from "expo-router"
 import {
   FilePlusCorner,
@@ -7,7 +8,6 @@ import {
 import { useTransition } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
-import BoardList from "../components/Board/BoardList"
 import { Button, Text } from "../components/Styled"
 import { usePagesetActions } from "../stores/boards"
 import { handleError } from "../utils/error"
@@ -43,7 +43,7 @@ export default function Index() {
 
   return (
     <View style={{ ...styles.container }}>
-      <ScrollView>
+      <ScrollView style={{ flexGrow: 0, minHeight: 80 }}>
         <Text
           style={{
             fontSize: FONT_SIZE.md,
@@ -84,10 +84,11 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     marginHorizontal: "auto",
     width: "100%",
     maxWidth: MAX_WIDTH,
     padding: PADDING.xl,
+    gap: GAP.xxl,
   },
 })

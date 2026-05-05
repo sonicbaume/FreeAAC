@@ -15,11 +15,14 @@ export interface ExecuTorchTtsModel {
   downloadProgress: number
 }
 
-type DataOnly<T> = {
-  [K in keyof T as T[K] extends (...args: unknown[]) => unknown
-    ? never
-    : K]: T[K]
-}
+type DataOnly<T> = Pick<
+  T,
+  {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [K in keyof T]: T[K] extends (...args: any[]) => any ? never : K
+  }[keyof T]
+>
+
 export type BoardButton = DataOnly<AACButton>
 export type BoardPage = Omit<DataOnly<AACPage>, "images"> & {
   images?: TileImage[]
