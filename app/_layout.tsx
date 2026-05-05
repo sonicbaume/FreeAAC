@@ -7,7 +7,7 @@ import Head from "expo-router/head"
 import { useState } from "react"
 import { Platform, StyleSheet, View } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 import AudioController from "../components/AudioController"
 import SettingsButton from "../components/Settings/Button"
 import { useDefaultBoardId } from "../stores/prefs"
@@ -74,9 +74,9 @@ export default function RootLayout() {
       )}
       <QueryClientProvider client={queryClient}>
         <ThemeContext value={theme}>
-          <TrueSheetProvider>
-            <GestureHandlerRootView>
-              <SafeAreaView style={{ flex: 1 }}>
+          <SafeAreaProvider>
+            <TrueSheetProvider>
+              <GestureHandlerRootView>
                 <Stack
                   screenOptions={{
                     contentStyle: { backgroundColor: theme.surface },
@@ -151,9 +151,9 @@ export default function RootLayout() {
                     }}
                   />
                 </Stack>
-              </SafeAreaView>
-            </GestureHandlerRootView>
-          </TrueSheetProvider>
+              </GestureHandlerRootView>
+            </TrueSheetProvider>
+          </SafeAreaProvider>
         </ThemeContext>
       </QueryClientProvider>
       <AudioController />
