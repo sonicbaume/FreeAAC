@@ -129,7 +129,9 @@ type ProcessedBoard = {
   rootPage: string
 }
 
-const processImportedBoard = async (tree: AACTree): Promise<ProcessedBoard> => {
+const processImportedBoard = async (
+  tree: BoardTree,
+): Promise<ProcessedBoard> => {
   const id = uuid()
   await saveBoard(id, tree)
 
@@ -248,7 +250,7 @@ export const loadPage = async (
   const processor = new ObfProcessor({ fileAdapter })
   const tree = await processor.loadIntoTree(`${boardId}/${path}`)
   cachedPages[cacheName] = tree.pages[pageId]
-  return tree.pages[pageId] as BoardPage
+  return tree.pages[pageId]
 }
 
 export const loadBoard = async (
@@ -257,7 +259,7 @@ export const loadBoard = async (
 ): Promise<BoardTree> => {
   const processor = getProcessor(`.${ext}`, { fileAdapter })
   const tree = await processor.loadIntoTree(input)
-  return tree
+  return tree as unknown as BoardTree
 }
 
 export const saveBoard = async (id: string, tree: BoardTree) => {
