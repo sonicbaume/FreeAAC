@@ -1,4 +1,5 @@
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
+import { useLocalSearchParams } from "expo-router"
 import { Check } from "lucide-react-native"
 import { useState } from "react"
 import { Platform, Pressable, StyleSheet, TextInput, View } from "react-native"
@@ -84,6 +85,7 @@ export default function TileEditor({
   onClose: () => void
 }) {
   const theme = useTheme()
+  const { boardId } = useLocalSearchParams()
   const { setSymbolSearchText } = usePagesetActions()
   const button = tile?.button
   const image = tile?.image
@@ -173,6 +175,7 @@ export default function TileEditor({
           <TabSelector tab={tab} setTab={setTab} />
           {tab === "settings" && (
             <TileSettings
+              boardId={boardId}
               button={button}
               setButton={(newButton) => setButton(newButton, image)}
               deleteTile={deleteTile}

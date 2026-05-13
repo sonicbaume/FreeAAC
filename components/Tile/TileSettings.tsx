@@ -3,7 +3,6 @@ import {
   AACSemanticCategory,
   AACSemanticIntent,
 } from "@willwade/aac-processors/browser"
-import { useLocalSearchParams } from "expo-router"
 import { ScrollView, StyleSheet, TextInput, View } from "react-native"
 import { ButtonVisibility, buttonVisibilityValues } from "../../utils/consts"
 import { FONT_SIZE, PADDING, RADIUS, useTheme } from "../../utils/theme"
@@ -16,16 +15,17 @@ import TileDelete from "./TileDelete"
 type PageOption = { value: string | undefined; label: string }
 
 export default function TileSettings({
+  boardId,
   button,
   setButton,
   deleteTile,
 }: {
+  boardId: string | string[]
   button: BoardButton
   setButton: (button: BoardButton) => void
   deleteTile: () => void
 }) {
   const theme = useTheme()
-  const { boardId } = useLocalSearchParams()
   const boards = useBoards()
   const pages = boards.find((b) => b.id === boardId)?.pages ?? []
   const pagePaths = pages.map((p): PageOption => {
