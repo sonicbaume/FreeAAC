@@ -70,6 +70,7 @@ export default function RootLayout() {
         <Head>
           <title>{appName}</title>
           <meta name="description" content={appDescription} />
+          <link rel="manifest" href="/manifest.json" />
         </Head>
       )}
       <QueryClientProvider client={queryClient}>
