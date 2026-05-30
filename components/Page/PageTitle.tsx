@@ -25,7 +25,7 @@ export default function PageTitle({
         onPress={() => setShowRenameDialog(true)}
         disabled={!editMode}
       >
-        <Text style={styles.title} numberOfLines={1}>
+        <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
           {title}
         </Text>
       </Pressable>
@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.xl,
     padding: PADDING.lg,
     userSelect: "none",
-    textOverflow: "ellipsis",
   },
   titleEdit: {
     borderWidth: 1,
