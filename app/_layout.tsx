@@ -10,6 +10,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 import AudioController from "../components/AudioController"
 import SettingsButton from "../components/Settings/Button"
+import { useBoards } from "../stores/boards"
 import { useDefaultBoardId } from "../stores/prefs"
 import { useColorScheme } from "../utils/colorScheme"
 import { appDescription, appName } from "../utils/consts"
@@ -27,9 +28,11 @@ export default function RootLayout() {
   const router = useRouter()
   const defaultBoardId = useDefaultBoardId()
   const [firstLaunch, setFirstLaunch] = useState(true)
+  const boards = useBoards()
 
   useFocusEffect(() => {
-    if (firstLaunch && defaultBoardId) {
+    const boardExists = boards.find((board) => board.id === defaultBoardId)
+    if (firstLaunch && defaultBoardId && boardExists) {
       console.log("redirecting to ", defaultBoardId)
       router.push({
         pathname: "/[boardId]",
