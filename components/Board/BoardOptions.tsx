@@ -49,7 +49,7 @@ export default function BoardOptions({
     if (!board) return handleError("No board found")
     await deleteBoard(board.id)
     removeBoard(board.id)
-    if (isDefaultBoard) setDefaultBoardId(undefined) // <-- adding default board id clearing to prevent redirecting to deleted board
+    if (isDefaultBoard) setDefaultBoardId(undefined)
     setShowDeleteDialog(false)
     ref.current?.dismiss()
   }
