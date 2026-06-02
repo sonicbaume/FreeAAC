@@ -21,6 +21,9 @@ export interface SpeechOptions extends ExpoSpeechOptions {
   engine: SpeechEngine
 }
 
+export const preventExitOptions = [undefined, "hold", "tap"] as const
+export type PreventExitOption = (typeof preventExitOptions)[number]
+
 interface PrefsState {
   playOnPress: boolean
   labelLocation: "top" | "bottom"
@@ -34,6 +37,7 @@ interface PrefsState {
   tileSpacing: number
   debounceTime: number | undefined
   backButton: BackButton
+  preventExit: PreventExitOption
   defaultBoardId: string | undefined
   actions: {
     togglePlayOnPress: () => void
@@ -50,6 +54,7 @@ interface PrefsState {
     setBackButton: (value: BackButton) => void
     setDefaultBoardId: (value: string | undefined) => void
     importPrefs: (prefs: unknown) => void
+    setPreventExit: (value: PreventExitOption) => void
   }
 }
 
@@ -73,6 +78,7 @@ export const usePrefsStore = create<PrefsState>()(
       tileSpacing: defaultTileSpacing,
       debounceTime: undefined,
       backButton: defaultBackButton,
+      preventExit: undefined,
       defaultBoardId: undefined,
       actions: {
         togglePlayOnPress: () => set({ playOnPress: !get().playOnPress }),
@@ -96,6 +102,8 @@ export const usePrefsStore = create<PrefsState>()(
           set({ defaultBoardId }),
         importPrefs: (prefs: unknown) =>
           set(prefs as Partial<Omit<PrefsState, "actions">>),
+        setPreventExit: (preventExit?: PreventExitOption) =>
+          set({ preventExit }),
       },
     }),
     {
@@ -125,5 +133,5 @@ export const useTileSpacing = () => usePrefsStore((s) => s.tileSpacing)
 export const useDebounceTime = () => usePrefsStore((s) => s.debounceTime)
 export const useBackButton = () => usePrefsStore((s) => s.backButton)
 export const useDefaultBoardId = () => usePrefsStore((s) => s.defaultBoardId)
-
+export const usePreventExit = () => usePrefsStore((s) => s.preventExit)
 export const usePrefsActions = () => usePrefsStore((s) => s.actions)

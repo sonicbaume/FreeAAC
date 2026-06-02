@@ -1,3 +1,4 @@
+import { preventExitHoldDuration, preventExitTapCount } from "@/utils/consts"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import * as Clipboard from "expo-clipboard"
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -27,6 +28,7 @@ import {
   useButtonView,
   useClearMessageOnPlay,
   useLabelLocation,
+  usePreventExit,
   useShowBackspace,
   useShowShareButton,
 } from "../stores/prefs"
@@ -66,6 +68,7 @@ export default function MessageWindow({
   const debounce = useDebounce()
   const optionsSheet = useRef<TrueSheet>(null)
   const [copied, setCopied] = useState(false)
+  const [exitTapCount, setExitTapCount] = useState(0)
   const [showSetDefaultPageDialog, setShowSetDefaultPageDialog] =
     useState(false)
   const [showDeletePageDialog, setShowDeletePageDialog] = useState(false)
@@ -77,6 +80,7 @@ export default function MessageWindow({
   const buttonView = useButtonView()
   const labelLocation = useLabelLocation()
   const editMode = useEditMode()
+  const preventExit = usePreventExit()
   const backButton = useBackButton()
   const {
     removeLastMessageButton,
@@ -115,7 +119,24 @@ export default function MessageWindow({
       )
     })
 
-  const navigateMenu = () => {
+  const navigateMenu = (isLongPress = false) => {
+    if (preventExit === "hold" && !isLongPress) {
+      alert(
+        `Hold the menu button for ${preventExitHoldDuration / 1000} seconds to exit`,
+      )
+      return
+    } else if (
+      preventExit === "tap" &&
+      exitTapCount < preventExitTapCount - 1
+    ) {
+      setExitTapCount((count) => count + 1)
+      return
+    } else if (
+      preventExit === "tap" &&
+      exitTapCount >= preventExitTapCount - 1
+    ) {
+      setExitTapCount(0)
+    }
     clearMessageButtons()
     dismissTo("/")
   }
@@ -169,7 +190,12 @@ export default function MessageWindow({
           {!editMode && (
             <>
               {isHome && (
-                <Button variant="ghost" onPress={navigateMenu}>
+                <Button
+                  variant="ghost"
+                  onPress={() => navigateMenu()}
+                  onLongPress={() => navigateMenu(true)}
+                  delayLongPress={preventExitHoldDuration}
+                >
                   <LibraryBig size={ICON_SIZE.xl} color={theme.onSurface} />
                 </Button>
               )}
