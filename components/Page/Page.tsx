@@ -1,3 +1,4 @@
+import { tileSpacingWidthThreshold } from "@/utils/consts"
 import { handleError } from "@/utils/error"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import {
@@ -9,11 +10,7 @@ import {
 import { AACSemanticIntent } from "@willwade/aac-processors/browser"
 import { useLocalSearchParams } from "expo-router"
 import { useCallback, useEffect, useRef, useState } from "react"
-import {
-  LayoutChangeEvent,
-  LayoutRectangle,
-  View
-} from "react-native"
+import { LayoutChangeEvent, LayoutRectangle, View } from "react-native"
 import { EditTile } from "../../app/[boardId]"
 import { useSpeak } from "../../stores/audio"
 import { useBoards, useEditMode, usePagesetActions } from "../../stores/boards"
@@ -33,6 +30,25 @@ const getGridPosition = (index: number, rows: number, cols: number) => {
   const row = Math.floor(index / cols)
   const col = index - row * cols
   return { row, col }
+}
+
+const calculateSpacing = (tileSpacing: number, pageSize?: LayoutRectangle) => {
+  if (!pageSize || pageSize.width >= tileSpacingWidthThreshold)
+    return tileSpacing
+  return tileSpacing / (tileSpacingWidthThreshold / pageSize.width)
+}
+
+const calculateTileSize = (
+  pageSize: LayoutRectangle | undefined,
+  rows: number | undefined,
+  cols: number | undefined,
+  spacing: number,
+) => {
+  if (!pageSize || !cols || !rows) return { width: 0, height: 0 }
+  const colWidth = (pageSize.width - spacing * 2 - spacing * (cols - 1)) / cols
+  const rowHeight =
+    (pageSize.height - spacing * 2 - spacing * (rows - 1)) / rows
+  return { colWidth, rowHeight }
 }
 
 export default function Page({
@@ -59,19 +75,19 @@ export default function Page({
   const playOnPress = usePlayOnPress()
   const goHomeOnPress = useGoHomeOnPress()
   const tileSpacing = useTileSpacing()
+  const spacing = calculateSpacing(tileSpacing, pageSize)
   const speak = useSpeak()
   const { addMessageButton, setSymbolSearchText, logEvent } =
     usePagesetActions()
+
   const rows = page.grid.length
   const cols = page.grid.at(0)?.length
-  const colWidth =
-    pageSize && cols ?
-      (pageSize.width - tileSpacing * 2 - tileSpacing * (cols - 1)) / cols
-    : 0
-  const rowHeight =
-    pageSize ?
-      (pageSize.height - tileSpacing * 2 - tileSpacing * (rows - 1)) / rows
-    : 0
+  const { colWidth, rowHeight } = calculateTileSize(
+    pageSize,
+    rows,
+    cols,
+    spacing,
+  )
 
   const grid = page.grid.flat()
 
@@ -223,8 +239,8 @@ export default function Page({
           backgroundColor: theme.surface,
           borderWidth: editMode ? 6 : 0,
           borderColor: theme.outline,
-          padding: editMode ? tileSpacing - 6 : tileSpacing,
-          gap: tileSpacing,
+          padding: editMode ? spacing - 6 : spacing,
+          gap: spacing,
         }}
         onLayout={handleLayout}
       >
@@ -234,7 +250,7 @@ export default function Page({
               key={grid.map((item) => item?.id ?? "null").join(",")}
               direction="row"
               size={cols}
-              gap={tileSpacing}
+              gap={spacing}
               onOrderChange={handleOrderChange}
             >
               {grid.map((item, index) => (
@@ -256,7 +272,11 @@ export default function Page({
           Array.from({ length: rows }).map((_, row) => (
             <View
               key={row}
-              style={{ flexDirection: "row", gap: tileSpacing, flex: 1 }}
+              style={{
+                flexDirection: "row",
+                gap: spacing,
+                flex: 1,
+              }}
             >
               {Array.from({ length: cols }).map((_, col) => {
                 const index = row * cols + col
