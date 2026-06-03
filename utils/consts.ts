@@ -297,6 +297,7 @@ export const buttonVisibilityValues: {
   { value: "Hidden", label: "Hidden" },
 ]
 
+export const tileSpacingWidthThreshold = 1200
 export const tileSpacingValues = [
   { value: "0", label: "None" },
   { value: GAP.xs.toFixed(0), label: "Compact" },
