@@ -31,6 +31,7 @@ import { useHistory, usePagesetActions, useShouldLog } from "../stores/boards"
 import {
   ButtonViewOption,
   buttonViewOptions,
+  PreventExitOption,
   SpeechEngine,
   speechEngines,
   useAllPrefs,
@@ -43,6 +44,7 @@ import {
   useMessageWindowLocation,
   usePlayOnPress,
   usePrefsActions,
+  usePreventExit,
   useShowBackspace,
   useShowShareButton,
   useSpeechOptions,
@@ -55,6 +57,7 @@ import {
   backButtonValues,
   debounceValues,
   korokoVoices,
+  preventExitValues,
   speechPitchValues,
   speechRateValues,
   tileSpacingValues,
@@ -124,6 +127,7 @@ export default function Settings() {
   const showShareButton = useShowShareButton()
   const showBackspace = useShowBackspace()
   const tileSpacing = useTileSpacing()
+  const preventExit = usePreventExit()
   const debounceTime = useDebounceTime()
   const backButton = useBackButton()
   const locales = useLocales()
@@ -141,6 +145,7 @@ export default function Settings() {
     toggleShowShareButton,
     toggleShowBackspace,
     setTileSpacing,
+    setPreventExit,
     setDebounceTime,
     setBackButton,
     importPrefs,
@@ -341,6 +346,14 @@ export default function Settings() {
             type="toggle"
             value={goHomeOnPress}
             setValue={toggleGoHomeOnPress}
+          />
+          <SettingsItem
+            title="Prevent board exit"
+            description="Avoid accidentally leaving the current board"
+            type="select"
+            items={preventExitValues}
+            value={preventExit}
+            setValue={(value) => setPreventExit(value as PreventExitOption)}
           />
           <SettingsItem
             title="Prevent double-taps"

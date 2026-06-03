@@ -8,6 +8,7 @@ import { useState } from "react"
 import { Platform, StyleSheet, View } from "react-native"
 import { GestureHandlerRootView } from "react-native-gesture-handler"
 import { SafeAreaProvider } from "react-native-safe-area-context"
+import Toast from "react-native-toast-message"
 import AudioController from "../components/AudioController"
 import SettingsButton from "../components/Settings/Button"
 import { useBoards } from "../stores/boards"
@@ -160,6 +161,7 @@ export default function RootLayout() {
         </ThemeContext>
       </QueryClientProvider>
       <AudioController />
+      <Toast position="bottom" />
     </Head.Provider>
   )
 }
