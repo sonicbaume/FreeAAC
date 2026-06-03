@@ -35,7 +35,13 @@ export default function SheetPicker({
         }}
         onPress={() => ref.current?.present()}
       >
-        <View style={{ display: "flex", flexDirection: "row" }}>
+        <View
+          style={{
+            display: "flex",
+            flexShrink: 1,
+            flexDirection: "row",
+          }}
+        >
           {item?.icon}
           <Text
             style={{ color: item?.value ? theme.onSurface : theme.outline }}
@@ -79,5 +85,6 @@ const styles = StyleSheet.create({
     gap: GAP.xs,
     padding: PADDING.lg,
     borderRadius: RADIUS.lg,
+    maxWidth: 200,
   },
 })
