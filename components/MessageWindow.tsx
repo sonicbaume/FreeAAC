@@ -1,3 +1,4 @@
+import { preventExitHoldDuration, preventExitTapCount } from "@/utils/consts"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import * as Clipboard from "expo-clipboard"
 import { useLocalSearchParams, useRouter } from "expo-router"
@@ -16,6 +17,7 @@ import {
 } from "lucide-react-native"
 import { useEffect, useRef, useState } from "react"
 import { Platform, ScrollView, View } from "react-native"
+import Toast from "react-native-toast-message"
 import { useSpeak } from "../stores/audio"
 import {
   useEditMode,
@@ -27,6 +29,7 @@ import {
   useButtonView,
   useClearMessageOnPlay,
   useLabelLocation,
+  usePreventExit,
   useShowBackspace,
   useShowShareButton,
 } from "../stores/prefs"
@@ -66,6 +69,7 @@ export default function MessageWindow({
   const debounce = useDebounce()
   const optionsSheet = useRef<TrueSheet>(null)
   const [copied, setCopied] = useState(false)
+  const [exitTapCount, setExitTapCount] = useState(0)
   const [showSetDefaultPageDialog, setShowSetDefaultPageDialog] =
     useState(false)
   const [showDeletePageDialog, setShowDeletePageDialog] = useState(false)
@@ -77,6 +81,7 @@ export default function MessageWindow({
   const buttonView = useButtonView()
   const labelLocation = useLabelLocation()
   const editMode = useEditMode()
+  const preventExit = usePreventExit()
   const backButton = useBackButton()
   const {
     removeLastMessageButton,
@@ -115,7 +120,31 @@ export default function MessageWindow({
       )
     })
 
-  const navigateMenu = () => {
+  const navigateMenu = (isLongPress = false) => {
+    console.log({ exitTapCount })
+    if (preventExit === "hold" && !isLongPress) {
+      return Toast.show({
+        type: "info",
+        text1: `Hold the button for ${preventExitHoldDuration / 1000} seconds to exit`,
+      })
+    } else if (
+      preventExit === "tap" &&
+      exitTapCount < preventExitTapCount - 1
+    ) {
+      if (exitTapCount === 0) {
+        Toast.show({
+          type: "info",
+          text1: `Tap the button ${preventExitTapCount} times to exit`,
+        })
+      }
+      setExitTapCount((count) => count + 1)
+      return
+    } else if (
+      preventExit === "tap" &&
+      exitTapCount >= preventExitTapCount - 1
+    ) {
+      setExitTapCount(0)
+    }
     clearMessageButtons()
     dismissTo("/")
   }
@@ -169,7 +198,12 @@ export default function MessageWindow({
           {!editMode && (
             <>
               {isHome && (
-                <Button variant="ghost" onPress={navigateMenu}>
+                <Button
+                  variant="ghost"
+                  onPress={() => navigateMenu()}
+                  onLongPress={() => navigateMenu(true)}
+                  delayLongPress={preventExitHoldDuration}
+                >
                   <LibraryBig size={ICON_SIZE.xl} color={theme.onSurface} />
                 </Button>
               )}

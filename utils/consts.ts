@@ -1,3 +1,4 @@
+import { PreventExitOption } from "@/stores/prefs"
 import { ExternalPathString } from "expo-router"
 import { Voice } from "expo-speech"
 import { GAP } from "./theme"
@@ -297,6 +298,7 @@ export const buttonVisibilityValues: {
   { value: "Hidden", label: "Hidden" },
 ]
 
+export const tileSpacingWidthThreshold = 1200
 export const tileSpacingValues = [
   { value: "0", label: "None" },
   { value: GAP.xs.toFixed(0), label: "Compact" },
@@ -322,3 +324,15 @@ export const backButtonValues: { value: BackButton; label: string }[] = [
   { value: "back", label: "Back" },
   { value: "both", label: "Home and back" },
 ]
+
+export const preventExitHoldDuration = 2000
+export const preventExitTapCount = 5
+export const preventExitValues: { value: PreventExitOption; label: string }[] =
+  [
+    { value: undefined, label: "Off" },
+    {
+      value: "hold",
+      label: `Hold for ${preventExitHoldDuration / 1000} seconds`,
+    },
+    { value: "tap", label: `Tap ${preventExitTapCount} times` },
+  ]

@@ -31,6 +31,7 @@ import { useHistory, usePagesetActions, useShouldLog } from "../stores/boards"
 import {
   ButtonViewOption,
   buttonViewOptions,
+  PreventExitOption,
   SpeechEngine,
   speechEngines,
   useAllPrefs,
@@ -43,10 +44,12 @@ import {
   useMessageWindowLocation,
   usePlayOnPress,
   usePrefsActions,
+  usePreventExit,
   useShowBackspace,
   useShowShareButton,
   useSpeechOptions,
   useTileSpacing,
+  useVocaliseLinkButtons,
 } from "../stores/prefs"
 import {
   appName,
@@ -54,6 +57,7 @@ import {
   backButtonValues,
   debounceValues,
   korokoVoices,
+  preventExitValues,
   speechPitchValues,
   speechRateValues,
   tileSpacingValues,
@@ -118,10 +122,12 @@ export default function Settings() {
   const buttonView = useButtonView()
   const speechOptions = useSpeechOptions()
   const clearMessageOnPlay = useClearMessageOnPlay()
+  const vocaliseLinkButtons = useVocaliseLinkButtons()
   const goHomeOnPress = useGoHomeOnPress()
   const showShareButton = useShowShareButton()
   const showBackspace = useShowBackspace()
   const tileSpacing = useTileSpacing()
+  const preventExit = usePreventExit()
   const debounceTime = useDebounceTime()
   const backButton = useBackButton()
   const locales = useLocales()
@@ -139,9 +145,11 @@ export default function Settings() {
     toggleShowShareButton,
     toggleShowBackspace,
     setTileSpacing,
+    setPreventExit,
     setDebounceTime,
     setBackButton,
     importPrefs,
+    toggleVocaliseLinkButtons,
   } = usePrefsActions()
   const { toggleShouldLog, deleteLogs } = usePagesetActions()
   const [voices, setVoices] = useState<
@@ -319,6 +327,13 @@ export default function Settings() {
           />
           <SettingsHeader title="Interaction" icon={Hand} />
           <SettingsItem
+            title="Vocalise link buttons"
+            description="Speak when a link button is pressed"
+            type="toggle"
+            value={vocaliseLinkButtons}
+            setValue={toggleVocaliseLinkButtons}
+          />
+          <SettingsItem
             title="Clear message on play"
             description="Clear the message once it has been played"
             type="toggle"
@@ -331,6 +346,14 @@ export default function Settings() {
             type="toggle"
             value={goHomeOnPress}
             setValue={toggleGoHomeOnPress}
+          />
+          <SettingsItem
+            title="Prevent board exit"
+            description="Avoid accidentally leaving the current board"
+            type="select"
+            items={preventExitValues}
+            value={preventExit}
+            setValue={(value) => setPreventExit(value as PreventExitOption)}
           />
           <SettingsItem
             title="Prevent double-taps"

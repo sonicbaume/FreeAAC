@@ -61,7 +61,7 @@ export const listDir = async (path: string): Promise<string[]> => {
   const root = await navigator.storage.getDirectory()
   const dir = await root.getDirectoryHandle(path)
   const dirContents = []
-  for await (const handle of Object.values(dir)) {
+  for await (const handle of dir.values()) {
     dirContents.push(handle.name)
   }
   return dirContents

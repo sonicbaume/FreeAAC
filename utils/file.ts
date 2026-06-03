@@ -16,6 +16,7 @@ import {
 import { fetch } from "expo/fetch"
 import { nanoid } from "nanoid/non-secure"
 import { PageItem } from "../stores/boards"
+import { preloadTreeImages } from "./cache"
 import { appName } from "./consts"
 import {
   getFileFromDocument,
@@ -260,6 +261,7 @@ export const loadBoard = async (
 ): Promise<BoardTree> => {
   const processor = getProcessor(`.${ext}`, { fileAdapter })
   const tree = await processor.loadIntoTree(input)
+  preloadTreeImages(tree)
   return tree as unknown as BoardTree
 }
 
@@ -299,8 +301,7 @@ export const deleteBoard = async (id: string) => {
 export const exportBoard = async (id: string, name: string, ext: string) => {
   const fileName = `${id}.${ext}`
   const tree = await loadBoard(id)
-  const processor = new ObfProcessor({ fileAdapter })
-  await processor.saveFromTree(tree as unknown as AACTree, fileName, false)
+  await saveBoard(fileName, tree)
   await saveFileAs(fileName, `${name}.${ext}`)
 }
 
