@@ -8,6 +8,7 @@ import {
 import { OblUtil } from "@willwade/aac-processors/metrics"
 import * as DocumentPicker from "expo-document-picker"
 import { Paths } from "expo-file-system"
+import { ImageManipulator, SaveFormat } from "expo-image-manipulator"
 import {
   ImagePickerOptions,
   launchCameraAsync,
@@ -17,7 +18,7 @@ import { fetch } from "expo/fetch"
 import { nanoid } from "nanoid/non-secure"
 import { PageItem } from "../stores/boards"
 import { preloadTreeImages } from "./cache"
-import { appName } from "./consts"
+import { appName, RESIZE_COMPRESS, RESIZE_WIDTH } from "./consts"
 import {
   getFileFromDocument,
   getFileSize,
@@ -207,14 +208,24 @@ export const selectImage = async (
   const file = result.assets?.at(0)
   if (!file) return undefined
   if (!file.base64) throw new Error("Could not read file data")
-  const data = `data:${file.mimeType};base64,` + file.base64
+
+  const resizer = ImageManipulator.manipulate(file.uri)
+  resizer.resize({ width: RESIZE_WIDTH })
+  const imageRef = await resizer.renderAsync()
+  const imageResult = await imageRef.saveAsync({
+    base64: true,
+    compress: RESIZE_COMPRESS,
+    format: SaveFormat.WEBP,
+  })
+  if (!imageResult.base64) throw new Error("Could not read image data")
+
+  const data = `data:image/webp;base64,` + imageResult.base64
   const id = nanoid()
   return {
-    content_type: file.mimeType,
-    data_url: data,
+    content_type: "image/webp",
+    data,
     id,
-    path: file.fileName ?? `${id}.jpg`,
-    url: data,
+    path: `${id}.webp`,
   }
 }
 
