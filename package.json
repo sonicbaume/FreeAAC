@@ -9,7 +9,8 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "npx eslint",
-    "deploy:web": "npx expo export --platform web && cp dist/index.html dist/404.html"
+    "deploy:web": "npx expo export --platform web && cp dist/index.html dist/404.html && npm run buildSW",
+    "buildSW": "workbox generateSW workbox-config.js"
   },
   "dependencies": {
     "@expo/metro-runtime": "~55.0.10",
@@ -76,7 +77,8 @@
     "jiti": "^2.6.1",
     "prettier": "3.8.1",
     "typescript": "~5.9.2",
-    "typescript-eslint": "^8.56.1"
+    "typescript-eslint": "^8.56.1",
+    "workbox-cli": "^7.4.1"
   },
   "private": true
 }

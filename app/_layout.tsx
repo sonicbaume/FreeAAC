@@ -1,3 +1,4 @@
+import InstallServiceWorker from "@/components/InstallServiceWorker"
 import { TrueSheetProvider } from "@lodev09/react-native-true-sheet"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { useAssets } from "expo-asset"
@@ -74,6 +75,7 @@ export default function RootLayout() {
         <Head>
           <title>{appName}</title>
           <meta name="description" content={appDescription} />
+          <link rel="manifest" href="/manifest.json" />
         </Head>
       )}
       <QueryClientProvider client={queryClient}>
@@ -162,6 +164,7 @@ export default function RootLayout() {
       </QueryClientProvider>
       <AudioController />
       <Toast position="bottom" />
+      <InstallServiceWorker />
     </Head.Provider>
   )
 }
