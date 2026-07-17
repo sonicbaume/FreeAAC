@@ -182,14 +182,19 @@ export const importBoard = async (url: string): Promise<ProcessedBoard> => {
 }
 
 export const importPrefsFile = async (): Promise<unknown> => {
-  const result = await DocumentPicker.getDocumentAsync({
-    copyToCacheDirectory: true,
-  })
-  const asset = result.assets?.at(0)
-  if (!asset) return undefined
-  const file = getFileFromDocument(asset)
-  const text = await file.text()
-  return JSON.parse(text)
+  try {
+    const result = await DocumentPicker.getDocumentAsync({
+      copyToCacheDirectory: true,
+    })
+    const asset = result.assets?.at(0)
+    if (!asset) return undefined
+    const file = getFileFromDocument(asset)
+    const text = await file.text()
+    return JSON.parse(text)
+  } catch (e: unknown) {
+    console.error("Error importing prefs file:", e)
+    return undefined
+  }
 }
 
 export const selectImage = async (

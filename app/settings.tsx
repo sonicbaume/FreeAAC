@@ -18,6 +18,7 @@ import {
 } from "lucide-react-native"
 import { useEffect, useState } from "react"
 import { Platform, ScrollView, StyleSheet, View } from "react-native"
+import Toast from "react-native-toast-message"
 import DialogConfirm from "../components/DialogConfirm"
 import GithubIcon from "../components/Icons/Github"
 import SettingsHeader from "../components/Settings/Header"
@@ -197,7 +198,12 @@ export default function Settings() {
 
   const handleImportPrefs = async () => {
     const prefs = await importPrefsFile()
-    importPrefs(prefs)
+    if (prefs) {
+      importPrefs(prefs)
+      return Toast.show({
+        text1: "Preferences imported",
+      })
+    }
   }
 
   return (
