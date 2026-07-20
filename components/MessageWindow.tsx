@@ -57,7 +57,7 @@ export default function MessageWindow({
   navigateBack: () => void
   isHome: boolean
   pageTitle?: string
-  setPageTitle: (title: string | undefined) => void
+  setPageTitle: (title: string | undefined) => boolean
   openPageNav: () => void
   deletePage: () => void
   rootPage?: string

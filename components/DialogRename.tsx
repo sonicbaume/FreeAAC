@@ -34,6 +34,10 @@ export default function DialogRename({
     setText(initialText)
     onCancel()
   }
+  const handleRename = () => {
+    if (text === initialText) cancel()
+    else onConfirm(text)
+  }
   return (
     <Modal
       visible={visible}
@@ -66,7 +70,7 @@ export default function DialogRename({
             </Button>
             <Button
               variant="secondary"
-              onPress={() => onConfirm(text)}
+              onPress={handleRename}
               style={{ flex: 1 }}
             >
               <Text style={{ color: theme.onSecondary }}>{confirmLabel}</Text>

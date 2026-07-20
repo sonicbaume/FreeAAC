@@ -90,12 +90,21 @@ export default function PageRoute() {
     if (rootPageState) dismissTo(`/${boardId}/${rootPageState}`)
   }
 
-  const savePageTitle = (name: string | undefined) => {
-    if (!page || !name) return
+  const isPageDuplicate = (name: string) => {
+    if (pages.find((p) => p.name.toLowerCase() === name.toLowerCase())) {
+      handleError("Page already exists - please choose a different name")
+      return true
+    }
+    return false
+  }
+
+  const savePageTitle = (name: string | undefined): boolean => {
+    if (!page || !name || isPageDuplicate(name)) return false
     savePage({ ...page, name })
     updateBoard(id, {
       pages: pages.map((p) => (p.id === page.id ? { ...p, name } : p)),
     })
+    return true
   }
 
   const deletePage = async () => {
@@ -148,6 +157,7 @@ export default function PageRoute() {
   const addPage = async (name: string, rows: number, cols: number) => {
     if (!currentPageId)
       return handleError("Could not add page - current page not found")
+    if (isPageDuplicate(name)) return
     const page = generateNewPage(rows, cols, currentPageId, pages.length, name)
     const path = `${page.id}.obf`
     updateBoard(id, {
