@@ -10,7 +10,7 @@ export default function PageTitle({
   onChange,
 }: {
   title: string | undefined
-  onChange: (title: string | undefined) => void
+  onChange: (title: string | undefined) => boolean
 }) {
   const theme = useTheme()
   const [showRenameDialog, setShowRenameDialog] = useState(false)
@@ -35,8 +35,8 @@ export default function PageTitle({
           visible={showRenameDialog}
           onCancel={() => setShowRenameDialog(false)}
           onConfirm={(name: string | undefined) => {
-            onChange(name)
-            setShowRenameDialog(false)
+            const success = onChange(name)
+            if (success) setShowRenameDialog(false)
           }}
         />
       )}

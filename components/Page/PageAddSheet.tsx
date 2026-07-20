@@ -8,9 +8,11 @@ import PageAdd from "./PageAdd"
 export default function PageAddSheet({
   ref,
   onAdd,
+  numPages,
 }: {
   ref: RefObject<TrueSheet | null>
   onAdd: (name: string, rows: number, cols: number) => Promise<void>
+  numPages: number
 }) {
   const theme = useTheme()
   return (
@@ -24,7 +26,7 @@ export default function PageAddSheet({
         <Text style={{ fontSize: FONT_SIZE.lg, textAlign: "center" }}>
           Add page
         </Text>
-        <PageAdd onPress={onAdd} defaultName="New page" />
+        <PageAdd onPress={onAdd} defaultName={`Page ${numPages + 1}`} />
       </View>
     </TrueSheet>
   )

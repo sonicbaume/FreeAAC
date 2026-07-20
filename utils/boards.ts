@@ -29,11 +29,13 @@ export const generateNewPage = (
   rows: number,
   cols: number,
   parentId: string | null,
-  name = "New page",
+  numPages = 0,
+  pageName = "",
 ): BoardPage => {
   const grid = Array(rows)
     .fill(null)
     .map(() => Array(cols).fill(undefined))
+  const name = pageName || `Page ${numPages + 1}`
   return {
     id: uuid(),
     name,

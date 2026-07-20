@@ -24,7 +24,10 @@ type DataOnly<T> = Pick<
 >
 
 export type BoardButton = DataOnly<AACButton>
-export type BoardPage = Omit<DataOnly<AACPage>, "images"> & {
+export type BoardPage = Omit<
+  DataOnly<AACPage>,
+  "images" | "pendingMutations"
+> & {
   images?: TileImage[]
 }
 export type BoardTree = Omit<DataOnly<AACTree>, "pages"> & {
