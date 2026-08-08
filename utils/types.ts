@@ -47,6 +47,6 @@ export type TileImage = {
     uneditable?: boolean
   }
   path?: string
-  url: string
+  url?: string
   width?: number
 }

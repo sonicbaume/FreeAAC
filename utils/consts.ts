@@ -336,3 +336,6 @@ export const preventExitValues: { value: PreventExitOption; label: string }[] =
     },
     { value: "tap", label: `Tap ${preventExitTapCount} times` },
   ]
+
+export const RESIZE_WIDTH = 512
+export const RESIZE_COMPRESS = 0.8

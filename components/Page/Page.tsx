@@ -214,16 +214,16 @@ export default function Page({
     if (tile.button && !tile.button.label) return undefined
     const { row, col } = getGridPosition(tile.index, rows, cols)
     const otherImages =
-      page.images?.filter((i) => i.url !== tile.image?.url) ?? []
+      page.images?.filter((i) => i.id !== tile.image?.id) ?? []
     const newImages = tile.image ? [...otherImages, tile.image] : otherImages
     if (tile.button && tile.image) {
       tile.button = {
         ...tile.button,
-        image: tile.image.url,
+        image: tile.image.url ?? tile.image.data,
         parameters: { ...tile.button.parameters, image_id: tile.image.id },
       }
-      preloadImage(tile.image.url)
     }
+    if (tile.image && tile.image.url) preloadImage(tile.image.url)
     const newGrid = [...page.grid]
     newGrid[row][col] = tile.button ?? null
     savePage({
