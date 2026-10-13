@@ -1,3 +1,4 @@
+import { handleError } from "@/utils/error"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import { useRouter } from "expo-router"
 import { Ellipsis } from "lucide-react-native"
@@ -25,9 +26,13 @@ export default function BoardList() {
               variant="ghost"
               style={{ justifyContent: "flex-start", flex: 1 }}
               onPress={() => {
+                const rootPage = boards.find(
+                  (board) => board.id === item.id,
+                )?.rootPage
+                if (!rootPage) return handleError("Root page not found")
                 router.push({
-                  pathname: "/[boardId]",
-                  params: { boardId: item.id },
+                  pathname: "/[boardId]/[pageId]",
+                  params: { boardId: item.id, pageId: rootPage },
                 })
               }}
             >

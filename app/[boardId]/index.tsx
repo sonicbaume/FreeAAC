@@ -1,8 +1,7 @@
 import { useLocalSearchParams, useRouter } from "expo-router"
 import { useEffect } from "react"
-import { usePagesetActions } from "../../stores/boards"
+import { useBoards, usePagesetActions } from "../../stores/boards"
 import { handleError } from "../../utils/error"
-import { loadManifest } from "../../utils/file"
 import { BoardButton, TileImage } from "../../utils/types"
 
 export type EditTile = {
@@ -15,14 +14,14 @@ export default function Board() {
   const { boardId } = useLocalSearchParams()
   const { replace } = useRouter()
   const { updateBoard } = usePagesetActions()
+  const boards = useBoards()
 
   useEffect(() => {
     ;(async () => {
       try {
-        const manifest = await loadManifest(boardId as string)
-        if (!manifest.root) return handleError("Root not found in manifest")
-        updateBoard(boardId as string, { rootPage: manifest.root })
-        replace(`/${boardId}/${manifest.root}`)
+        const rootPage = boards.find((board) => board.id === boardId)?.rootPage
+        if (rootPage) return replace(`/${boardId}/${rootPage}`)
+        throw new Error("Could not find root page")
       } catch (e) {
         handleError(e)
       }

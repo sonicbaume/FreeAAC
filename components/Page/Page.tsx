@@ -154,7 +154,9 @@ export default function Page({
         button.semanticAction.targetId
       ) {
         const targetPage = board?.pages?.find(
-          (p) => p.path === button.semanticAction?.targetId,
+          (p) =>
+            button.semanticAction?.targetId &&
+            p.path.startsWith(button.semanticAction.targetId),
         )
         if (!targetPage) {
           console.error("Could not find page ID", targetPage)

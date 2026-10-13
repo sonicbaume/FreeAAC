@@ -59,7 +59,6 @@ export const saveFile = async (
 ): Promise<string> => {
   const root = Paths.document
   const file = new File(root, fileName)
-  console.log({ root, fileName, uri: file.uri })
   file.create({ overwrite: true })
   file.write(data)
   return fileName

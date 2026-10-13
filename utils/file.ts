@@ -140,7 +140,8 @@ const processImportedBoard = async (
   const manifest = await loadManifest(id)
   if (!manifest.root) throw new Error("No root page in manifest")
   const name = tree.metadata?.name ?? "Untitled board"
-  const rootPage = manifest.root
+  const rootPageTree = await loadPage(id, manifest.root)
+  const rootPage = rootPageTree.id
 
   const pages = Object.entries<BoardPage>(tree.pages).map(([id, page]) => {
     if (!manifest.paths?.boards) throw new Error("No boards in manifest")
@@ -249,15 +250,17 @@ export const saveRootPageId = async (boardId: string, pageId: string) => {
 
 export const loadPage = async (
   boardId: string,
-  pageId: string,
   path: string,
+  pageId?: string,
 ): Promise<BoardPage> => {
-  const cacheName = `${boardId}/${pageId}`
-  if (cacheName in cachedPages) return cachedPages[cacheName]
+  if (pageId && `${boardId}/${pageId}` in cachedPages)
+    return cachedPages[`${boardId}/${pageId}`]
   const processor = new ObfProcessor({ fileAdapter })
   const tree = await processor.loadIntoTree(`${boardId}/${path}`)
-  cachedPages[cacheName] = tree.pages[pageId]
-  return tree.pages[pageId]
+  const id = pageId ?? tree.rootId
+  if (!id) throw new Error("No root page found")
+  cachedPages[`${boardId}/${pageId}`] = tree.pages[id]
+  return tree.pages[id]
 }
 
 export const loadBoard = async (

@@ -1,3 +1,4 @@
+import { handleError } from "@/utils/error"
 import { useRouter } from "expo-router"
 import { ScrollView, StyleSheet, View } from "react-native"
 import PageAdd from "../components/Page/PageAdd"
@@ -14,10 +15,11 @@ export default function Create() {
   const createBoard = async (name: string, rows: number, cols: number) => {
     const id = uuid()
     const { tree, pages } = generateNewBoard(rows, cols)
+    if (!tree.rootId) return handleError("Root page not found")
     await saveBoard(id, tree)
-    addBoard({ id, name, pages })
+    addBoard({ id, name, pages, rootPage: tree.rootId })
     toggleEditMode()
-    replace(`/${id}`)
+    replace(`/${id}/${tree.rootId}`)
   }
 
   return (
