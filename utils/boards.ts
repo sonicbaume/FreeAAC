@@ -44,6 +44,7 @@ export const generateNewPage = (
     buttons: [],
     images: [],
     sounds: [],
+    pendingMutations: [],
   }
 }
 
