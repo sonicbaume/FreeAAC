@@ -26,6 +26,7 @@ export type EditTile = {
   button: BoardButton | undefined
   image: TileImage | undefined
   index: number
+  originalIndex?: number
 }
 
 export default function PageRoute() {

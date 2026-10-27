@@ -78,11 +78,17 @@ export default function TileEditor({
   tile,
   setTile,
   onClose,
+  grid,
+  rows,
+  cols,
 }: {
   ref: React.RefObject<TrueSheet | null>
   tile: EditTile | undefined
   setTile: (tile: EditTile) => void
   onClose: () => void
+  grid: (BoardButton | null)[]
+  rows: number
+  cols: number
 }) {
   const theme = useTheme()
   const { boardId } = useLocalSearchParams()
@@ -98,6 +104,15 @@ export default function TileEditor({
         button: newButton,
         image: newImage,
         index: tile.index,
+        originalIndex: tile.originalIndex ?? tile.index,
+      })
+  }
+  const setIndex = (newIndex: number) => {
+    if (tile)
+      setTile({
+        ...tile,
+        index: newIndex,
+        originalIndex: tile.originalIndex ?? tile.index,
       })
   }
   const [tab, setTab] = useState<Tab>("symbol")
@@ -173,12 +188,18 @@ export default function TileEditor({
             </Pressable>
           </View>
           <TabSelector tab={tab} setTab={setTab} />
-          {tab === "settings" && (
+          {tab === "settings" && tile && (
             <TileSettings
               boardId={boardId}
               button={button}
               setButton={(newButton) => setButton(newButton, image)}
               deleteTile={deleteTile}
+              index={tile.index}
+              originalIndex={tile.originalIndex ?? tile.index}
+              setIndex={setIndex}
+              grid={grid}
+              rows={rows}
+              cols={cols}
             />
           )}
           {tab === "symbol" && (

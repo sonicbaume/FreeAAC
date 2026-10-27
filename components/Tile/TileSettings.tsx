@@ -3,13 +3,21 @@ import {
   AACSemanticCategory,
   AACSemanticIntent,
 } from "@willwade/aac-processors/browser"
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "lucide-react-native"
 import { ScrollView, StyleSheet, TextInput, View } from "react-native"
 import { ButtonVisibility, buttonVisibilityValues } from "../../utils/consts"
-import { FONT_SIZE, PADDING, RADIUS, useTheme } from "../../utils/theme"
+import {
+  FONT_SIZE,
+  GAP,
+  ICON_SIZE,
+  PADDING,
+  RADIUS,
+  useTheme,
+} from "../../utils/theme"
 import { BoardButton } from "../../utils/types"
 import ColorPicker from "../ColorPicker"
 import SheetPicker from "../SheetPicker"
-import { Text } from "../Styled"
+import { Button, Text } from "../Styled"
 import TileDelete from "./TileDelete"
 
 type PageOption = { value: string | undefined; label: string }
@@ -19,11 +27,23 @@ export default function TileSettings({
   button,
   setButton,
   deleteTile,
+  index,
+  originalIndex,
+  setIndex,
+  grid,
+  rows,
+  cols,
 }: {
   boardId: string | string[]
   button: BoardButton
   setButton: (button: BoardButton) => void
   deleteTile: () => void
+  index: number
+  originalIndex: number
+  setIndex: (index: number) => void
+  grid: (BoardButton | null)[]
+  rows: number
+  cols: number
 }) {
   const theme = useTheme()
   const boards = useBoards()
@@ -31,6 +51,21 @@ export default function TileSettings({
   const pagePaths = pages.map((p): PageOption => {
     return { value: p.path, label: p.name }
   })
+  const row = Math.floor(index / cols)
+  const col = index - row * cols
+  const rowItems = Array.from({ length: rows }, (_, r) => ({
+    value: String(r),
+    label: `Row ${r + 1}`,
+  }))
+  const colItems = Array.from({ length: cols }, (_, c) => ({
+    value: String(c),
+    label: `Col ${c + 1}`,
+  }))
+  const canMoveUp = row > 0
+  const canMoveDown = row < rows - 1
+  const canMoveLeft = col > 0
+  const canMoveRight = col < cols - 1
+  const targetTile = index !== originalIndex ? grid[index] : undefined
 
   const setVocalization = (message: string) => {
     setButton({
@@ -198,13 +233,108 @@ export default function TileSettings({
         <SheetPicker
           items={buttonVisibilityValues}
           value={button.visibility ?? "Visible"}
-          onChange={({ value, label }) =>
+          onChange={({ value }) =>
             setButton({
               ...button,
               visibility: value as ButtonVisibility,
             })
           }
         />
+      </View>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 10,
+          alignItems: "flex-start",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            minWidth: 100,
+            textAlign: "right",
+            paddingTop: PADDING.lg,
+          }}
+        >
+          Position
+        </Text>
+        <View style={{ flex: 1, gap: GAP.md }}>
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              gap: GAP.md,
+              alignItems: "center",
+            }}
+          >
+            <SheetPicker
+              items={rowItems}
+              value={String(row)}
+              onChange={(item) => {
+                if (item.value !== undefined)
+                  setIndex(Number(item.value) * cols + col)
+              }}
+            />
+            <SheetPicker
+              items={colItems}
+              value={String(col)}
+              onChange={(item) => {
+                if (item.value !== undefined)
+                  setIndex(row * cols + Number(item.value))
+              }}
+            />
+            <View style={{ flexDirection: "row", gap: GAP.xs }}>
+              <Button
+                variant="outline"
+                disabled={!canMoveUp}
+                accessibilityRole="button"
+                accessibilityLabel="Move tile up"
+                style={{ opacity: canMoveUp ? 1 : 0.4 }}
+                onPress={() => setIndex((row - 1) * cols + col)}
+              >
+                <ArrowUp size={ICON_SIZE.md} color={theme.onSurface} />
+              </Button>
+              <Button
+                variant="outline"
+                disabled={!canMoveDown}
+                accessibilityRole="button"
+                accessibilityLabel="Move tile down"
+                style={{ opacity: canMoveDown ? 1 : 0.4 }}
+                onPress={() => setIndex((row + 1) * cols + col)}
+              >
+                <ArrowDown size={ICON_SIZE.md} color={theme.onSurface} />
+              </Button>
+              <Button
+                variant="outline"
+                disabled={!canMoveLeft}
+                accessibilityRole="button"
+                accessibilityLabel="Move tile left"
+                style={{ opacity: canMoveLeft ? 1 : 0.4 }}
+                onPress={() => setIndex(row * cols + (col - 1))}
+              >
+                <ArrowLeft size={ICON_SIZE.md} color={theme.onSurface} />
+              </Button>
+              <Button
+                variant="outline"
+                disabled={!canMoveRight}
+                accessibilityRole="button"
+                accessibilityLabel="Move tile right"
+                style={{ opacity: canMoveRight ? 1 : 0.4 }}
+                onPress={() => setIndex(row * cols + (col + 1))}
+              >
+                <ArrowRight size={ICON_SIZE.md} color={theme.onSurface} />
+              </Button>
+            </View>
+          </View>
+          {index !== originalIndex && (
+            <Text style={{ fontSize: FONT_SIZE.sm, color: theme.outline }}>
+              {targetTile ?
+                `Swaps with "${targetTile.label}"`
+              : "Moves to empty slot"}
+            </Text>
+          )}
+        </View>
       </View>
       <TileDelete onPress={deleteTile} />
     </ScrollView>
