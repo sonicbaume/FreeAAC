@@ -8,6 +8,10 @@ import {
 import { useTransition } from "react"
 import { ActivityIndicator, StyleSheet, View } from "react-native"
 import { ScrollView } from "react-native-gesture-handler"
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from "react-native-reanimated"
 import { Button, Text } from "../components/Styled"
 import { usePagesetActions } from "../stores/boards"
 import { handleError } from "../utils/error"
@@ -21,6 +25,11 @@ import {
   PADDING,
   useTheme,
 } from "../utils/theme"
+
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false,
+})
 
 export default function Index() {
   const theme = useTheme()

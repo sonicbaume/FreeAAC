@@ -1,6 +1,7 @@
 import { preloadImage } from "@/utils/cache"
 import { tileSpacingWidthThreshold } from "@/utils/consts"
 import { handleError } from "@/utils/error"
+import { obfPathsMatch } from "@/utils/file"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import {
   DndProvider,
@@ -154,7 +155,7 @@ export default function Page({
         const targetPage = board?.pages?.find(
           (p) =>
             button.semanticAction?.targetId &&
-            p.path.startsWith(button.semanticAction.targetId),
+            obfPathsMatch(p.path, button.semanticAction.targetId),
         )
         if (!targetPage) {
           console.error("Could not find page ID", targetPage)

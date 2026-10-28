@@ -322,3 +322,9 @@ export const exportLogs = async (entries: HistoryEntry[]) => {
   const oblObject = OblUtil.fromHistoryEntries(entries, "user", appName)
   await saveObjectAs(oblObject, `${appName}_logs.obl`)
 }
+
+export const stripObfExt = (path: string) =>
+  path.replace(/\.obf$/i, "").replace(/\.obz$/i, "")
+
+export const obfPathsMatch = (path1: string, path2: string) =>
+  stripObfExt(path1) === stripObfExt(path2)
