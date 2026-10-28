@@ -86,46 +86,56 @@ export default function Tile({
     return style
   }, [id, state])
 
-  if (button === null && editMode) return <TileAdd onPress={onAdd} />
-  if (button === null) return <View style={{ flex: 1 }} />
-
   const showText = buttonView === "both" || buttonView === "text"
   const showSymbol = buttonView === "both" || buttonView === "symbol"
-  const isHidden = button.visibility === "Hidden"
-  const isLink = button.semanticAction?.targetId !== undefined
+  const isHidden = button?.visibility === "Hidden"
+  const isLink = button?.semanticAction?.targetId !== undefined
   const labelJustify =
     buttonView === "text" ? "center"
     : labelLocation === "bottom" ? "flex-end"
     : "flex-start"
 
   const handlePress = () => {
-    debounce(() => onPress(button, index))
+    debounce(() => button && onPress(button, index))
   }
 
   return (
     <Animated.View {...props} style={[{ width, height }, animatedStyle]}>
-      <Pressable
-        onPressOut={() => {
-          if (panGestureState.value !== 4) handlePress()
-        }}
-        style={{
-          ...styles.container,
-          ...button.style,
-          borderTopRightRadius: isLink ? 50 : undefined,
-          justifyContent: labelJustify,
-          borderStyle: isHidden ? "dashed" : "solid",
-        }}
-      >
-        {showText && labelLocation === "top" && (
-          <Label text={button.label} style={button.style} />
-        )}
-        {showSymbol && button.image && (
-          <TileImage uri={button.image} style={styles.symbol} />
-        )}
-        {showText && labelLocation === "bottom" && (
-          <Label text={button.label} style={button.style} />
-        )}
-      </Pressable>
+      {button === null && editMode && (
+        <TileAdd
+          onPress={() => {
+            if (panGestureState.value === 4) return
+            onAdd()
+          }}
+        />
+      )}
+      {button === null && !editMode && <View style={{ flex: 1 }} />}
+      {button && (
+        <Pressable
+          onPress={() => {
+            if (panGestureState.value === 4) return
+            if (button === null) return onAdd()
+            handlePress()
+          }}
+          style={{
+            ...styles.container,
+            ...button.style,
+            borderTopRightRadius: isLink ? 50 : undefined,
+            justifyContent: labelJustify,
+            borderStyle: isHidden ? "dashed" : "solid",
+          }}
+        >
+          {showText && labelLocation === "top" && (
+            <Label text={button.label} style={button.style} />
+          )}
+          {showSymbol && button.image && (
+            <TileImage uri={button.image} style={styles.symbol} />
+          )}
+          {showText && labelLocation === "bottom" && (
+            <Label text={button.label} style={button.style} />
+          )}
+        </Pressable>
+      )}
     </Animated.View>
   )
 }
