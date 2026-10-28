@@ -4,11 +4,10 @@ import { handleError } from "@/utils/error"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import {
   DndProvider,
-  Draggable,
   DraggableGrid,
   UniqueIdentifier,
 } from "@mgcrea/react-native-dnd"
-import { AACSemanticIntent } from "@willwade/aac-processors/browser"
+import { AACButton, AACSemanticIntent } from "@willwade/aac-processors/browser"
 import { useLocalSearchParams } from "expo-router"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { LayoutChangeEvent, LayoutRectangle, View } from "react-native"
@@ -25,7 +24,6 @@ import { generateNewButton } from "../../utils/boards"
 import { useTheme } from "../../utils/theme"
 import { BoardButton, BoardPage } from "../../utils/types"
 import Tile from "../Tile/Tile"
-import TileAdd from "../Tile/TileAdd"
 import TileEditor from "../Tile/TileEditor"
 
 const getGridPosition = (index: number, rows: number, cols: number) => {
@@ -184,21 +182,11 @@ export default function Page({
     ],
   )
 
-  const renderButton = useCallback(
-    ({ item, index }: { item: BoardButton | null; index: number }) => {
-      const isHidden = item && item.visibility && item.visibility === "Hidden"
-      if (item && (editMode || !isHidden))
-        return <Tile button={item} onPress={onButtonPress} index={index} />
-      if (editMode && item === null)
-        return <TileAdd onPress={() => addButton(index)} />
-      return <View style={{ flex: 1 }} />
-    },
-    [editMode, onButtonPress, addButton],
-  )
-
   const handleOrderChange = (order: UniqueIdentifier[]) => {
-    const flatGrid = order.map((id) => grid[parseInt(id as string)])
-    const newGrid = []
+    const flatGrid = order.map(
+      (index) => grid.at(parseInt(index as string)) ?? null,
+    )
+    const newGrid: (AACButton | null)[][] = []
     while (flatGrid.length) newGrid.push(flatGrid.splice(0, cols))
     savePage({ ...page, grid: newGrid })
   }
@@ -252,51 +240,28 @@ export default function Page({
         }}
         onLayout={handleLayout}
       >
-        {editMode && (
-          <DndProvider>
-            <DraggableGrid
-              key={grid.map((item) => item?.id ?? "null").join(",")}
-              direction="row"
-              size={cols}
-              gap={spacing}
-              onOrderChange={handleOrderChange}
-            >
-              {grid.map((item, index) => (
-                <Draggable
-                  key={index}
-                  id={index.toString()}
-                  style={{
-                    width: colWidth,
-                    height: rowHeight,
-                  }}
-                >
-                  {renderButton({ item, index })}
-                </Draggable>
-              ))}
-            </DraggableGrid>
-          </DndProvider>
-        )}
-        {!editMode &&
-          Array.from({ length: rows }).map((_, row) => (
-            <View
-              key={row}
-              style={{
-                flexDirection: "row",
-                gap: spacing,
-                flex: 1,
-              }}
-            >
-              {Array.from({ length: cols }).map((_, col) => {
-                const index = row * cols + col
-                const item = grid[index]
-                return (
-                  <View key={index} style={{ flex: 1 }}>
-                    {renderButton({ item, index })}
-                  </View>
-                )
-              })}
-            </View>
-          ))}
+        <DndProvider>
+          <DraggableGrid
+            key={grid.map((item) => item?.id ?? "null").join(",")}
+            direction="row"
+            size={cols}
+            gap={spacing}
+            onOrderChange={handleOrderChange}
+          >
+            {grid.map((item, index) => (
+              <Tile
+                key={index}
+                id={index.toString()}
+                button={item}
+                onPress={onButtonPress}
+                index={index}
+                onAdd={() => addButton(index)}
+                width={colWidth}
+                height={rowHeight}
+              />
+            ))}
+          </DraggableGrid>
+        </DndProvider>
       </View>
       <TileEditor
         ref={editSheet}
