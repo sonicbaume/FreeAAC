@@ -1,4 +1,5 @@
 import { useBoards } from "@/stores/boards"
+import { stripObfExt } from "@/utils/file"
 import {
   AACSemanticCategory,
   AACSemanticIntent,
@@ -28,8 +29,8 @@ export default function TileSettings({
   const theme = useTheme()
   const boards = useBoards()
   const pages = boards.find((b) => b.id === boardId)?.pages ?? []
-  const pagePaths = pages.map((p): PageOption => {
-    return { value: p.path, label: p.name }
+  const pagePaths = pages.map((p) => {
+    return { value: stripObfExt(p.path), label: p.name }
   })
 
   const setVocalization = (message: string) => {
