@@ -23,6 +23,7 @@ import {
 import { generateNewButton } from "../../utils/boards"
 import { useTheme } from "../../utils/theme"
 import { BoardButton, BoardPage } from "../../utils/types"
+import DraggableTile from "../Tile/DraggableTile"
 import Tile from "../Tile/Tile"
 import TileEditor from "../Tile/TileEditor"
 
@@ -236,28 +237,57 @@ export default function Page({
         }}
         onLayout={handleLayout}
       >
-        <DndProvider>
-          <DraggableGrid
-            key={grid.map((item) => item?.id ?? "null").join(",")}
-            direction="row"
-            size={cols}
-            gap={spacing}
-            onOrderChange={handleOrderChange}
-          >
-            {grid.map((item, index) => (
-              <Tile
-                key={index}
-                id={index.toString()}
-                button={item}
-                onPress={onButtonPress}
-                index={index}
-                onAdd={() => addButton(index)}
-                width={colWidth}
-                height={rowHeight}
-              />
-            ))}
-          </DraggableGrid>
-        </DndProvider>
+        {editMode && (
+          <DndProvider>
+            <DraggableGrid
+              key={grid.map((item) => item?.id ?? "null").join(",")}
+              direction="row"
+              size={cols}
+              gap={spacing}
+              onOrderChange={handleOrderChange}
+            >
+              {grid.map((item, index) => (
+                <DraggableTile
+                  key={index}
+                  id={index.toString()}
+                  button={item}
+                  onPress={onButtonPress}
+                  index={index}
+                  onAdd={() => addButton(index)}
+                  width={colWidth}
+                  height={rowHeight}
+                />
+              ))}
+            </DraggableGrid>
+          </DndProvider>
+        )}
+        {!editMode &&
+          Array.from({ length: rows }).map((_, row) => (
+            <View
+              key={row}
+              style={{
+                flexDirection: "row",
+                gap: spacing,
+                flex: 1,
+              }}
+            >
+              {Array.from({ length: cols }).map((_, col) => {
+                const index = row * cols + col
+                const item = grid[index]
+                return (
+                  <View key={index} style={{ flex: 1 }}>
+                    <Tile
+                      key={index}
+                      button={item}
+                      onPress={onButtonPress}
+                      index={index}
+                      onAdd={() => addButton(index)}
+                    />
+                  </View>
+                )
+              })}
+            </View>
+          ))}
       </View>
       <TileEditor
         ref={editSheet}
