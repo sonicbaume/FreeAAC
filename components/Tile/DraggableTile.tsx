@@ -54,7 +54,7 @@ export default function DraggableTile({
       ],
     }
     return style
-  }, [id, state])
+  })
 
   return (
     <Animated.View {...props} style={[{ width, height }, animatedStyle]}>
