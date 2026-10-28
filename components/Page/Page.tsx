@@ -68,7 +68,6 @@ export default function Page({
   const board = boards.find((b) => b.id === boardId)
   const [pageSize, setPageSize] = useState<LayoutRectangle>()
   const [editTile, setEditTile] = useState<EditTile | undefined>()
-  const editTileRef = useRef<EditTile | undefined>(editTile)
   const pageRef = useRef<BoardPage>(page)
   const editMode = useEditMode()
   const playOnPress = usePlayOnPress()
@@ -192,13 +191,10 @@ export default function Page({
   }
 
   useEffect(() => {
-    editTileRef.current = editTile
-  }, [editTile])
-  useEffect(() => {
     pageRef.current = page
   }, [page])
   const saveEditTile = () => {
-    const tile = { ...editTileRef.current }
+    const tile = { ...editTile }
     const page = pageRef.current
     if (!tile || tile.index === undefined || !rows || !cols) return undefined
     if (tile.button && !tile.button.label) return undefined
