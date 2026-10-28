@@ -4,11 +4,10 @@ import { handleError } from "@/utils/error"
 import { TrueSheet } from "@lodev09/react-native-true-sheet"
 import {
   DndProvider,
-  Draggable,
   DraggableGrid,
   UniqueIdentifier,
 } from "@mgcrea/react-native-dnd"
-import { AACSemanticIntent } from "@willwade/aac-processors/browser"
+import { AACButton, AACSemanticIntent } from "@willwade/aac-processors/browser"
 import { useLocalSearchParams } from "expo-router"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { LayoutChangeEvent, LayoutRectangle, View } from "react-native"
@@ -24,8 +23,8 @@ import {
 import { generateNewButton } from "../../utils/boards"
 import { useTheme } from "../../utils/theme"
 import { BoardButton, BoardPage } from "../../utils/types"
+import DraggableTile from "../Tile/DraggableTile"
 import Tile from "../Tile/Tile"
-import TileAdd from "../Tile/TileAdd"
 import TileEditor from "../Tile/TileEditor"
 
 const getGridPosition = (index: number, rows: number, cols: number) => {
@@ -70,7 +69,6 @@ export default function Page({
   const board = boards.find((b) => b.id === boardId)
   const [pageSize, setPageSize] = useState<LayoutRectangle>()
   const [editTile, setEditTile] = useState<EditTile | undefined>()
-  const editTileRef = useRef<EditTile | undefined>(editTile)
   const pageRef = useRef<BoardPage>(page)
   const editMode = useEditMode()
   const playOnPress = usePlayOnPress()
@@ -184,33 +182,20 @@ export default function Page({
     ],
   )
 
-  const renderButton = useCallback(
-    ({ item, index }: { item: BoardButton | null; index: number }) => {
-      const isHidden = item && item.visibility && item.visibility === "Hidden"
-      if (item && (editMode || !isHidden))
-        return <Tile button={item} onPress={onButtonPress} index={index} />
-      if (editMode && item === null)
-        return <TileAdd onPress={() => addButton(index)} />
-      return <View style={{ flex: 1 }} />
-    },
-    [editMode, onButtonPress, addButton],
-  )
-
   const handleOrderChange = (order: UniqueIdentifier[]) => {
-    const flatGrid = order.map((id) => grid[parseInt(id as string)])
-    const newGrid = []
+    const flatGrid = order.map(
+      (index) => grid.at(parseInt(index as string)) ?? null,
+    )
+    const newGrid: (AACButton | null)[][] = []
     while (flatGrid.length) newGrid.push(flatGrid.splice(0, cols))
     savePage({ ...page, grid: newGrid })
   }
 
   useEffect(() => {
-    editTileRef.current = editTile
-  }, [editTile])
-  useEffect(() => {
     pageRef.current = page
   }, [page])
   const saveEditTile = () => {
-    const tile = { ...editTileRef.current }
+    const tile = { ...editTile }
     const page = pageRef.current
     if (!tile || tile.index === undefined || !rows || !cols) return undefined
     if (tile.button && !tile.button.label) return undefined
@@ -262,16 +247,16 @@ export default function Page({
               onOrderChange={handleOrderChange}
             >
               {grid.map((item, index) => (
-                <Draggable
+                <DraggableTile
                   key={index}
                   id={index.toString()}
-                  style={{
-                    width: colWidth,
-                    height: rowHeight,
-                  }}
-                >
-                  {renderButton({ item, index })}
-                </Draggable>
+                  button={item}
+                  onPress={onButtonPress}
+                  index={index}
+                  onAdd={() => addButton(index)}
+                  width={colWidth}
+                  height={rowHeight}
+                />
               ))}
             </DraggableGrid>
           </DndProvider>
@@ -291,7 +276,13 @@ export default function Page({
                 const item = grid[index]
                 return (
                   <View key={index} style={{ flex: 1 }}>
-                    {renderButton({ item, index })}
+                    <Tile
+                      key={index}
+                      button={item}
+                      onPress={onButtonPress}
+                      index={index}
+                      onAdd={() => addButton(index)}
+                    />
                   </View>
                 )
               })}
