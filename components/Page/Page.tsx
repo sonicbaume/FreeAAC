@@ -101,6 +101,7 @@ export default function Page({
         button: generateNewButton(page.id),
         image: undefined,
         index,
+        originalIndex: index,
       })
       setSymbolSearchText("")
       editSheet.current?.present()
@@ -138,6 +139,7 @@ export default function Page({
           button,
           image: page.images?.find((i) => i.url === button.image),
           index,
+          originalIndex: index,
         })
         setSymbolSearchText(button.label)
         editSheet.current?.present()
@@ -199,12 +201,25 @@ export default function Page({
     const tile = { ...editTile }
     const page = pageRef.current
     if (!tile || tile.index === undefined || !rows || !cols) return undefined
-    if (tile.button && !tile.button.label) return undefined
-    const { row, col } = getGridPosition(tile.index, rows, cols)
+    const origIndex = tile.originalIndex ?? tile.index
+    const origPos = getGridPosition(origIndex, rows, cols)
+    const targetPos = getGridPosition(tile.index, rows, cols)
+    const newGrid = page.grid.map((r) => [...r])
+    if (!tile.button) {
+      newGrid[origPos.row][origPos.col] = null
+      savePage({
+        ...page,
+        buttons: newGrid.flat().filter((b) => b !== null),
+        grid: newGrid,
+      })
+      setEditTile(undefined)
+      return
+    }
+    if (!tile.button.label) return undefined
     const otherImages =
       page.images?.filter((i) => i.url !== tile.image?.url) ?? []
     const newImages = tile.image ? [...otherImages, tile.image] : otherImages
-    if (tile.button && tile.image) {
+    if (tile.image) {
       tile.button = {
         ...tile.button,
         image: tile.image.url,
@@ -212,8 +227,13 @@ export default function Page({
       }
       preloadImage(tile.image.url)
     }
-    const newGrid = [...page.grid]
-    newGrid[row][col] = tile.button ?? null
+    if (origIndex === tile.index) {
+      newGrid[targetPos.row][targetPos.col] = tile.button
+    } else {
+      const displaced = newGrid[targetPos.row][targetPos.col]
+      newGrid[origPos.row][origPos.col] = displaced
+      newGrid[targetPos.row][targetPos.col] = tile.button
+    }
     savePage({
       ...page,
       buttons: newGrid.flat().filter((b) => b !== null),
@@ -295,6 +315,9 @@ export default function Page({
         tile={editTile}
         setTile={setEditTile}
         onClose={saveEditTile}
+        grid={grid}
+        rows={rows}
+        cols={cols}
       />
     </>
   )
